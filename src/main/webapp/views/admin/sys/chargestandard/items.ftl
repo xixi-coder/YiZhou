@@ -41,7 +41,7 @@
                                 <input style="width: 50px;height: 24px;" name="chargestandarditem.base_amount"
                                        value="${(chargestandarditem.base_amount)!}">
                                 <label>)元</label>
-                                <label>)最低消费(</label>
+                                <label>最低消费(</label>
                                 <input style="width: 50px;" name="chargestandarditem.min_amount" value="<#if chargestandarditem.min_amount??>${(chargestandarditem.min_amount)!}<#else>0</#if>">
                                 <label>)元</label>
                                 <#--<div class="additional-btn">

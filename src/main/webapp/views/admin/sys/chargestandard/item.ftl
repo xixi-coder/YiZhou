@@ -76,7 +76,7 @@
                                 <input style="width: 50px;height: 24px;" name="royaltyStandard.name"
                                        value="${(item.base_amount)?c!}">
                                 <label>)元</label>
-                                <label>)最低消费(</label>
+                                <label>最低消费(</label>
                                 <input style="width: 50px;" name="royaltyStandard.name" value="<#if item.min_amount??>${(item.min_amount)?c!}<#else>0</#if>">
                                 <label>)元</label>
                                 <#if type==0>
@@ -332,7 +332,7 @@
                             <label>)起步价(</label>
                             <input style="width: 50px;height: 24px;" name="royaltyStandard.name" value="0">
                             <label>)元</label>
-                            <label>)最低消费(</label>
+                            <label>最低消费(</label>
                             <input style="width: 50px;height: 24px;" name="royaltyStandard.name" value="0">
                             <label>)元</label>
                             <div class="additional-btn">
@@ -554,7 +554,7 @@
                 <label>)起步价(</label>
                 <input style="width: 50px;" name="royaltyStandard.name" value="0">
                 <label>)元</label>
-                <label>)最低消费(</label>
+                <label>最低消费(</label>
                 <input style="width: 50px;" name="royaltyStandard.name"  value="0">
                 <label>)元</label>
 
