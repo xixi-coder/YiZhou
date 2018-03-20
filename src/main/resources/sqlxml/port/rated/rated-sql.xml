@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="rated">
+    <!--乘客评价信息接口-->
+    <sql id="passenger">
+    SELECT
+        order_id OrderId,
+        create_time EvaluateTime,
+        score ServuceScore
+    FROM
+        dele_grade
+    </sql>
+
+    <!--驾驶员处罚信息接口-->
+    <sql id="driverpunish">
+    SELECT
+        i.LicenseId,
+        p.PunishTime,
+        p.PunishReason,
+        p.PunishResult
+    FROM
+        dele_driver_punish p
+    LEFT JOIN dele_driver_info i ON p.driver_id = i.id
+    </sql>
+
+    <!--驾驶员信誉信息接口-->
+    <sql id="driver">
+    SELECT
+        i.LicenseId,
+        c.Lever,
+        DATE_FORMAT(c.TestDate, '%Y%m%d') TestDate,
+        c.TestDepartment
+    FROM
+        dele_driver_credit c
+    LEFT JOIN dele_driver_info i ON c.driver_id = i.id
+    </sql>
+</sqlGroup>

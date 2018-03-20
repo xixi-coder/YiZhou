@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="car">
+    <sql id="findByDriverAndStatus">
+        SELECT
+        dbc.*,ddc.*,dcb.`name` bname,dcm.name mname
+        FROM
+        dele_base_car dbc
+        INNER JOIN dele_driver_car ddc ON ddc.car = dbc.id
+        LEFT JOIN dele_car_brand dcb ON dcb.id = dbc.brand
+        LEFT JOIN dele_car_model dcm ON dcm.id = dbc.model_type
+        WHERE
+        ddc.driver = ?
+        AND dbc.`status` = ?
+    </sql>
+    <sql id="findByDriver">
+        SELECT
+        dbc.color,dbc.picture,dbc.id,dbc.plate_no plateNo, dcb.`name` brandName,
+        dcm.`name` modelName
+        FROM
+        dele_base_car dbc
+        INNER JOIN dele_driver_car ddc ON ddc.car = dbc.id
+        INNER JOIN dele_car_model dcm ON dbc.model_type = dcm.id
+        INNER JOIN dele_car_brand dcb ON dbc.brand = dcb.id
+        WHERE
+        ddc.driver = ?
+        AND ddc.use_flag = 1
+    </sql>
+    <sql id="validateVin">
+        SELECT id FROM dele_base_car WHERE VIN = ? LIMIT 1
+    </sql>
+    <sql id="validatePlateNumber">
+        SELECT id FROM dele_base_car WHERE plate_no = ? LIMIT 1
+    </sql>
+</sqlGroup>

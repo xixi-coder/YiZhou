@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="companyAccount">
+    <sql id="column">
+        SELECT
+        dcal.amount,
+        dcal.remark,
+        dcal.service_type,
+        dcal.opeart_type,
+        dcal.create_time,
+        dc.`name` companyName
+    </sql>
+    <sql id="where">
+        FROM
+        dele_company_account_log dcal
+        LEFT JOIN dele_company dc ON dc.id = dcal.company -- where
+        ORDER BY dcal.create_time DESC
+    </sql>
+    <sql id="columnPage">
+        SELECT
+        count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM
+        dele_company_account_log dcal
+        LEFT JOIN dele_company dc ON dc.id = dcal.company -- where
+    </sql>
+</sqlGroup>

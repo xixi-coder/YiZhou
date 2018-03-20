@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="driverLicenseInfo">
+    <sql id="findByDriver">
+        SELECT
+        *
+        FROM
+        dele_driver_license_info
+        WHERE
+        driver = ?
+        LIMIT 1
+    </sql>
+</sqlGroup>

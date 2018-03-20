@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="wechatAccount">
+    <sql id="findFrist">
+        select * from dele_wechat_account LIMIT 1
+    </sql>
+</sqlGroup>

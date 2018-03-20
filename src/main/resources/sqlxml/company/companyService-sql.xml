@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="companyService">
+    <sql id="findByServiceType">
+        SELECT * FROM dele_company_service WHERE service_type_item = ?
+    </sql>
+    <sql id="findByCompanyAndServiceType">
+        SELECT * FROM dele_company_service WHERE company = ? AND service_type_item = ?
+    </sql>
+</sqlGroup>

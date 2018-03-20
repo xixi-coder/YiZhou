@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="operate">
+    <sql id="login">
+      <!--  SELECT ddo.id,dbc.plate_no VehicleNo,ddi.LicenseId,DATE_FORMAT(ddo.operat_time,'%Y%m%d%H%i%s') LoginTime,2 EncryPt
+        ,ddr.longitude Longitude,ddr.latitude Latitude
+        FROM `dele_driver_online_detail` ddo
+        LEFT JOIN dele_driver_car ddc ON ddo.driver = ddc.driver
+        LEFT JOIN dele_base_car dbc ON ddc.car = dbc.id
+        LEFT JOIN dele_driver_info ddi ON ddc.driver = ddi.id
+        LEFT JOIN dele_driver_history_location ddr ON ddi.id = ddr.driver
+        WHERE ddo.operat_type = 1  AND ddr.recovice_time BETWEEN ddo.operat_time AND DATE_ADD(ddo.operat_time,INTERVAL 10 minute)
+        GROUP BY ddo.id-->
+        SELECT ddo.id,dbc.plate_no VehicleNo,ddi.LicenseId,DATE_FORMAT(ddo.operat_time,'%Y%m%d%H%i%s') LoginTime,2 ENCRYPT,
+        0 Longitude,0 Latitude
+        FROM `dele_driver_online_detail` ddo
+        LEFT JOIN dele_driver_car ddc ON ddo.driver = ddc.driver
+        LEFT JOIN dele_base_car dbc ON ddc.car = dbc.id
+        LEFT JOIN dele_driver_info ddi ON ddc.driver = ddi.id
+        WHERE ddo.operat_type = 1
+        GROUP BY ddo.id
+    </sql>
+    <sql id="logout">
+       <!-- SELECT ddo.id,dbc.plate_no VehicleNo,ddi.LicenseId,DATE_FORMAT(ddo.operat_time,'%Y%m%d%H%i%s') LoginTime,2 EncryPt
+        ,ddr.longitude Longitude,ddr.latitude Latitude
+        FROM `dele_driver_online_detail` ddo
+        LEFT JOIN dele_driver_car ddc ON ddo.driver = ddc.driver
+        LEFT JOIN dele_base_car dbc ON ddc.car = dbc.id
+        LEFT JOIN dele_driver_info ddi ON ddc.driver = ddi.id
+        LEFT JOIN dele_driver_history_location ddr ON ddi.id = ddr.driver
+        WHERE ddo.operat_type = 0 AND ddr.recovice_time BETWEEN ddo.operat_time AND DATE_ADD(ddo.operat_time,INTERVAL 10 minute)
+        GROUP BY ddo.id-->
+        SELECT ddo.id,dbc.plate_no VehicleNo,ddi.LicenseId,DATE_FORMAT(ddo.operat_time,'%Y%m%d%H%i%s') LoginTime,2 ENCRYPT
+        ,0 Longitude,0 Latitude
+        FROM `dele_driver_online_detail` ddo
+        LEFT JOIN dele_driver_car ddc ON ddo.driver = ddc.driver
+        LEFT JOIN dele_base_car dbc ON ddc.car = dbc.id
+        LEFT JOIN dele_driver_info ddi ON ddc.driver = ddi.id
+        WHERE ddo.operat_type = 0
+        GROUP BY ddo.id
+    </sql>
+    <sql id="start">
+        <!--SELECT dl.id,dd.no,di.LicenseId,dd.type,dd.VehicleNo,dh.longitude DepLongitude,dh.latitude DepLatitude,2 Encrypt,DATE_FORMAT(dl.operation_time,'%Y%m%d%H%i%s') DepTime
+        FROM dele_order_log dl
+        LEFT JOIN dele_order dd ON dl.order_id = dd.id
+        LEFT JOIN dele_driver_info di ON dd.driver = di.id
+        LEFT JOIN dele_driver_history_location dh ON dh.driver = di.id
+        WHERE action = 3 AND dh.recovice_time BETWEEN dl.operation_time AND DATE_ADD(dl.operation_time,INTERVAL 10 minute)
+        GROUP BY dl.id-->
+        SELECT dl.id,dd.no,di.LicenseId,dd.type,dd.VehicleNo,0 DepLongitude,0 DepLatitude,2 ENCRYPT,DATE_FORMAT(dl.operation_time,'%Y%m%d%H%i%s') DepTime
+        FROM dele_order_log dl
+        LEFT JOIN dele_order dd ON dl.order_id = dd.id
+        LEFT JOIN dele_driver_info di ON dd.driver = di.id
+        WHERE ACTION = 3
+        GROUP BY dl.id
+    </sql>
+    <sql id="arrive">
+        <!--SELECT dl.id,dd.no,dd.distance DriverMile,dd.consume_time DriverTime,dh.longitude DepLongitude,dh.latitude DepLatitude,2 Encrypt,DATE_FORMAT(dl.operation_time,'%Y%m%d%H%i%s') DepTime
+        FROM dele_order_log dl
+        LEFT JOIN dele_order dd ON dl.order_id = dd.id
+        LEFT JOIN dele_driver_info di ON dd.driver = di.id
+        LEFT JOIN dele_driver_history_location dh ON dh.driver = di.id
+        WHERE action = 4 AND dh.recovice_time BETWEEN dl.operation_time AND DATE_ADD(dl.operation_time,INTERVAL 10 minute)
+        GROUP BY dl.id-->
+        SELECT dl.id,dd.no,dd.distance DriverMile,dd.consume_time DriverTime,0 DepLongitude,0 DepLatitude,2 ENCRYPT,DATE_FORMAT(dl.operation_time,'%Y%m%d%H%i%s') DepTime
+        FROM dele_order_log dl
+        LEFT JOIN dele_order dd ON dl.order_id = dd.id
+        LEFT JOIN dele_driver_info di ON dd.driver = di.id
+        WHERE ACTION = 4
+        GROUP BY dl.id
+    </sql>
+    <sql id="pay">
+        <!--SELECT dl.id,dd.no,dc.city OnArea,di.LicenseId,dd.type FareType,dd.VehicleNo,DATE_FORMAT(dd.setouttime,'%Y%m%d%H%i%s') BookDepTime,dt.start_longitude DepLongitude,
+        dt.start_latitude DepLatitude,DATE_FORMAT(dd.setouttime,'%Y%m%d%H%i%s') DepTime,dt.end_longitude DestLongitude,dt.end_latitude DestLongitude, DATE_FORMAT(s.operation_time,'%Y%m%d%H%i%s') DestTime,
+        dd.distance DriverMile,dd.consume_time DriverTime,dd.real_pay FactPrice,dd.amount Price,dd.remote_fee FarUpPrice,dd.other_charges OtherUpPrice,IF(dd.pay_status=6,0,1) PayState,IF(dir.id,1,0) InvoiceStatus
+        FROM dele_order_log dl
+        LEFT JOIN dele_order dd ON dl.order_id = dd.id
+        LEFT JOIN dele_company dc ON dd.company = dc.id
+        LEFT JOIN dele_driver_info di ON dd.driver = di.id
+        LEFT JOIN dele_driver_history_location dh ON dh.driver = di.id
+        LEFT JOIN dele_trip dt ON dd.id = dt.order_id
+        LEFT JOIN (SELECT d.operation_time,d.order_id FROM dele_order_log d WHERE d.action=4)s ON s.order_id = dd.id
+        LEFT JOIN dele_invoice_order dio ON dio.order_id = dd.id
+        LEFT JOIN dele_invoice_rec dir ON dio.invoice_id = dir.id
+        WHERE action = 5 AND dh.recovice_time BETWEEN dl.operation_time AND DATE_ADD(dl.operation_time,INTERVAL 10 minute)
+        GROUP BY dl.id-->
+        SELECT dl.id,dd.no,dc.city OnArea,di.LicenseId,dd.type FareType,dd.VehicleNo,DATE_FORMAT(dd.setouttime,'%Y%m%d%H%i%s') BookDepTime,dt.start_longitude DepLongitude,
+        dt.start_latitude DepLatitude,DATE_FORMAT(dd.setouttime,'%Y%m%d%H%i%s') DepTime,dt.end_longitude DestLongitude,dt.end_latitude DestLongitude, DATE_FORMAT(s.operation_time,'%Y%m%d%H%i%s') DestTime,
+        dd.distance DriverMile,dd.consume_time DriverTime,dd.real_pay FactPrice,dd.amount Price,dd.remote_fee FarUpPrice,dd.other_charges OtherUpPrice,IF(dd.pay_status=6,0,1) PayState,IF(dir.id,1,0) InvoiceStatus
+        FROM dele_order_log dl
+        LEFT JOIN dele_order dd ON dl.order_id = dd.id
+        LEFT JOIN dele_company dc ON dd.company = dc.id
+        LEFT JOIN dele_driver_info di ON dd.driver = di.id
+        LEFT JOIN dele_trip dt ON dd.id = dt.order_id
+        LEFT JOIN (SELECT d.operation_time,d.order_id FROM dele_order_log d WHERE d.action=4)s ON s.order_id = dd.id
+        LEFT JOIN dele_invoice_order dio ON dio.order_id = dd.id
+        LEFT JOIN dele_invoice_rec dir ON dio.invoice_id = dir.id
+        WHERE ACTION = 5
+        GROUP BY dl.id
+    </sql>
+
+<!-- 交通部车辆上线接口 -->
+    <sql id="findDataByA38">
+        SELECT  o.driver,
+                bc.plate_no AS VehicleNo,
+                 o.operat_time
+        FROM dele_driver_online_detail AS o
+        LEFT JOIN  `dele_driver_car` AS c ON (o.driver = c.driver)
+        LEFT JOIN  `dele_base_car` AS bc ON (c.car = bc.id)
+        WHERE operat_type = ? LIMIT 1,50
+
+
+    </sql>
+
+    <sql id="findDataByA42">
+        SELECT
+        o.id AS orderId,
+        o.no,
+        ol.operation_time ,
+        o.driver ,
+        bc.plate_no AS VehicleNo,
+        o.distance AS DriveMile,
+        TIMESTAMPDIFF(SECOND,o.create_time,ol.operation_time) AS DriveTime
+        FROM `dele_order` o
+        LEFT JOIN  dele_order_log ol ON (o.id=ol.order_id)
+        LEFT JOIN  `dele_driver_car` AS c ON (o.driver = c.driver)
+        LEFT JOIN  `dele_base_car` AS bc ON (c.car = bc.id)
+        WHERE
+        o.no IN ('SJDD20170719160033KHLKVI','SJDD20170719154254OEITBX')
+        AND ACTION=?
+        GROUP BY o.no
+
+
+
+    </sql>
+
+
+
+</sqlGroup>

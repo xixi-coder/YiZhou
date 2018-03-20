@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="position">
+    <!--驾驶员定位信息接口-->
+    <sql id="driver">
+    SELECT
+        f.LicenseId,
+        b.plate_no VehicleNo,
+        o.city VehicleRegionCode,
+        d.recive_time PositionTime,
+        d.longitude Logitude,
+        d.latitude Latitude
+    FROM
+        dele_driver_real_location d
+    LEFT JOIN dele_driver_car c ON d.driver = c.driver
+    LEFT JOIN dele_base_car b ON c.car = b.id
+    LEFT JOIN dele_driver_info f ON c.driver = f.id
+    LEFT JOIN dele_company o ON o.id = f.company
+    </sql>
+
+    <!--车辆定位信息接口-->
+    <sql id="vehicle">
+    SELECT
+        b.plate_no VehicleNo,
+        i.city VehicleRegionCode,
+        d.recive_time PositionTime,
+        d.longitude Logitude,
+        d.latitude Latitude
+    FROM
+	  dele_driver_real_location d
+    LEFT JOIN dele_driver_car c ON d.driver = c.driver
+    LEFT JOIN dele_base_car b ON c.car = b.id
+    LEFT JOIN dele_car_info i ON i.car_id = b.id
+    </sql>
+</sqlGroup>

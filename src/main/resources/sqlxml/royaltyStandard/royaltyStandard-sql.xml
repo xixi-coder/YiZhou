@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="royaltyStandard">
+    <sql id="column">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_royalty_standard WHERE 1 = 1 -- where
+    </sql>
+    <sql id="findAll">
+        SELECT * FROM dele_royalty_standard
+    </sql>
+    <sql id="findByCompany">
+        SELECT * FROM dele_royalty_standard WHERE company = ?
+    </sql>
+</sqlGroup>

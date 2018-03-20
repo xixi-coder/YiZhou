@@ -1,0 +1,49 @@
+.notify-container {
+    width: 150px;
+    float: left;
+    z-index: 9999;
+    margin-left: 5px;
+}
+
+.notify-type-notice {
+    color: white;
+}
+
+.notify-item {
+    height: auto;
+    background: #FF9933;
+    opacity: 0.9;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    color: #eee;
+    padding-top: 10px;
+    padding-left: 6px;
+    padding-right: 6px;
+    font-family: lucida Grande;
+    font-size: 14px;
+    border: 1px solid #CC6633;
+    display: block;
+    position: relative;
+    margin: 0 0 12px 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.notify-item-image {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top: 50%;
+    margin-top: -16px;
+    left: 10px;
+}
+
+.notify-item-close {
+    background: url(../tips/close.gif);
+    width: 22px;
+    height: 22px;
+    margin-left: 120px;
+    margin-right: 0px;
+    margin-top: -10px;
+    cursor: pointer;
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="smslog">
+    <sql id="column">
+        select *
+    </sql>
+    <sql id="where">
+        from dele_sms_log WHERE 1=1 -- where
+        ORDER BY send_time DESC
+    </sql>
+    <sql id="columnPage">
+        select count(*) c
+    </sql>
+    <sql id="wherePage">
+        from dele_sms_log WHERE 1=1 -- where
+    </sql>
+</sqlGroup>

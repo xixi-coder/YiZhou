@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="carBrand">
+    <sql id="column">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_car_brand WHERE 1=1 -- where
+        ORDER BY frist_py
+    </sql>
+    <sql id="findByPage">
+        SELECT
+        *
+        FROM
+        dele_car_brand
+        WHERE
+        1=1 -- where
+        ORDER BY frist_py
+        LIMIT ?,?
+    </sql>
+    <sql id="findAll">
+        SELECT * FROM dele_car_brand WHERE 1=1 ORDER BY frist_py
+    </sql>
+
+    <sql id="findByCount">
+        SELECT COUNT(1) c FROM dele_car_brand WHERE name = ? AND id != ?
+    </sql>
+
+    <sql id="findByName">
+        SELECT * FROM dele_car_brand WHERE name = ? limit 1
+    </sql>
+</sqlGroup>

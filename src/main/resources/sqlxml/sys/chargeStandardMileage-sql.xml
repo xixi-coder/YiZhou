@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="chargeStandardMileage">
+    <sql id="delByChargeStandard">
+        DELETE FROM dele_charge_standard_mileage WHERE charge_standard = ?
+    </sql>
+    <sql id="findByChargeStandardItem">
+        SELECT * FROM dele_charge_standard_mileage WHERE charge_standard_item = ? ORDER by id ASC
+    </sql>
+    <sql id="findByChargeStandardItemAndMileage">
+        SELECT * FROM dele_charge_standard_mileage WHERE charge_standard_item = ? AND end &lt;= ? ORDER by id ASC
+    </sql>
+</sqlGroup>

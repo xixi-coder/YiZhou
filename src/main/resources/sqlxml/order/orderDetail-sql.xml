@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="orderDetail">
+    <sql id="column">
+        SELECT
+        dod. NO,
+        dod.order_id,
+        dod.create_time,
+        dod.audit_status,
+        dod.amount,
+        dod.remark,
+        dod.type,
+        dc. NAME cname
+    </sql>
+    <sql id="where">
+        FROM
+        dele_order_detail dod
+        LEFT JOIN dele_company dc ON dc.id = dod.company
+        WHERE
+        1 = 1 -- where
+        ORDER BY
+        dod.create_time DESC
+    </sql>
+    <sql id="columnPage">
+        SELECT
+        count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM
+        dele_order_detail dod
+        LEFT JOIN dele_company dc ON dc.id = dod.company
+        WHERE
+        1 = 1 -- where
+    </sql>
+    <sql id="columnDriver">
+        SELECT
+        dod.*,ddi.real_name
+    </sql>
+    <sql id="whereDriver">
+        FROM
+        dele_order_detail dod
+        LEFT JOIN dele_order ddo ON ddo.id = dod.order_id
+        INNER JOIN dele_driver_info ddi ON ddi.id = ddo.driver
+        WHERE
+        1 = 1 -- where
+        ORDER BY dod.create_time DESC
+    </sql>
+    <sql id="columnDriverPage">
+        SELECT
+        count(*) c
+    </sql>
+    <sql id="whereDriverPage">
+        FROM
+        dele_order_detail dod
+        LEFT JOIN dele_order ddo ON ddo.id = dod.order_id
+        INNER JOIN dele_driver_info ddi ON ddi.id = ddo.driver
+        WHERE
+        1 = 1 -- where
+    </sql>
+</sqlGroup>

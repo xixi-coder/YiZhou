@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="rejectLog">
+    <sql id="driverFavorableRate">
+        SELECT i.id as id,
+        i.nick_name as name,
+        i.phone as phone,
+        r.status as status
+        FROM `reject_log` r LEFT JOIN `dele_driver_info` i ON (r.driver_id=i.id)
+        WHERE 1=1 -- where
+    </sql>
+</sqlGroup>

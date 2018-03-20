@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberInfo">
+    <sql id="findCountByPhone">
+        SELECT count(1) c FROM dele_member_info WHERE phone = ?
+    </sql>
+    <sql id="findByLoginId">
+        SELECT * FROM dele_member_info WHERE login_id = ? LIMIT 1
+    </sql>
+    <sql id="column">
+        SELECT
+        info.id,
+        info.login_id,
+        inst.user_name inst_phone,
+        info.STATUS status,
+        info.nick_name,
+        info.head_portrait,
+        info.age,
+        info.company,
+        info.birthday,
+        info.phone,
+        info.province,
+        info.city,
+        info.county,
+        info.address,
+        info.email,
+        info.real_name,
+        info.certificate_type,
+        info.certificate_no,
+        info.gender,
+        info.urgent_name,
+        info.urgent_phone,
+        info.`level`,
+        info.last_update_time,
+        info.post_code,
+        login.id idg,
+        login.user_name,
+        login.password,
+        login.salt,
+        login.type,
+        login.device_no,
+        login.last_login_time,
+        login.STATUS lstatus,
+        login.create_time,
+        login.device_type,
+        dmca.amount,
+        dc. NAME cname,
+        vip.amount  AS vipAmount,
+        vip.historical_amount  AS vipHistoricalAmount
+    </sql>
+    <sql id="where">
+        FROM
+        dele_member_info info
+        LEFT JOIN dele_member_login login ON info.login_id = login.id
+        LEFT JOIN dele_member_login inst ON inst.id = info.introducer_login_id
+        LEFT JOIN dele_member_capital_account dmca ON dmca.login_id = login.id
+        LEFT JOIN dele_company dc ON info.company = dc.id
+        LEFT JOIN vip_info vip ON vip.login_id = info.login_id
+        WHERE
+        1 = 1 -- where
+        GROUP BY info.id
+        ORDER BY
+        login.create_time desc
+        <!--,
+        convert(dc.name USING gbk) COLLATE gbk_chinese_ci-->
+    </sql>
+
+    <sql id="columnPage">
+        SELECT
+        count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM
+        dele_member_info info
+        LEFT JOIN dele_member_login login ON info.login_id = login.id
+        LEFT JOIN dele_member_login inst ON inst.id = info.introducer_login_id
+        LEFT JOIN dele_member_capital_account dmca ON dmca.login_id = login.id
+        LEFT JOIN dele_company dc ON info.company = dc.id
+        WHERE
+        1 = 1 -- where
+    </sql>
+    <sql id="column1">
+        SELECT *
+    </sql>
+    <sql id="where1">
+        FROM(
+        SELECT dg.id,dmi.real_name aname,ddn.real_name ename,content,score,dg.create_time,master_id FROM dele_grade dg
+        JOIN dele_member_info dmi ON dg.master_id = dmi.login_id
+        JOIN dele_driver_info ddn ON dg.member_id = ddn.login_id
+        UNION
+        SELECT dg.id,dmi.real_name aname,dmn.real_name ename,content,score,dg.create_time,master_id FROM dele_grade dg
+        JOIN dele_member_info dmi ON dg.master_id = dmi.login_id
+        JOIN dele_member_info dmn ON dg.member_id = dmn.login_id
+        )cc
+        WHERE cc.master_id = ?
+    </sql>
+    <sql id="findByPhone">
+        SELECT * FROM dele_member_info WHERE phone = ? LIMIT 1
+    </sql>
+    <sql id="findByTj">
+        SELECT id,phone,nick_name,real_name,head_portrait FROM dele_member_info WHERE introducer_login_id = ?
+    </sql>
+    <sql id="findByCompanyAndLogined">
+        SELECT * FROM dele_member_info dmi  INNER JOIN dele_member_login dml ON dmi.login_id = dml.id
+        WHERE dmi.company = ? AND dml.status != ?
+    </sql>
+    <sql id="noticeMemberListCloumn">
+          SELECT id,CONCAT(real_name,'-',nick_name,'-',phone) name,0 pId
+    </sql>
+    <sql id="noticeMemberListWhere">
+        FROM dele_member_info
+        WHERE company=? -- where
+        ORDER BY id LIMIT 0,30
+    </sql>
+    <sql id="noticeMemberList">
+        SELECT dmi.nick_name,dmi.real_name,dmi.phone,dml.cache_key,dmi.company,dmi.login_id,dml.device_type,dml.registration_id,dml.type
+        FROM dele_member_info dmi LEFT JOIN dele_member_login dml ON dml.id = dmi.login_id
+        WHERE dmi.company = ? -- where
+    </sql>
+    <sql id="findForCouponByCompany">
+        SELECT CONCAT(real_name,'-',phone) as name, 0 pId,login_id as id FROM dele_member_info WHERE 1=1 -- where
+    </sql>
+    <sql id="findDataAddA30">
+        SELECT phone,nick_name FROM `dele_member_info` WHERE 1=1 LIMIT ?,?
+    </sql>
+    <sql id="findMemberInfos">
+        SELECT
+        last_update_time RegisterDate,
+        phone PassengerPhone,
+        nick_name PassengerName,
+        gender PassengerGender,
+        `status` State
+        FROM
+        dele_member_info
+        WHERE last_update_time IS NOT NULL
+    </sql>
+
+</sqlGroup>

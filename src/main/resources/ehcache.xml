@@ -1,0 +1,30 @@
+<ehcache>
+
+    <diskStore path="java.io.tmpdir"/>
+    <!--  -->
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="true"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="3600"
+            overflowToDisk="true"
+    />
+    <!-- 菜单cache -->
+    <cache name="resources_ecache"
+           maxElementsInMemory="10000"
+           maxElementsOnDisk="1000"
+           eternal="false"
+           overflowToDisk="true"
+           timeToIdleSeconds="1800"
+           timeToLiveSeconds="1800"
+    />
+    <!-- 自定义cache -->
+    <cache name="sms_code_cache"
+           maxElementsInMemory="30000"
+           maxElementsOnDisk="1000"
+           eternal="false"
+           overflowToDisk="true"
+           timeToIdleSeconds="1800"
+           timeToLiveSeconds="1800"
+    />
+</ehcache>

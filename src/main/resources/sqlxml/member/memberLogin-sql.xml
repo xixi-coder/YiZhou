@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberLogin">
+    <sql id="findByUserName">
+        select id,user_name,password,salt,type appType,device_no,last_login_time,status,cache_key,landing_ip from dele_member_login where
+        user_name = ? AND type = ? LIMIT 1
+    </sql>
+    <sql id="findCountByPhoneAndType">
+        SELECT count(1) c FROM dele_member_login WHERE phone = ? AND type = ?
+    </sql>
+    <sql id="findByCount">
+        select count(1) c from dele_member_login where user_name = ? AND id != ? AND type=?
+    </sql>
+    <sql id="findByName">
+        select * from dele_member_login where user_name = ? LIMIT 1
+    </sql>
+    <sql id="findLogin">
+        SELECT
+        *
+        FROM
+        dele_member_login
+        WHERE login_status != ?
+    </sql>
+    <sql id="findByLoginIdIn">
+    SELECT  if(dmi.real_name IS null,ddi.real_name,dmi.real_name) name,if(dmi.phone IS null,ddi.phone,dmi.phone) phone
+    FROM
+        dele_member_login dml
+    LEFT JOIN dele_driver_info ddi ON ddi.login_id = dml.id
+    LEFT JOIN dele_member_info dmi ON dmi.login_id=dml.id WHERE 1=1 -- where
+    </sql>
+    <sql id="callback1">
+        SELECT dc.content,dc.create_time,dc.app_type,dml.user_name
+    </sql>
+    <sql id="callback2">
+        FROM dele_call_back dc
+        LEFT JOIN dele_member_login dml ON dc.login_id = dml.id
+        where 1=1  -- where
+        ORDER BY dc.create_time DESC
+    </sql>
+    <sql id="findMemberLoginByMemberInfoId">
+        SELECT * FROM dele_member_login dml
+        LEFT JOIN dele_driver_info ddi ON dml.id = ddi.login_id
+        WHERE ddi.id = ?
+    </sql>
+</sqlGroup>

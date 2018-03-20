@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="specialdriver">
+    <sql>
+        SELECT
+            dsd.id,dsd.line_status
+        FROM
+            dele_special_driver dsd
+        LEFT JOIN
+            dele_specialline_order dso ON dso.specialcarId = dsd.special_car_id
+        WHERE
+            dso.orderId = ? AND dsd.driver_info_id = ?
+    </sql>
+
+    <sql id="updateline">
+        UPDATE
+        dele_special_driver
+        SET
+        line_status = 0
+        WHERE
+        driver_info_id = ? AND special_car_id = ?
+    </sql>
+
+    <sql id="findByDriverAndOrder">
+        SELECT
+            dsd.id,dsd.line_status,dsd.special_car_id,dsd.driver_info_id
+        FROM
+            dele_special_driver dsd
+        LEFT JOIN dele_specialline_order dso ON dso.specialcarId = dsd.special_car_id
+        LEFT JOIN dele_specialdriver_order dsdo ON dsdo.special_driver = dsd.id
+        WHERE
+            dso.orderId = ? AND dsd.driver_info_id = ?
+    </sql>
+
+    <sql id="findTotalPeopleByDriverId">
+        SELECT dsd.people
+            FROM dele_special_driver dsd
+        LEFT JOIN dele_specialline_order dso ON dso.specialcarId = dsd.special_car_id
+        LEFT JOIN dele_order deo ON deo.id = dso.orderId
+        WHERE dsd.driver_info_id = ? AND dso.orderId = ?
+    </sql>
+
+</sqlGroup>

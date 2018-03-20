@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="orderport">
+
+    <sql id="findorders">
+        SELECT dd.id,dd.`no` OrderId,dc.city Address,DATE_FORMAT(dd.setouttime,'%Y%m%d%H%i%s')
+        DepartTime,DATE_FORMAT(dd.create_time,'%Y%m%d%H%i%s') OrderTime
+        ,dd.reservation_address Departure,dt.start_longitude DepLongitude,dt.start_latitude DepLatitude,dd.destination
+        Destination,dt.end_longitude DestLongitude,
+        dt.end_latitude DestLatitude,dd.type FareType
+        FROM dele_order dd
+        LEFT JOIN dele_company dc ON dd.company = dc.id
+        LEFT JOIN dele_trip dt ON dt.order_id = dd.id
+    </sql>
+
+    <sql id="match">
+        SELECT dd.id,2 Encrypt,dd.VehicleNo,di.phone DriverPhone,dt.longitude DestLongitude,di.LicenseId,dt.latitude
+        DestLatitude,DATE_FORMAT(dl.operation_time,'%Y%m%d%H%i%s') DepartTime
+        FROM dele_order dd
+        LEFT JOIN dele_company dc ON dd.company = dc.id
+        LEFT JOIN dele_driver_info di ON dd.driver = di.id
+        JOIN dele_driver_real_location dt ON dt.driver = dd.driver
+        LEFT JOIN dele_order_log dl ON dl.order_id = dd.id
+        WHERE dl.action = 2
+    </sql>
+
+    <sql id="plate">
+        SELECT dbc.plate_no FROM dele_base_car dbc
+        LEFT JOIN dele_driver_car ddc ON dbc.id = ddc.car
+        LEFT JOIN dele_driver_info ddi ON ddc.driver = ddi.id
+        WHERE ddc.use_flag = 1 and ddi.id = ?
+    </sql>
+
+    <sql id="cancel">
+        SELECT dd.id,dc.city Address,dd.no OrderId,DATE_FORMAT(dd.create_time,'%Y%m%d%H%i%s')
+        OrderTime,DATE_FORMAT(dl.operation_time,'%Y%m%d%H%i%s') CancelTime
+        ,IF(dl.login_id,1,3) Operator,IF(dl.login_id,1,3) CancelTypeCode
+        FROM dele_order dd
+        LEFT JOIN dele_order_log dl ON dd.id = dl.order_id
+        LEFT JOIN dele_company dc ON dd.company = dc.id
+    </sql>
+
+    <sql id="shareRoute">
+        SELECT
+        o.create_time RouteCreateTime,
+        di.city Address,
+        o.id RouteId ,
+        di.real_name DriverName,
+        di.phone DriverPhone,
+        di.LicenseId LicenseId,
+        bc.plate_no VehicleNo,
+        o.reservation_address Departure,
+        tr.start_longitude startLongitude,
+        tr.start_latitude startLatitude,
+        o.destination Destination,
+        tr.end_longitude endLongitude,
+        tr.end_latitude endLatitude,
+        o.distance RouteMile,
+        '0' AS ENCRYPT
+        FROM `dele_order` o
+        LEFT JOIN `dele_driver_info` di ON (o.driver=di.id)
+        LEFT JOIN `dele_base_car` bc ON (o.car=bc.id)
+        LEFT JOIN `dele_trip` tr ON (o.id=tr.order_id)
+        WHERE o.type IN (49,50,55) AND o.people
+        ORDER BY o.create_time DESC
+
+    </sql>
+
+    <sql id="shareOrder">
+        SELECT
+        o.create_time AS RouteCreateTime,
+        o.id AS RouteId ,
+        o.no AS OrderId,
+        o.last_update_time AS BookDepartTime,
+        o.reservation_address AS Departure,
+        tr.start_longitude ,
+        tr.start_latitude,
+        o.destination AS Destination,
+        tr.end_longitude,
+        tr.end_latitude,
+        '0' AS ENCRYPT,
+        o.create_time AS OrderEnsureTime,
+        o.people AS passengerNum
+        FROM `dele_order` AS o
+        LEFT JOIN `dele_driver_info` AS di ON (o.driver=di.id)
+        LEFT JOIN `dele_base_car` AS bc ON (o.car=bc.id)
+        LEFT JOIN `dele_trip` AS tr ON (o.id=tr.order_id)
+        WHERE o.type IN (49,50,55) AND o.people
+        ORDER BY o.create_time DESC
+    </sql>
+
+    <sql id="sharePay">
+        SELECT
+            ord.id RouteId,
+            ord. NO OrderId,
+            dri.phone,
+            dri.LicenseId,
+            car.vin VehicleNo,
+            '39' FareType,
+            DATE_FORMAT(ord.create_time,'%Y%m%d%H%i%s') BookDepartTime,
+            DATE_FORMAT(ti.start_time,'%Y%m%d%H%i%s') DepartTime,
+            ord.reservation_address Departure,
+            ti.start_longitude DepLongitude,
+            ti.start_latitude DepLatitude,
+            DATE_FORMAT(ti.end_time, '%Y%m%d%H%i%s') DestTime,
+            ord.destination Destination,
+            ti.end_longitude DestLongitude,
+            ti.end_latitude DestLatitude,
+            '0' Encrypt,
+            ord.distance DriveMile,
+            TIMESTAMPDIFF(
+            SECOND,
+            ti.start_time,
+            ti.end_time
+            ) DriveTime,
+            ord.real_pay FactPrice,
+            ord.yg_amount Price,
+            0 CashPrice,
+            ord.real_pay LinePrice,
+            ord. STATUS PayState,
+            ord.people PassengerNum
+        FROM
+            dele_order ord
+            LEFT JOIN dele_driver_info dri ON ord.driver = dri.id
+            LEFT JOIN dele_base_car car ON ord.car = car.id
+            LEFT JOIN dele_trip ti ON ti.order_id = ord.id
+        WHERE
+            ord.type IN (49, 50, 55);
+    </sql>
+
+</sqlGroup>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="callBack">
+
+    <sql id="column">
+        SELECT
+            cb.id,
+            cb.content,
+            cb.create_time,
+            cb.login_id,
+            cb.reply_content,
+            cb.user_id,
+            us.`name`,
+            cb.app_type
+    </sql>
+    <sql id="where">
+        FROM
+            dele_call_back cb
+        LEFT JOIN
+            dele_user us ON cb.user_id = us.id
+        WHERE
+            1 = 1 -- where
+        ORDER BY
+            cb.create_time DESC
+    </sql>
+
+    <!--根据loginId查询-->
+    <sql id="findByLoginId">
+        SELECT
+            cb.id,
+            cb.content,
+            cb.create_time,
+            cb.login_id,
+            cb.reply_content,
+            cb.user_id,
+            us.`name`,
+            cb.app_type
+        FROM
+            dele_call_back cb
+        LEFT JOIN
+            dele_user us ON cb.user_id = us.id
+        WHERE
+            cb.login_id = ?
+        ORDER BY
+            cb.create_time DESC
+    </sql>
+</sqlGroup>

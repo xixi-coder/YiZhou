@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="resources">
+    <sql id="findByUser">
+        SELECT dr.* FROM dele_resources dr
+        LEFT JOIN dele_role_resource drr on drr.`resource` = dr.id
+        LEFT JOIN dele_role drl on drl.id = drr.`role_id`
+        LEFT JOIN dele_user du on du.role = drl.id
+        WHERE du.id = ? AND parent = ? AND style = ? ORDER BY dr.sort ASC
+    </sql>
+    <sql id="column">
+        SELECT dr.*,pdr.name as pname
+    </sql>
+    <sql id="where">
+        from dele_resources dr LEFT JOIN dele_resources pdr ON pdr.id = dr.parent where 1=1 -- where
+    </sql>
+    <sql id="findByParent">
+        SELECT * FROM dele_resources WHERE parent = ? AND status !=0 ORDER BY sort ASC
+    </sql>
+    <sql id="findByCountExcludedSelf">
+        SELECT count(1) c FROM dele_resources WHERE id != ? AND code = ?
+    </sql>
+    <sql id="findByCount">
+        SELECT count(1) c FROM dele_resources WHERE code = ?
+    </sql>
+    <sql id="findForZtreeByStyle">
+        SELECT show_name as name,parent as pId,id FROM dele_resources WHERE 1=1
+    </sql>
+    <sql id="findForZtreeByStyleExculedSelf">
+        SELECT show_name as name,parent as pId,id FROM dele_resources WHERE 1=1 AND id != ?
+    </sql>
+    <sql id="findCodeByUser">
+        SELECT dr.code,ddr.code as role from dele_user dur
+        LEFT JOIN dele_role_resource drr ON drr.role_id = dur.role
+        LEFT JOIN dele_role ddr on ddr.id = drr.role_id
+        LEFT JOIN dele_resources dr on dr.id = drr.resource where dur.id=? and dr.id !=0;
+    </sql>
+    <sql id="findByUrl">
+        SELECT `name` FROM dele_resources WHERE ? LIKE concat('%',path,'%') LIMIT 1
+    </sql>
+    <sql id="findByUserId">
+        SELECT
+        dr.*
+        FROM
+        dele_resources dr
+        LEFT JOIN dele_role_resource drr ON drr.resource = dr.id
+        LEFT JOIN dele_user du ON du.role = drr.role_id
+        WHERE dr.parent=? AND du.id=? AND dr.status !=0
+    </sql>
+</sqlGroup>

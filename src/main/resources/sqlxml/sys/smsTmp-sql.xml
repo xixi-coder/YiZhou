@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="smstmp">
+    <sql id="findByType">
+        select * from dele_sms_tmp where type = ? -- where
+        LIMIT 1
+    </sql>
+    <sql id="column">
+        select dst.*,dc.name cname
+    </sql>
+    <sql id="where">
+        from dele_sms_tmp dst
+         LEFT JOIN dele_company dc ON dc.id = dst.company
+        WHERE 1=1
+        -- where
+        GROUP BY dst.id
+    </sql>
+</sqlGroup>

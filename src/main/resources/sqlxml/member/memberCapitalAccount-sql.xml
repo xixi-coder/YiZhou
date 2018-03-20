@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberCapital">
+    <sql id="column">
+        SELECT amount,last_update_amount,ddi.phone dphone,alipay_account,real_name,
+        (
+        SELECT
+        SUM(dcl.amount)
+        FROM
+        dele_capital_log dcl
+        WHERE
+        dcl.login_id = ddi.login_id
+        AND (
+        dcl.operation_type = 11
+        OR dcl.operation_type =12
+        ) AND dcl.status=1
+        ) total
+    </sql>
+    <sql id="where">
+        FROM dele_member_capital_account dmc
+        JOIN dele_driver_info ddi ON dmc.login_id = ddi.login_id where 1=1 -- where
+    </sql>
+    <sql id="columnPage">
+        SELECT count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM dele_member_capital_account dmc
+        JOIN dele_driver_info ddi ON dmc.login_id = ddi.login_id where 1=1 -- where
+    </sql>
+    <sql id="column1">
+        SELECT amount,last_update_amount,dmi.phone dphone,alipay_account,real_name,
+        (
+        SELECT
+        SUM(dcl.amount)
+        FROM
+        dele_capital_log dcl
+        WHERE
+        dcl.login_id = dmi.login_id
+        AND (
+        dcl.operation_type = 11
+        OR dcl.operation_type =12
+        ) AND dcl.status=1
+        ) total
+    </sql>
+    <sql id="where1">
+        FROM dele_member_capital_account dmc
+        JOIN dele_member_info dmi ON dmc.login_id = dmi.login_id where 1=1 -- where
+    </sql>
+    <sql id="columnPage1">
+        SELECT count(*) c
+    </sql>
+    <sql id="wherePage1">
+        FROM dele_member_capital_account dmc
+        JOIN dele_member_info dmi ON dmc.login_id = dmi.login_id where 1=1 -- where
+    </sql>
+    <sql id="findByLogid">
+        SELECT * FROM dele_member_capital_account WHERE login_id = ? LIMIT 1
+    </sql>
+</sqlGroup>

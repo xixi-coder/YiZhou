@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="schedule">
+    <sql id="findByOrderId">
+        select * from dele_schedule where orderId = ?
+    </sql>
+    <sql id="updateByOrderId">
+        update dele_schedule set status = 1 where orderId = ?
+    </sql>
+    <sql id="findScheduleCount">
+        SELECT COUNT(*) c FROM dele_schedule WHERE orderId != "" AND `status` = ?
+    </sql>
+</sqlGroup>

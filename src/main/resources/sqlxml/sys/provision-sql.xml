@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="provision">
+    <sql id="cloumn">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_provision WHERE 1=1 -- where
+    </sql>
+    <sql id="findByAppTypeAndPType">
+        SELECT * FROM dele_provision WHERE client_type = ? AND provision = ? LIMIT 1
+    </sql>
+</sqlGroup>

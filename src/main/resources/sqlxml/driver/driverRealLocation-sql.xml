@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="driverRealLocation">
+    <sql id="findByDriver">
+    SELECT
+    *
+    FROM
+    dele_driver_real_location
+    WHERE
+    driver = ?
+    LIMIT 1
+    </sql>
+    <sql id="findByCompanyAndStatus">
+    SELECT
+    ddi.phone,
+    ddi.id,
+    ddi.real_name,
+    ddrl.latitude,
+    ddrl.longitude,
+    dml.status
+    FROM
+    dele_driver_info ddi
+    LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+    LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+    WHERE ddrl.latitude IS NOT NULL -- where
+    </sql>
+</sqlGroup>

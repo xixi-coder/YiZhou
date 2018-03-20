@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="invoiceRec">
+    <sql id="cloum">
+    SELECT
+    dir.*,dmi.phone mphone,dc.`name` company
+    </sql>
+    <sql id="where">
+    FROM
+    dele_invoice_rec dir
+    LEFT JOIN dele_member_info dmi ON dmi.login_id = dir.login_id
+    LEFT JOIN dele_company dc ON dc.id = dmi.company
+    WHERE 1=1 -- where
+    GROUP BY dir.id
+    </sql>
+    <sql id="findByid">
+    SELECT * FROM `dele_order`
+    WHERE id IN (SELECT
+    o.`order_id`
+    FROM
+    dele_invoice_order o
+    JOIN  dele_invoice_rec  r ON (r.id = o.invoice_id)
+    WHERE r.id=?   )
+    </sql>
+</sqlGroup>

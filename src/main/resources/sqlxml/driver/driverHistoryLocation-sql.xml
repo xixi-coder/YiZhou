@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="driverHistoryLocation">
+    <sql id="findByDriverAndTime">
+        SELECT
+        longitude,latitude,speed,orientation,type,DATE_FORMAT(recovice_time,'%Y/%m/%e %H:%i:%s') rrecovice_time
+        FROM
+        dele_driver_history_location
+        WHERE
+        driver = ?
+        AND recovice_time BETWEEN ? AND ?
+        ORDER BY recovice_time ASC
+    </sql>
+
+    <sql id="findByDriverAndTime1">
+        SELECT
+        longitude,latitude,speed,orientation,type,recovice_time
+        FROM
+        dele_driver_history_location
+        WHERE
+        driver = ?
+        AND recovice_time BETWEEN ? AND ?
+        ORDER BY recovice_time ASC
+    </sql>
+
+    <!--交通部接口数据添加A48表-->
+    <sql id="findDataAddA48">
+    SELECT
+        ord.`no` AS OrderId,                <!--订单编号-->
+        info.LicenseId AS LicenseId,        <!--机动车驾驶证号-->
+        com.city AS DriverRegionCode,       <!--行政区划代码-->
+        car.plate_no AS VehicleNo,          <!--车辆牌号-->
+        loca.recovice_time AS PositionTime, <!--定位时间-->
+        loca.longitude AS Longitude,        <!--经度-->
+        loca.latitude AS Latitude,          <!--维度-->
+        loca.orientation AS Direction,      <!--方向角 否-->
+        loca.speed AS Speed,                <!--瞬时速度 否-->
+        "3" AS BizStatus,                   <!--运营状态-->
+        "0" AS Encrypt,                     <!--坐标加密标识 否-->
+        "64" AS Elevation                   <!--海拔高度 否-->
+    FROM
+        dele_driver_history_location loca
+        LEFT JOIN dele_driver_car driver ON loca.driver = driver.driver
+        LEFT JOIN dele_base_car car ON driver.car = car.id
+        LEFT JOIN dele_driver_info info ON driver.driver = info.id
+        LEFT JOIN dele_company com ON com.id = info.company
+        LEFT JOIN dele_order ord ON ord.driver = info.id
+    WHERE
+        ord.`no` = ?
+    AND
+        loca.recovice_time BETWEEN ( SELECT create_time FROM dele_order WHERE `no` = ? )
+        AND ( SELECT last_update_time FROM dele_order WHERE `no` = ? )
+    </sql>
+
+</sqlGroup>

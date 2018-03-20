@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="chargeStandardItem">
+    <sql id="delByChargeStandard">
+        DELETE FROM dele_charge_standard_item WHERE charge_standard = ?
+    </sql>
+    <sql id="findByChargeStandard">
+        SELECT * FROM dele_charge_standard_item WHERE charge_standard = ? ORDER by id ASC
+    </sql>
+    <sql id="findByChargeStandardAndTime">
+        SELECT * FROM dele_charge_standard_item WHERE charge_standard = ? AND ? BETWEEN start_time AND end_time ORDER by
+        id ASC
+    </sql>
+</sqlGroup>

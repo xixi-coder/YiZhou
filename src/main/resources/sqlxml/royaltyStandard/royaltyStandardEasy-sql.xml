@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="royaltyStandardEasy">
+    <sql id="findByRoyaltyStandard">
+        SELECT
+        ddd.*,date_format(start_time, '%H') start_hour,
+        date_format(start_time, '%i') start_minute,
+        date_format(end_time, '%H') end_hour,
+        date_format(end_time, '%i') end_minute
+        FROM dele_royalty_standard_easy ddd WHERE royalty_standard = ? ORDER by id ASC
+    </sql>
+    <sql id="deleByRoyaltyStandard">
+        DELETE FROM dele_royalty_standard_easy WHERE royalty_standard = ?
+    </sql>
+    <sql id="findByRoyaltyAndTime">
+        SELECT * FROM dele_order WHERE ( ? BETWEEN start_time AND end_time OR ? BETWEEN end_time AND start_time)
+    </sql>
+</sqlGroup>

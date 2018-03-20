@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="agreement">
+    <sql id="findByCompanyType">
+        SELECT * FROM dele_service_agreement WHERE company = ? AND type = ? LIMIT 1
+    </sql>
+</sqlGroup>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberOrderStatistics">
+    <sql id="findByMemberId">
+        SELECT * FROM member_order_statistics
+        WHERE member_id = ?
+    </sql>
+</sqlGroup>

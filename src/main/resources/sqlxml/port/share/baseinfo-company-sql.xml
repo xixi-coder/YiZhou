@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="baseInfoCompany">
+    <sql id="findAll">
+        SELECT
+            `companyname`,
+            `identifier`,
+            `address`,
+            `businessscope`,
+            `contactaddress`,
+            `economictype`,
+            `regcapital`,
+            `legalname`,
+            `legalid`,
+            `legalphone`,
+            `state`,
+            `flag`,
+            `updatetime`
+        FROM `dele_baseinfo_company`
+    </sql>
+
+
+
+</sqlGroup>

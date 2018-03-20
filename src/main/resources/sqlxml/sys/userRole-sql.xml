@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="userRole">
+    deleByRole
+    <sql id="findByRoleId">
+        SELECT
+        user_id id
+        FROM
+        dele_user_role dur
+        LEFT JOIN dele_role dr ON dr.id = dur.role_id
+        WHERE role_id = ?
+    </sql>
+    <sql id="deleByRole">
+        UPDATE
+        dele_user
+        SET role = NULL
+        WHERE role = ?
+    </sql>
+</sqlGroup>

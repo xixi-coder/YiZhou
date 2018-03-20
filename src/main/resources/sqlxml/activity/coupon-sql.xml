@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="coupon">
+    <sql id="column">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_coupon
+    </sql>
+
+    <sql id="column1">
+        SELECT
+        cd.id,coupon_title,amount,cd.login_id,gain_time,use_time,coupon_source,`no`,cd.`password`,user_name,real_name
+    </sql>
+    <sql id="where1">
+        FROM(SELECT cm.id,coupon_title,amount,login_id,gain_time,use_time,coupon_source,`no`,cm.`password`,user_name
+        FROM(select dc.id,coupon_title,amount,login_id,gain_time,use_time,coupon_source,`no`,`password`
+        from dele_coupon dc JOIN dele_member_coupon dmc ON dc.id = dmc.coupon_id)cm
+        LEFT JOIN dele_member_login dml ON cm.login_id = dml.id)cd
+        LEFT JOIN dele_member_info dmi ON cd.login_id = dmi.login_id
+        where cd.id = ?
+    </sql>
+
+    <sql id="column2">
+        SELECT
+        cd.id,coupon_title,amount,cd.login_id,gain_time,use_time,coupon_source,`no`,cd.`password`,user_name,real_name
+    </sql>
+    <sql id="where2">
+        FROM(SELECT cm.id,coupon_title,amount,login_id,gain_time,use_time,coupon_source,`no`,cm.`password`,user_name
+        FROM(select dc.id,coupon_title,amount,login_id,gain_time,use_time,coupon_source,`no`,`password`
+        from dele_coupon dc JOIN dele_member_coupon dmc ON dc.id = dmc.coupon_id)cm
+        LEFT JOIN dele_member_login dml ON cm.login_id = dml.id)cd
+        LEFT JOIN dele_driver_info ddi ON cd.login_id = ddi.login_id
+        where cd.id = ?
+    </sql>
+
+    <sql id="column3">
+        SELECT
+        dmc.*,
+        IFNULL(dmi.real_name,ddi.real_name) real_name,
+        IFNULL(dmi.phone,ddi.phone) phone
+    </sql>
+    <sql id="where3">
+        FROM
+        dele_member_coupon dmc
+        LEFT JOIN dele_member_info dmi ON dmi.login_id = dmc.login_id
+        LEFT JOIN dele_driver_info ddi ON ddi.login_id = dmc.login_id
+        WHERE dmc.coupon_id = ? -- where
+        ORDER BY dmc.id DESC
+    </sql>
+    <sql id="findByCompany">
+        SELECT * FROM dele_coupon WHERE 1=1 AND ? BETWEEN start_time AND end_time
+    </sql>
+
+    <sql id="findByCidAndDate">
+        SELECT * FROM `dele_coupon`
+        WHERE company=? AND  ? BETWEEN start_time AND end_time
+    </sql>
+</sqlGroup>

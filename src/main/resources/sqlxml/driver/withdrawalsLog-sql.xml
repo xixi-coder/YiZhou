@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="withdrawalsLog">
+    <sql id="column">
+        SELECT dwl.amount,dwl.create_time,dmi.real_name mreal_name,ddi.real_name dreal_name,ddi.phone dphone,dmi.phone mphone,dwl.bank_no,
+        dwl.bank_name,dwl.status,dbk.bank_name bname,dwl.id
+    </sql>
+    <sql id="where">
+        FROM dele_withdrawals_log dwl
+        LEFT JOIN dele_member_info dmi ON dmi.login_id = dwl.login_id
+        LEFT JOIN dele_driver_info ddi ON ddi.login_id = dwl.login_id
+        LEFT JOIN dele_bank dbk ON dbk.id = dwl.bank_type
+        WHERE 1=1 -- where
+    </sql>
+    <sql id="findByLoginIdAndPage">
+        SELECT
+        amount,
+        real_amount,
+        id,
+        login_id,
+        remark,
+        form_type,
+        auditer,
+        `status`,
+        DATE_FORMAT(create_time,'%Y-%m-%d %T') createTime,
+        audit_time,
+        bank_no,
+        bank_name,
+        company,
+        bank_type,
+        kh_bank
+        FROM
+        dele_withdrawals_log
+        WHERE login_id = ? ORDER BY create_time DESC LIMIT ?,?
+    </sql>
+</sqlGroup>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="royaltyStandardMoneyItem">
+    <sql id="findByMoney">
+        SELECT * FROM dele_royalty_standard_money_item WHERE parent = ? ORDER by id ASC
+    </sql>
+    <sql id="deleByRoyaltyStandard">
+        DELETE FROM dele_royalty_standard_money_item WHERE royalty_standard = ?
+    </sql>
+    <sql id="findByMoneyAndAmount">
+        SELECT * FROM dele_royalty_standard_money_item WHERE parent = ? AND (each_money  &lt;= ? OR ? BETWEEN start_money AND end_money) ORDER by id ASC
+    </sql>
+</sqlGroup>

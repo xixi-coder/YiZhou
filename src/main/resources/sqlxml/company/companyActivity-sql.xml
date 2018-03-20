@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="companyActivity">
+    <sql id="findByCouponId">
+        SELECT * FROM dele_company_activity WHERE coupon_id = ? LIMIT 1
+    </sql>
+    <sql id="column">
+        SELECT
+        dca.id,
+        dca.amount,
+        dca.remark,
+        dca.type,
+        dca.create_time,
+        dc.`name` cname,
+        dmc.type couponType,
+        dmc.title
+    </sql>
+    <sql id="where">
+        FROM
+        dele_company_activity dca
+        LEFT JOIN dele_company dc ON dc.id = dca.company
+        LEFT JOIN dele_member_coupon dmc ON dmc.id = dca.coupon_id
+        WHERE dca.type IS NOT NULL AND dmc.`status` = 1 -- where
+        ORDER BY dca.create_time DESC
+    </sql>
+    <sql id="columnPage">
+        SELECT
+        COUNT(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM
+        dele_company_activity dca
+        LEFT JOIN dele_company dc ON dc.id = dca.company
+        LEFT JOIN dele_member_coupon dmc ON dmc.id = dca.coupon_id
+        WHERE dca.type IS NOT NULL AND dmc.`status` = 1 -- where
+    </sql>
+</sqlGroup>

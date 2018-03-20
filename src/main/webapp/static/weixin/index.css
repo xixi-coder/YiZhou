@@ -1,0 +1,19 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	margin:auto;
+	text-decoration: none;
+	border: none;
+}
+
+.content{background: url(images/bg.png) no-repeat;
+	width:750px;
+	height:1206px;
+	margin:auto;
+	}
+a{ display:block; padding-left:250px;}
+	.ios{
+		padding-top:700px;}
+		.android{
+			padding-top:60px;
+			}

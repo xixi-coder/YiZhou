@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="orderLog">
+    <sql id="findByOrder">
+        select * from dele_order_log where order_id = ?
+    </sql>
+    <sql id="findByOrderAndLoginId">
+        SELECT * FROM dele_order_log WHERE order_id = ? AND login_id = ? ORDER BY operation_time asc
+    </sql>
+    <sql id="findByOrderAndActionAndLoginId">
+        SELECT * FROM dele_order_log WHERE order_id = ? AND action = ? AND login_id = ? LIMIT 1
+    </sql>
+    <sql id="findByOrderAndPayAction">
+        SELECT * FROM dele_order_log WHERE order_id = ? AND action = ? LIMIT 1
+    </sql>
+</sqlGroup>

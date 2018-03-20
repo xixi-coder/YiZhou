@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="distributionItem">
+    <sql id="delete">
+        DELETE FROM dele_distribution_item WHERE distribution = ?
+    </sql>
+    <sql id="findByDistribution">
+        SELECT * FROM dele_distribution_item WHERE distribution = ? ORDER BY type
+    </sql>
+</sqlGroup>

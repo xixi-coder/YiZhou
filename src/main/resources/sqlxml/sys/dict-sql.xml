@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="dict">
+    <sql id="findByType">
+        select dd.* from dele_dict dd inner join dele_dict pdd on pdd.id = dd.parent where pdd.code = ?
+    </sql>
+</sqlGroup>

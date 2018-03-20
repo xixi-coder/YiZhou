@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="traver">
+    <sql id="findRecord">
+        SELECT dt.id
+        id,dt.driverId,dt.memberId,setout_time1,setout_time2,reservationCity,reservationAddress,destination,destinationCity,
+        di.real_name,di.head_portrait,di.phone,dc.`name` dname,dcm.`name` mname,db.color,dt.amount,db.plate_no
+        plateNo,dt.pinCheAmount,dt.people,dt.totalPeople
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance
+        FROM dele_traver_record dt
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_driver_car dd ON di.id = dd.driver
+        LEFT JOIN dele_base_car db ON dd.car = db.id
+        LEFT JOIN dele_car_brand dc ON db.brand = dc.id
+        LEFT JOIN dele_car_model dcm ON db.model_type = dcm.id
+        where dt.completed =0 AND dt.type != ? and dt.record_type = ? and start_adcode = ? and dt.status = ? and
+        setout_time2 >?
+        and di.Allow =1-- where
+        GROUP BY id
+        ORDER BY distance LIMIT ?,?
+    </sql>
+    <sql id="findRecord2">
+        SELECT dt.id
+        id,dt.driverId,dt.memberId,setout_time1,setout_time2,reservationCity,reservationAddress,destination,destinationCity,
+        di.real_name,di.head_portrait,di.phone,dc.`name` dname,dcm.`name` mname,db.color,dt.amount,db.plate_no
+        plateNo,dt.pinCheAmount,dt.people,dt.totalPeople
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance
+        FROM dele_traver_record dt
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_driver_car dd ON di.id = dd.driver
+        LEFT JOIN dele_base_car db ON dd.car = db.id
+        LEFT JOIN dele_car_brand dc ON db.brand = dc.id
+        LEFT JOIN dele_car_model dcm ON db.model_type = dcm.id
+        where dt.completed =0 AND dt.type != ? and dt.record_type = ? and start_adcode = ? and dt.status = ?
+        and di.Allow =1-- where
+        GROUP BY id
+        ORDER BY distance LIMIT ?,?
+    </sql>
+    <sql id="daihuo">
+        SELECT dt.id
+        id,dt.driverId,dt.memberId,setout_time1,setout_time2,reservationCity,reservationAddress,destination,destinationCity,
+        di.real_name,di.head_portrait,di.phone,dc.`name` dname,dcm.`name` mname,db.plate_no
+        plateNo,db.color,dt.jiHuoAmount,dt.people,dt.totalPeople
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance
+        FROM dele_traver_record dt
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_driver_car dd ON di.id = dd.driver
+        LEFT JOIN dele_base_car db ON dd.car = db.id
+        LEFT JOIN dele_car_brand dc ON db.brand = dc.id
+        LEFT JOIN dele_car_model dcm ON db.model_type = dcm.id
+        where dt.completed=0 and dt.type != 2 and dt.status = ? and setout_time2 >?
+        and di.Allow =1-- where
+        GROUP BY id
+        ORDER BY distance LIMIT ?,?
+    </sql>
+    <sql id="daihuo2">
+        SELECT dt.id
+        id,dt.driverId,dt.memberId,setout_time1,setout_time2,reservationCity,reservationAddress,destination,destinationCity,
+        di.real_name,di.head_portrait,di.phone,dc.`name` dname,dcm.`name` mname,db.plate_no
+        plateNo,db.color,dt.jiHuoAmount,dt.people,dt.totalPeople
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance
+        FROM dele_traver_record dt
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_driver_car dd ON di.id = dd.driver
+        LEFT JOIN dele_base_car db ON dd.car = db.id
+        LEFT JOIN dele_car_brand dc ON db.brand = dc.id
+        LEFT JOIN dele_car_model dcm ON db.model_type = dcm.id
+        where dt.completed=0 and dt.type != 2 and dt.status = ?
+        and di.Allow =1-- where
+        GROUP BY id
+        ORDER BY distance LIMIT ?,?
+    </sql>
+    <sql id="findAll">
+        SELECT dt.id
+        id,dt.driverId,dt.memberId,setout_time1,setout_time2,reservationCity,reservationAddress,destination,destinationCity,
+        di.real_name,di.head_portrait,di.phone,dc.`name` dname,dcm.`name` mname,dt.amount,dt.pinCheAmount,db.plate_no
+        plateNo,db.color,dt.people,dt.totalPeople
+        FROM dele_traver_record dt
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_driver_car dd ON di.id = dd.driver
+        LEFT JOIN dele_base_car db ON dd.car = db.id
+        LEFT JOIN dele_car_brand dc ON db.brand = dc.id
+        LEFT JOIN dele_car_model dcm ON db.model_type = dcm.id
+        where dt.type != ? and dt.record_type = ? and dt.status = ? and setout_time2 >? -- where
+        GROUP BY id
+        ORDER BY setout_time1 LIMIT ?,?
+    </sql>
+    <sql id="findHistory">
+        select
+        id,`status`,setout_time1,setout_time2,reservationCity,reservationAddress,destinationCity,destination,amount,pinCheAmount,jiHuoAmount
+        from dele_traver_record where 1=1 -- where
+        order by create_time limit ?,?
+    </sql>
+    <sql id="findDriverRecord">
+        SELECT * FROM dele_traver_record WHERE driverId = ? AND ? BETWEEN setout_time1 AND setout_time2
+    </sql>
+    <sql id="find">
+        SELECT
+        dl.id,dl.login_id,dl.record_id,dt.setout_time1,dt.setout_time2,dt.reservationCity,dt.destinationCity,dt.reservationAddress,
+        dt.destination,dl.type,di.real_name driverName,di.phone driverPhone,di.head_portrait driverPhoto,dl.`status`
+        ,dm.real_name memberName,dm.head_portrait memberPhoto,dm.phone
+        memberPhone,dl.amount,dl.pinCheAmount,dl.jiHuoAmount
+        FROM dele_record_log dl
+        LEFT JOIN dele_traver_record dt ON dl.record_id = dt.id
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_member_info dm ON dt.memberId = dm.id
+        where dl.login_id = ? and dl.status = ? AND dl.record_id OR dl.type = 1 and dl.login_id = ?
+        GROUP BY record_id
+        order by dl.create_time limit ?,?
+    </sql>
+    <sql id="findHistoryDriver">
+        SELECT dl.id,dt.id traverId,IFNULL(pd+ji,3) pd,dl.login_id,dl.record_id,IFNULL(dt.people,1)
+        count,dt.setout_time1,dt.setout_time2,dt.reservationCity,dt.destinationCity,dt.reservationAddress,
+        dt.destination,dl.type,di.real_name driverName,di.phone driverPhone,di.head_portrait driverPhoto,dl.`status`
+        ,dm.real_name memberName,dm.head_portrait memberPhoto,dm.phone
+        memberPhone,dl.amount,dl.pinCheAmount,dl.jiHuoAmount,dt.start_longitude,dt.start_latitude,dt.end_longitude,dt.end_latitude
+        FROM dele_record_log dl
+        LEFT JOIN dele_traver_record dt ON dl.record_id = dt.id
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_member_info dm ON dt.memberId = dm.id
+        LEFT JOIN (SELECT COUNT(*) count,record_id,IF(pinCheAmount IS NULL,0,1) pd,IF(jiHuoAmount IS NOT NULL,2,0) ji
+        FROM dele_record_log where login_id != ? and status = 2 GROUP BY record_id,pinCheAmount,jiHuoAmount,amount)a ON
+        a.record_id = dl.record_id
+        where dl.login_id = ? -- where
+        OR dl.type = 1 and dl.login_id = ? and dl.status !=3
+        order by dl.create_time
+        limit ?,?
+    </sql>
+    <sql id="findHistoryRecord">
+        SELECT dl.id,dt.id traverId,IFNULL(pd+ji,3) pd,dl.login_id,dt.people
+        count,dt.setout_time1,dt.setout_time2,dt.reservationCity,dt.destinationCity,dt.reservationAddress,
+        dt.destination,dl.type,di.real_name driverName,di.phone driverPhone,di.head_portrait driverPhoto,dl.`status`
+        ,dm.real_name memberName,dm.head_portrait memberPhoto,dm.phone
+        memberPhone,dl.amount,dl.pinCheAmount,dl.jiHuoAmount,dt.start_longitude,dt.start_latitude,dt.end_longitude,dt.end_latitude
+        FROM dele_record_log dl
+        LEFT JOIN dele_traver_record dt ON dl.record_id = dt.id
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_member_info dm ON dt.memberId = dm.id
+        LEFT JOIN (SELECT COUNT(*) count,record_id,IF(pinCheAmount IS NULL,0,1) pd,IF(jiHuoAmount IS NOT NULL,2,0) ji
+        FROM dele_record_log where login_id != ? and status = 2 GROUP BY record_id,jiHuoAmount,pinCheAmount,amount)a ON
+        a.record_id = dl.record_id
+        where dl.login_id = ? -- where
+        OR dl.type = 1 and dl.login_id = ? and dl.status !=3 and dl.status !=4
+        and to_days(dt.setout_time2) >= to_days(now())
+        group by dl.id,pd
+        order by dl.create_time
+        limit ?,?
+    </sql>
+
+    <sql id="findDriverList">
+        SELECT * FROM(
+        (SELECT
+        dt.id,dt.people,dt.totalPeople,dt.setout_time1,dt.setout_time2,dt.reservationCity,dt.destinationCity,dt.reservationAddress,
+        dt.destination,dm.id
+        memberId,dm.real_name,dm.phone,dm.head_portrait,dl.amount,dl.pinCheAmount,dl.jiHuoAmount,IFNULL(dt.yg_amount,1)
+        pp
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance,dt.mess
+        FROM dele_record_log dl
+        LEFT JOIN dele_traver_record dt ON dl.record_id = dt.id
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_member_login dg ON dg.id = dl.login_id
+        LEFT JOIN dele_member_info dm ON dm.login_id = dg.id
+        where dl.status = 1 and dt.record_type = ? and dl.type =2 and dt.status = 1
+        and dl.record_id IN (SELECT id FROM dele_traver_record d WHERE d.driverId = ?) and setout_time2 >?
+        order by dl.create_time)
+        UNION
+        (SELECT
+        dt.id,dt.people,dt.totalPeople,dt.setout_time1,dt.setout_time2,dt.reservationCity,dt.destinationCity,dt.reservationAddress,dt.destination,
+        dm.id
+        memberId,dm.real_name,dm.phone,dm.head_portrait,dt.amount,dt.pinCheAmount,dt.jiHuoAmount,IFNULL(dt.yg_amount,0)
+        pp
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance,dt.mess
+        FROM dele_traver_record dt
+        LEFT JOIN dele_member_info dm ON dt.memberId = dm.id
+        where dt.type != 1 and dt.record_type = ? and start_adcode = ? and dt.status = 1 and setout_time2 >? -- where
+        )
+        )a
+        GROUP BY id
+        ORDER BY pp DESC,distance
+        LIMIT ?,?
+    </sql>
+    <sql id="findDriverList2">
+        SELECT * FROM(
+        (SELECT
+        dt.id,dt.people,dt.totalPeople,dt.setout_time1,dt.setout_time2,dt.reservationCity,dt.destinationCity,dt.reservationAddress,
+        dt.destination,dm.id
+        memberId,dm.real_name,dm.phone,dm.head_portrait,dl.amount,dl.pinCheAmount,dl.jiHuoAmount,IFNULL(dt.yg_amount,1)
+        pp
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance,dt.mess
+        FROM dele_record_log dl
+        LEFT JOIN dele_traver_record dt ON dl.record_id = dt.id
+        LEFT JOIN dele_driver_info di ON dt.driverId = di.id
+        LEFT JOIN dele_member_login dg ON dg.id = dl.login_id
+        LEFT JOIN dele_member_info dm ON dm.login_id = dg.id
+        where dl.status = 1 and dt.record_type = ? and dl.type =2 and dt.status = 1
+        and dl.record_id IN (SELECT id FROM dele_traver_record d WHERE d.driverId = ?)
+        order by dl.create_time)
+        UNION
+        (SELECT
+        dt.id,dt.people,dt.totalPeople,dt.setout_time1,dt.setout_time2,dt.reservationCity,dt.destinationCity,dt.reservationAddress,dt.destination,
+        dm.id
+        memberId,dm.real_name,dm.phone,dm.head_portrait,dt.amount,dt.pinCheAmount,dt.jiHuoAmount,IFNULL(dt.yg_amount,0)
+        pp
+        ,julijisuan(?,?,dt.start_latitude,dt.start_longitude)/1000 AS distance,dt.mess
+        FROM dele_traver_record dt
+        LEFT JOIN dele_member_info dm ON dt.memberId = dm.id
+        where dt.type != 1 and dt.record_type = ? and start_adcode = ? and dt.status = 1  -- where
+        )
+        )a
+        GROUP BY id
+        ORDER BY pp DESC,distance
+        LIMIT ?,?
+    </sql>
+    <sql id="findCount">
+        select count(1) c from dele_record_log where record_id = ? AND login_id = ?
+    </sql>
+
+    <sql id="findDriver">
+        SELECT * FROM dele_driver_info dd
+        LEFT JOIN dele_traver_record dt ON dd.id = dt.driverId
+        WHERE dt.start_adcode = ? and dt.end_adcode = ? and dt.status = 1
+        GROUP BY dd.id
+    </sql>
+    <sql id="column1">
+        SELECT dt.id,dt.setout_time1,dt.setout_time2,dt.type,dt.`status`,dd.real_name dname,dt.reservationAddress
+        ,dt.destination,dt.amount,dt.pinCheAmount,dt.jiHuoAmount,record_type,dd.company dcompany,dd.phone,dt.create_time
+    </sql>
+    <sql id="where1">
+        FROM dele_traver_record dt
+        LEFT JOIN dele_driver_info dd ON dt.driverId = dd.id
+        where dt.type = 1 -- where
+    </sql>
+    <sql id="column2">
+        SELECT dt.id,dt.setout_time1,dt.setout_time2,dt.type,dt.`status`,dm.phone mphone,dd.phone
+        dphone,dt.reservationAddress,dt.reservationCity,dt.destinationCity
+        ,dt.destination,record_type,dm.company
+        dcompany,IF(amount,amount,IF(pinCheAmount,pinCheAmount,IF(jiHuoAmount,jiHuoAmount,0))) amount,dt.create_time
+    </sql>
+    <sql id="where2">
+        FROM dele_traver_record dt
+        LEFT JOIN dele_driver_info dd ON dt.driverId = dd.id
+        LEFT JOIN dele_member_info dm ON dt.driverId = dm.id
+        where dt.type = 2 -- where
+    </sql>
+    <sql id="findOrder">
+        SELECT * FROM dele_record_log WHERE record_id = ? AND login_id = ?
+    </sql>
+    <sql id="findSFCList">
+        SELECT
+        *
+            FROM
+            (
+                SELECT *
+                    FROM
+                        dele_traver_record
+                    WHERE
+                        setout_time1 BETWEEN ?
+                        AND ?
+                        AND id IN (
+                                    SELECT id FROM dele_traver_record WHERE completed = 0 AND record_type=?  AND type = ?
+                                    )
+                        LIMIT ?,?
+            ) AS a
+       WHERE
+            a.reservationAddress LIKE ?
+            OR a.destination LIKE ?
+    </sql>
+    <sql id="findSFCListTwo">
+        SELECT
+            *
+        FROM
+            (
+                SELECT
+                    *
+                FROM   dele_traver_record
+                WHERE
+                    setout_time1 BETWEEN ? AND ?
+                    AND id IN
+                    (
+                        SELECT id
+                        FROM dele_traver_record
+                        WHERE completed = 0
+                                AND record_type=?
+                                AND type = ?
+                    )
+            LIMIT ?,?
+            ) AS a
+        WHERE
+            ( start_latitude LIKE ? and start_longitude like ?  )
+            OR
+            ( end_latitude LIKE ? and end_longitude like ? )
+    </sql>
+</sqlGroup>

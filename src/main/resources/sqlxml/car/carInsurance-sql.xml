@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="insurance">
+    <sql id="findByVno">
+    SELECT
+        id,
+        CompanyId,
+        VehicleNo,
+        InsurCom,
+        InsurNum,
+        InsurType,
+        InsurCount,
+        InsurEff,
+        InsurExp,
+        Flag,
+        UpdateTime
+    FROM
+        dele_insurance
+    WHERE
+        VehicleNo=?
+    </sql>
+    <sql id="findInfos">
+        SELECT * FROM dele_insurance
+    </sql>
+</sqlGroup>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="capitalLog">
+    <sql id="column">
+        SELECT operation_type,amount,real_name,phone,remark,dcl.create_time
+    </sql>
+    <sql id="where">
+        FROM dele_capital_log dcl
+        JOIN dele_driver_info ddi ON dcl.login_id = ddi.login_id
+        WHERE dcl.operation_type between 11 and 20 AND dcl.status=? -- where
+         ORDER BY dcl.create_time DESC
+    </sql>
+    <sql id="columnPage">
+        SELECT count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM dele_capital_log dcl
+        JOIN dele_driver_info ddi ON dcl.login_id = ddi.login_id
+        WHERE dcl.operation_type between 11 and 20 AND dcl.status=? -- where
+    </sql>
+    <sql id="column1">
+        SELECT operation_type,amount,real_name,phone,remark,dcl.create_time
+    </sql>
+    <sql id="where1">
+        FROM dele_capital_log dcl
+        JOIN dele_member_info ddi ON dcl.login_id = ddi.login_id
+        WHERE dcl.operation_type between 11 and 20 AND dcl.status=?
+        -- where
+        ORDER BY dcl.create_time DESC
+    </sql>
+    <sql id="columnPage1">
+        SELECT count(*) c
+    </sql>
+    <sql id="wherePage1">
+        FROM dele_capital_log dcl
+        JOIN dele_member_info ddi ON dcl.login_id = ddi.login_id
+        WHERE dcl.operation_type between 11 and 20 AND dcl.status=?
+        -- where
+    </sql>
+    <sql id="findByNo">
+        SELECT * FROM dele_capital_log WHERE no = ? LIMIT 1
+    </sql>
+    <sql id="findByStartAndEndWithAccount">
+        SELECT IFNULL(SUM(amount),0) s FROM dele_capital_log WHERE (operation_type = ? OR operation_type = ? OR operation_type = ? OR operation_type = ? OR operation_type = ? OR operation_type = ? OR operation_type = ? OR operation_type = ?) AND create_time BETWEEN ? AND ? AND login_id = ? AND status=?
+    </sql>
+    <sql id="findByLoginIdAndFanli">
+        SELECT * FROM dele_capital_log WHERE login_id = ? AND operation_type=? ORDER BY create_time DESC LIMIT ?,?
+    </sql>
+    <sql id="findByLoginId">
+        SELECT * FROM dele_capital_log WHERE login_id = ? AND status=? ORDER BY create_time DESC LIMIT ?,?
+    </sql>
+</sqlGroup>

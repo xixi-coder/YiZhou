@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="roleResources">
+    <sql id="findResourcesByRole">
+        SELECT
+        dr.id
+        FROM
+        dele_role_resource drr
+        LEFT JOIN dele_resources dr ON dr.id = drr.resource
+        WHERE drr.role_id = ?
+    </sql>
+    <sql id="delByRoleId">
+        DELETE
+        FROM
+        dele_role_resource
+        WHERE
+        role_id = ?
+    </sql>
+    <sql id="isUseResource">
+        SELECT
+        count(1) c
+        FROM
+        dele_role_resource
+        WHERE resource = ?
+    </sql>
+    <sql id="delByResource">
+        DELETE
+        FROM
+        dele_role_resource
+        WHERE
+        resource = ?
+    </sql>
+</sqlGroup>

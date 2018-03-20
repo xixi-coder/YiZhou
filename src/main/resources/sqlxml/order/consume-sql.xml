@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="consume">
+    <sql id="column">
+        SELECT real_name,dc.name,user_name,COUNT(user_name) count,SUM(amount) sum,dd.type,dd.pay_time,dmi.`level`
+    </sql>
+    <sql id="where">
+        FROM dele_order dd
+        JOIN dele_member_info dmi ON dd.member = dmi.id
+        JOIN dele_member_login dml ON dmi.login_id = dml.id
+        JOIN dele_company dc ON dmi.company = dc.id
+        WHERE dd.status = ? AND dd.service_type = ? -- where
+        GROUP BY user_name
+    </sql>
+    <sql id="tongjiwhere">
+        FROM dele_order dd
+        JOIN dele_member_info dmi ON dd.member = dmi.id
+        JOIN dele_member_login dml ON dmi.login_id = dml.id
+        JOIN dele_company dc ON dmi.company = dc.id
+        WHERE dd.status = ? AND dd.service_type = ? -- where
+        GROUP BY dd.id
+    </sql>
+</sqlGroup>

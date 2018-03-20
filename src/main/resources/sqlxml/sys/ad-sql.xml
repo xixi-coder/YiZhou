@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="ad">
+    <sql id="findByCompanyAndType">
+        select * from dele_ad where company = ? AND app_type = ? AND type = ?
+    </sql>
+    <sql id="findByDefaultAndType">
+        select * from dele_ad where app_type = ? AND type = ? AND default_flag = true
+    </sql>
+    <sql id="column">
+        select da.*,dc.name
+    </sql>
+    <sql id="where">
+        from dele_ad da
+        LEFT JOIN dele_company dc ON dc.id = da.company
+        WHERE 1=1 -- where
+        GROUP BY da.id
+    </sql>
+</sqlGroup>

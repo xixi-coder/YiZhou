@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="role">
+    <sql id="column">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_role
+         WHERE 1=1
+        -- where
+    </sql>
+    <sql id="findAll">
+        SELECT * FROM dele_role -- where
+    </sql>
+</sqlGroup>

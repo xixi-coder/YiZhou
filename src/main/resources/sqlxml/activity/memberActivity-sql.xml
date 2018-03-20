@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberActivity">
+    <sql id="memberJoinTimes">
+        SELECT count(1) c FROM dele_member_activity WHERE activity_id = ? AND login_id = ?
+    </sql>
+</sqlGroup>

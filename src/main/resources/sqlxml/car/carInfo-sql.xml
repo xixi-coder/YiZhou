@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="carInfo">
+    <sql id="findByCar">
+        SELECT * FROM dele_car_info WHERE car_id = ? LIMIT 1
+    </sql>
+
+    <sql id="findCarInfos">
+        SELECT
+        dbc.plate_no VehicleNo,
+        dbc.plate_color PlateColor,
+        dbc.Seats,
+        dcb.`name` Brand,
+        dcm.`name` Model,
+        dbc.OwnerName,
+        dbc.VehicleType,
+        dbc.color VehicleColor,
+        dbc.EngineId,
+        dbc.vin VIN,
+        dbc.CertifyDateA,
+        dbc.FuelType,
+        dbc.EngineDisplace,
+        dbc.picture PhotoId,
+        dbc.Certificate,
+        dbc.TransAgency,
+        dbc.TransArea,
+        dbc.TransDateStart,
+        dbc.TransDateStop,
+        dbc.CertifyDateB,
+        dbc.FixState,
+        dbc.NextFixDate,
+        dbc.CheckState,
+        dbc.FeePrintId,
+        dbc.GPSBrand,
+        dbc.GPSModel,
+        dbc.GPSIMEI,
+        dbc.GPSinstallDate,
+        dbc.RegisterDate,
+        dbc.CommercialType,
+        dbc.FareType,
+        dbc.State,
+        dbc.Flag
+        FROM
+        dele_base_car dbc
+        LEFT JOIN dele_car_brand dcb ON dcb.id = dbc.brand
+        LEFT JOIN dele_car_model dcm ON dcm.id = dbc.model_type
+        LEFT JOIN dele_driver_car ddc ON ddc.car = dbc.id
+        WHERE ddc.driver IN (
+        <!--157,156,153,139,138,243,500,225,235,230,226,171,167,190,177,164,439,393,437,442,445,443,189,387,390,343,385,379,375,347,460,411,412,414,395,178,503,416,417,376,461,459,193,220,221,223,219,448,451,449,452,453,408,447,280,307,304,300,290,293,288,129,130,134,133,234,179,187,111,161,162,158,175,199,168,173,137,131,241,229,245,251,242,135,207,180,204,200,201,255,246,148,155,149,151,152,154,150-->
+        293
+        )
+    </sql>
+
+    <sql id="findCarDistance">
+        SELECT
+        dci.distance TotalMile,
+        dbc.plate_no VehicleNo
+        FROM
+        dele_car_info dci
+        LEFT JOIN dele_base_car dbc ON dbc.id = dci.car_id
+        LEFT JOIN dele_driver_car ddc ON ddc.car = dbc.id
+        WHERE
+        ddc.driver IN (157,156,153,139,138,243,500,225,235,230,226,171,167,190,177,164,439,393,437,442,445,443,189,387,390,343,385,379,375,347,460,411,412,414,395,178,503,416,417,376,461,459,193,220,221,223,219,448,451,449,452,453,408,447,280,307,304,300,290,293,288,129,130,134,133,234,179,187,111,161,162,158,175,199,168,173,137,131,241,229,245,251,242,135,207,180,204,200,201,255,246,148,155,149,151,152,154,150)
+    </sql>
+
+</sqlGroup>

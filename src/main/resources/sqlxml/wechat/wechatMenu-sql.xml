@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="wechatMenu">
+    <sql id="findByParent">
+        select * from dele_wechat_menu where parent = ?
+    </sql>
+    <sql id="findAll">
+        SELECT * FROM dele_wechat_menu
+    </sql>
+</sqlGroup>

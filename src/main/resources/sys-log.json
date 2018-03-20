@@ -1,0 +1,26 @@
+[
+  {
+    "url": "save",
+    "action": "保存或修改"
+  },
+  {
+    "url": "del",
+    "action": "删除"
+  },
+  {
+    "url": "updatepd",
+    "action": "修改密码"
+  },
+  {
+    "url": "repw",
+    "action": "重置密码"
+  },
+  {
+    "url": "account",
+    "action": "查看微信公众号"
+  },
+  {
+    "url":"frozen",
+    "action":"冻结或解冻司机"
+  }
+]

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="driverCar">
+    <sql id="findByDriver">
+        SELECT
+        ddc.car id,dbc.plate_no,dbc.color,dcb.`name` brand,dcm.`name` model,dbc.type
+        FROM
+        dele_driver_car ddc
+        LEFT JOIN dele_base_car dbc ON dbc.id = ddc.car
+        LEFT JOIN dele_car_brand dcb ON dbc.brand = dcb.id
+        LEFT JOIN dele_car_model dcm ON dbc.model_type = dcm.id
+        WHERE ddc.driver = ? AND dbc.status = ?
+    </sql>
+    <sql id="findByCar">
+        select * from dele_driver_car where car = ? LIMIT 1
+    </sql>
+    <sql id="updateExcludeThis">
+        UPDATE dele_driver_car SET use_flag = ? WHERE driver = ? AND car != ?
+    </sql>
+    <sql id="updateAll">
+        UPDATE dele_driver_car SET use_flag = ? WHERE driver = ?
+    </sql>
+    <sql id="findByCarAndDriver">
+        SELECT * FROM dele_driver_car WHERE car = ? AND driver = ? LIMIT 1
+    </sql>
+    <sql id="findByDriverAndStatus">
+        SELECT car FROM dele_driver_car WHERE driver= ? AND use_flag = ? LIMIT 1
+    </sql>
+    <sql id="carListColumn">
+        SELECT
+        ddi.id driverid,
+        ddi.real_name,
+        ddi.nick_name,
+        dc.`name` AS company,
+        dbc.color,
+        dbc.plate_no,
+        dbc.id,
+        dcb.`name` brand,
+        dcm.`name` model,
+        dbc.`status`,
+        dbc.vin,
+        dci.distance,
+        dci.join_time,
+        dsti.name sname
+    </sql>
+    <sql id="carListWhere">
+        FROM
+        dele_driver_car ddc
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddc.driver
+        LEFT JOIN dele_car_info dci ON dci.car_id = ddc.car
+        LEFT JOIN dele_base_car dbc ON dbc.id = ddc.car
+        LEFT JOIN dele_car_brand dcb ON dcb.id = dbc.brand
+        LEFT JOIN dele_car_model dcm ON dcm.id = dbc.model_type
+        LEFT JOIN dele_company dc ON dc.id = ddi.company
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dbc.type
+        WHERE 1=1 -- where
+        GROUP BY dbc.id
+        ORDER BY dci.join_time DESC
+    </sql>
+    <sql id="findCountNoAduit">
+        SELECT count(1) c FROM
+        dele_driver_car ddc
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddc.driver
+        LEFT JOIN dele_car_info dci ON dci.car_id = ddc.car
+        LEFT JOIN dele_base_car dbc ON dbc.id = ddc.car
+        LEFT JOIN dele_car_brand dcb ON dcb.id = dbc.brand
+        LEFT JOIN dele_car_model dcm ON dcm.id = dbc.model_type
+        WHERE dbc.status is NULL -- where
+    </sql>
+</sqlGroup>

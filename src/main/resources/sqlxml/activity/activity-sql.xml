@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="activity">
+    <sql id="column">
+        SELECT
+        dy.name companyName,
+        da.*,
+        dc.coupon_title
+    </sql>
+    <sql id="where">
+        FROM dele_activity da
+        LEFT JOIN dele_coupon dc ON dc.id = da.coupon
+        LEFT JOIN dele_company dy ON dy.id = da.company
+        WHERE 1=1 -- where
+        ORDER BY da.create_time DESC
+    </sql>
+    <sql id="columnPage">
+        SELECT
+        COUNT(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM dele_activity da
+        LEFT JOIN dele_coupon dc ON dc.id = da.coupon
+        LEFT JOIN dele_company dy ON dy.id = da.company
+        WHERE 1=1 -- where
+    </sql>
+    <sql id="findByEvent">
+        SELECT * FROM dele_activity WHERE event = ? AND company = ? AND ? BETWEEN start_time AND end_time
+    </sql>
+</sqlGroup>

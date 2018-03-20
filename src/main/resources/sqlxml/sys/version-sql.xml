@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="version">
+    <sql id="findMaxVersion">
+        SELECT
+            *
+        FROM
+            dele_version
+        WHERE
+            type = ?
+        AND os_type = ?
+        ORDER BY version DESC
+        LIMIT 1
+    </sql>
+
+    <sql id="findVersionByNo">
+        SELECT
+            version,
+            `force`,
+            crc,
+            hvalue
+        FROM
+            dele_version
+        WHERE
+            type = ?
+        AND os_type = ?
+        AND version = ?
+        ORDER BY version DESC
+        LIMIT 1
+    </sql>
+</sqlGroup>

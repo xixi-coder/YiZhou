@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="driverOnline">
+    <sql id="findCurrentByDriverAndType">
+        SELECT
+            *
+        FROM
+            dele_driver_online_detail
+        WHERE
+            driver = ?
+        AND operat_type = ?
+        ORDER BY operat_time DESC LIMIT 1
+    </sql>
+    <sql id="findTotalTimeByDriverAndDate">
+        SELECT IFNULL(SUM(time),0) total FROM dele_driver_online_detail
+        WHERE driver = ? AND operat_time BETWEEN ? AND ?
+    </sql>
+    <sql id="findByMonthForDetail">
+        SELECT
+        real_name,
+        phone,
+        b.dayDatil,
+        id
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN (
+        SELECT
+        CONVERT (
+        GROUP_CONCAT(
+        '{time:"',
+        a.sums,
+        '",date:"',
+        a.times,
+        '"}'
+        ) USING utf8
+        ) dayDatil,
+        a.driver
+        FROM
+        (
+        SELECT
+        SUM(ddod.time) sums,
+        DATE_FORMAT(ddod.operat_time, '%e') times,
+        ddod.driver
+        FROM
+        dele_driver_online_detail ddod
+        WHERE 1=1
+
+        AND ddod.operat_time BETWEEN ?
+        AND ?
+        GROUP BY
+        DATE_FORMAT(ddod.operat_time, '%e'),
+        ddod.driver
+        ) a
+        GROUP BY
+        a.driver
+        ) b ON b.driver = ddi.id WHERE 1=1 -- where
+        LIMIT ?,?
+    </sql>
+    <sql id="findCountByMonthForDetail">
+        SELECT COUNT(1) c FROM (
+        SELECT
+        real_name,
+        phone,
+        b.dayDatil,
+        id
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN (
+        SELECT
+        CONVERT (
+        GROUP_CONCAT(
+        '{time:"',
+        a.sums,
+        '",date:"',
+        a.times,
+        '"}'
+        ) USING utf8
+        ) dayDatil,
+        a.driver
+        FROM
+        (
+        SELECT
+        SUM(ddod.time) sums,
+        DATE_FORMAT(ddod.operat_time, '%e') times,
+        ddod.driver
+        FROM
+        dele_driver_online_detail ddod
+        WHERE 1=1
+
+        AND ddod.operat_time BETWEEN ?
+        AND ?
+        GROUP BY
+        DATE_FORMAT(ddod.operat_time, '%e'),
+        ddod.driver
+        ) a
+        GROUP BY
+        a.driver
+        ) b ON b.driver = ddi.id WHERE 1=1 -- where
+        ) bddd
+    </sql>
+    <sql id="deleDownLineRecored">
+        DELETE FROM dele_driver_online_detail WHERE driver = ? AND operat_type = ? AND operat_time &gt; ?
+    </sql>
+</sqlGroup>

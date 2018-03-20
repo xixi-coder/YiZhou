@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="special">
+    <sql id="column">
+        SELECT
+        dsc.*,
+        dc.name AS company_name
+    </sql>
+    <sql id="where">
+        FROM
+        dele_special_car dsc
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dsc.type
+        LEFT JOIN dele_company dc ON dc.id = dsc.company_id
+        WHERE 1=1 AND dsc.type = ? AND dsc.flag = 0 -- where
+        ORDER BY
+        dsc.create_time DESC
+    </sql>
+    <sql id="driverGetList">
+        SELECT id,reservationCity,destinationCity,reservationAddress,destination,sharing_price as pinCheAmount,
+        index_price as amount,distance,need_time as requiredTime
+        FROM dele_special_car dsc
+        where dsc.status = ? AND dsc.type = ? AND dsc.flag = 0 AND dsc.start_adcode = ? -- where
+        ORDER BY id LIMIT ?,?
+    </sql>
+    <sql id="findAll">
+        SELECT dsc.id,reservationCity,destinationCity,reservationAddress,destination,sharing_price as pinCheAmount,
+        index_price as amount,distance,need_time as requiredTime
+        FROM dele_special_car dsc
+        where dsc.status = ? AND dsc.flag = 0 and dsc.type = ? -- where
+        ORDER BY id LIMIT ?,?
+    </sql>
+    <sql id="findLineAll">
+        SELECT
+        DISTINCT special_car_id,
+        dsc.id,
+        reservationCity,
+        destinationCity,
+        reservationAddress,
+        destination,
+        sharing_price as pinCheAmount,
+        index_price as amount,
+        distance,need_time as requiredTime
+        FROM dele_special_driver dsd
+        LEFT JOIN dele_special_car dsc ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_driver_info info ON dsd.driver_info_id=info.id
+        WHERE dsd.flag = 0 AND dsc.`status` = ? AND dsc.type = ? AND dsc.flag = 0
+        AND info.Allow2 =1
+        ORDER BY id LIMIT ?,?
+    </sql>
+    <sql id="findLineByCityCode">
+        SELECT
+        DISTINCT special_car_id,
+        dsc.id,
+        reservationCity,
+        destinationCity,
+        reservationAddress,
+        destination,
+        sharing_price as pinCheAmount,
+        index_price as amount,
+        distance,need_time as requiredTime
+        FROM dele_special_driver dsd
+        LEFT JOIN dele_special_car dsc ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_driver_info info ON dsd.driver_info_id=info.id
+        WHERE dsd.flag = 0 AND dsc.`status` = ? AND dsc.type = ? AND dsc.start_adcode = ? AND dsc.flag = 0
+        AND info.Allow2 =1
+        ORDER BY id LIMIT ?,?
+    </sql>
+    <sql id="lineListByDriverId">
+        SELECT
+        dsd.line_status orderStatus,
+        dsc.id,
+        dsc.reservationCity,
+        dsc.destinationCity,
+        dsc.reservationAddress,
+        dsc.destination,
+        dsc.start_longitude startLongitude,
+        dsc.start_latitude startLatitude,
+        dsc.end_longitude endLongitude,
+        dsc.end_latitude endLatitude,
+        dsc.sharing_price as pinCheAmount,
+        dsc.`status` lineStatus,
+        dsti.`name` lineName,
+        dsc.index_price as amount,
+        dsc.distance,
+        dsc.need_time as requiredTime,
+        di.real_name realName,
+        di.head_portrait headPortrait,
+        di.phone,
+        dc.`name` dname,
+        dcm.`name` mname
+        FROM dele_special_car dsc
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dsc.type
+        LEFT JOIN dele_special_driver dsd ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_driver_info di ON di.id = dsd.driver_info_id
+        LEFT JOIN dele_order do ON di.id = dsd.driver_info_id
+        LEFT JOIN dele_driver_car dd ON di.id = dd.driver
+        LEFT JOIN dele_base_car db ON dd.car = db.id
+        LEFT JOIN dele_car_brand dc ON db.brand = dc.id
+        LEFT JOIN dele_car_model dcm ON db.model_type = dcm.id
+        WHERE dsc.id = dsd.special_car_id and dsd.driver_info_id = ? AND dsd.flag = 0 -- where
+        GROUP BY id
+        ORDER BY id DESC LIMIT ?,?
+    </sql>
+    <sql id="lineByDriverIdAndOrderId">
+        SELECT dsd.line_status orderStatus,
+        dsd.people,
+        dsc.id,
+        reservationCity,
+        destinationCity,
+        reservationAddress,
+        destination,
+        sharing_price as pinCheAmount,
+        dsc.`status` lineStatus,
+        dsti.`name` lineName,
+        index_price as amount,
+        distance,
+        need_time as requiredTime,
+        di.real_name realName,
+        di.head_portrait headPortrait,
+        di.phone,
+        dc.`name` dname,
+        dcm.`name` mname
+        FROM dele_special_car dsc
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dsc.type
+        LEFT JOIN dele_special_driver dsd ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_order do ON do.id = dsd.orderid
+        LEFT JOIN dele_member_info dmi ON dmi.id = do.member
+        where dsc.id = dsd.special_car_id and dsd.driver_info_id = ? -- where
+        GROUP BY id
+        ORDER BY id LIMIT ?,?
+    </sql>
+    <sql id="lineListByMemberId">
+        SELECT
+        deo.id,
+        deo.amount,
+        dsc.distance,
+        dsc.need_time requiredTime,
+        deo.people,
+        dsc.reservationCity,
+        dsc.destinationCity,
+        dsc.reservationAddress,
+        dsc.destination,
+        deo.pd_flag type,
+        deo.create_time createTime,
+        deo.status,
+        ddi.nick_name nickName,
+        ddi.head_portrait headPortrait,
+        ddi.phone,
+        db.plate_no plateNo,
+        db.color,
+        dcm.`name` model,
+        dc.`name` brand,
+        dsti.name lineName
+        FROM
+        dele_order deo
+        LEFT JOIN dele_specialdriver_order dso ON dso.orderid = deo.id
+        LEFT JOIN dele_special_driver dsd ON dsd.id = dso.special_driver
+        LEFT JOIN dele_special_car dsc ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dsc.type
+        LEFT JOIN dele_driver_info ddi ON ddi.id = deo.driver
+        LEFT JOIN dele_driver_car ddc ON dsd.driver_info_id = ddc.driver
+        LEFT JOIN dele_base_car db ON ddc.car = db.id
+        LEFT JOIN dele_car_brand dc ON db.brand = dc.id
+        LEFT JOIN dele_car_model dcm ON db.model_type = dcm.id
+        WHERE
+        deo.driver = dsd.driver_info_id AND deo.member = ? AND deo.status != ? AND deo.status != ? -- where
+        GROUP BY id
+        ORDER BY id DESC LIMIT ?,?
+    </sql>
+    <sql id="lineListByMemberId1">
+        SELECT
+        deo.id,
+        dsc.distance,
+        deo.create_time createTime,
+        dsc.need_time requiredTime,
+        deo.amount,
+        deo.phone,
+        dsc.reservationAddress,
+        dsc.reservationCity,
+        dsc.destination,
+        dsc.destinationCity,
+        deo.people,
+        deo.status,
+        deo.pd_flag type,
+        dsti.name lineName
+        FROM
+        dele_order deo
+        LEFT JOIN dele_specialline_order dso ON deo.id = dso.orderId
+        LEFT JOIN dele_special_car dsc ON dsc.id = dso.specialcarId
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dsc.type
+        WHERE
+        deo.member = ? AND deo.service_type = ? AND deo.status = ? AND deo.id = dso.orderId -- where
+        GROUP BY id
+        ORDER BY id DESC LIMIT ?,?
+    </sql>
+    <sql id="getOrderByDriverId">
+        SELECT
+        dmi.phone,
+        dmi.real_name,
+        dmi.nick_name name,
+        dmi.head_portrait headPortrait,
+        deo.status,
+        deo.pd_flag type,
+        deo.id oid,
+        deo.member id,
+        deo.people,
+        deo.amount,
+        dsc.reservationCity,
+        dsc.destinationCity,
+        dsc.reservationAddress,
+        dsc.destination,
+        dsc.start_longitude startLongitude,
+        dsc.start_latitude startLatitude,
+        dsc.end_longitude endLongitude,
+        dsc.end_latitude endLatitude,
+        dsc.distance,
+        dsc.need_time AS requiredTime
+        FROM
+        dele_special_driver dsd
+        LEFT JOIN dele_special_car dsc ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_specialdriver_order dso ON dso.special_driver = dsd.id
+        LEFT JOIN dele_order deo ON deo.id = dso.orderid
+        LEFT JOIN dele_member_info dmi ON dmi.id = deo.member
+        WHERE
+        dsd.driver_info_id = ?
+        AND dsd.line_status = ? AND dso.over = 0
+    </sql>
+    <sql id="getOrderIdByDriverId">
+        SELECT
+        deo.id
+        FROM
+        dele_special_driver dsd
+        LEFT JOIN dele_special_car dsc ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_specialdriver_order dso ON dso.special_driver = dsd.id
+        LEFT JOIN dele_order deo ON deo.id = dso.orderid
+        LEFT JOIN dele_member_info dmi ON dmi.id = deo.member
+        WHERE
+        dsd.driver_info_id = ? AND deo.service_type = ? AND deo.status = ?
+    </sql>
+    <sql id="">
+        SELECT
+        deo.id
+        FROM
+        dele_special_driver dsd
+        LEFT JOIN dele_special_car dsc ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_specialdriver_order dso ON dso.special_driver = dsd.id
+        LEFT JOIN dele_order deo ON deo.id = dso.orderid
+        LEFT JOIN dele_member_info dmi ON dmi.id = deo.member
+        WHERE
+        dsd.driver_info_id = ? AND dsd.line_status = ?
+    </sql>
+    <sql id="getRegisId">
+        SELECT
+        dmi.phone,
+        dmi.real_name,
+        dmi.nick_name,
+        dso.id,
+        deo.people,
+        deo.amount,
+        dsc.reservationCity,
+        dsc.destinationCity,
+        dsc.reservationAddress,
+        dsc.destination,
+        dsc.distance,
+        dsc.need_time AS requiredTime
+        FROM
+        dele_special_driver dsd
+        LEFT JOIN dele_special_car dsc ON dsc.id = dsd.special_car_id
+        LEFT JOIN dele_specialdriver_order dso ON dso.special_driver = dsd.id
+        LEFT JOIN dele_order deo ON deo.id = dso.orderid
+        LEFT JOIN dele_member_info dmi ON dmi.id = deo.member
+        WHERE
+        dsd.driver_info_id = ?
+        AND dsd.line_status = ? -- where
+        GROUP BY id
+        ORDER BY id LIMIT ?,?
+    </sql>
+    <sql id="driverId">
+        SELECT * from dele_special_driver
+        where driver_info_id = ? AND flag = 0
+    </sql>
+    <sql id="deleteline">
+        UPDATE
+        dele_special_driver
+        SET
+        flag = 1
+        WHERE
+        driver_info_id = ? AND special_car_id = ?
+    </sql>
+
+    <sql id="updateflag">
+        UPDATE
+        dele_special_car
+        SET
+        flag = 1
+        WHERE
+        id = ?
+    </sql>
+
+    <sql id="updateline">
+        UPDATE
+        dele_special_driver
+        SET
+        flag = 0
+        WHERE
+        driver_info_id = ? AND special_car_id = ?
+    </sql>
+
+    <sql id="lineStatus">
+        SELECT * from dele_special_driver
+        where line_status = ?
+    </sql>
+
+    <sql id="lineId">
+        SELECT * from dele_special_driver
+        where special_car_id = ?
+    </sql>
+
+    <sql id="lineexist">
+        SELECT * from dele_special_driver
+        where driver_info_id = ? AND special_car_id = ?
+    </sql>
+</sqlGroup>

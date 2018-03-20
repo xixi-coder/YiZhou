@@ -1,0 +1,885 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="order">
+
+    <sql id="columnPage">
+        SELECT count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM
+        dele_order ddo
+        LEFT JOIN dele_member_info dmi ON dmi.id = ddo.member
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddo.driver
+        LEFT JOIN dele_company dc ON dc.id = ddo.company
+        WHERE 1=1 AND ddo.service_type = ? AND ddo.del_flag = ? -- where
+    </sql>
+    <sql id="column">
+        SELECT
+        ddo.*,
+        dmi.nick_name AS mnickName,
+        dmi.real_name AS mrealName,
+        dmi.phone AS mPhone,
+        ddi.nick_name AS dnickName,
+        ddi.real_name AS drealName,
+        dc.name AS company_name,
+        ddi.phone AS dPhone
+    </sql>
+    <sql id="where">
+        FROM
+        dele_order ddo
+        LEFT JOIN dele_member_info dmi ON dmi.id = ddo.member
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddo.driver
+        LEFT JOIN dele_company dc ON dc.id = ddo.company
+        WHERE 1=1 AND ddo.service_type = ? AND ddo.del_flag = ? -- where
+        GROUP BY ddo.id
+        ORDER BY
+        ddo.status ASC,ddo.create_time DESC,ddo.last_update_time DESC
+    </sql>
+
+    <sql id="whereByStatus">
+        FROM
+        dele_order ddo
+        LEFT JOIN dele_member_info dmi ON dmi.id = ddo.member
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddo.driver
+        LEFT JOIN dele_company dc ON dc.id = ddo.company
+        WHERE 1=1 AND ddo.status = ? AND ddo.del_flag = ? -- where
+        GROUP BY ddo.id
+        ORDER BY
+        ddo.status ASC,ddo.create_time DESC,ddo.last_update_time DESC
+    </sql>
+
+    <sql id="column1">
+        SELECT
+        ddo.*,
+        dmi.nick_name AS mnickName,
+        dmi.real_name AS mrealName,
+        dmi.phone AS mPhone,
+        ddi.nick_name AS dnickName,
+        ddi.real_name AS drealName,
+        dc.name AS company_name,
+        ddi.phone AS dPhone
+    </sql>
+    <sql id="where1">
+        FROM
+        dele_order ddo
+        LEFT JOIN dele_member_info dmi ON dmi.id = ddo.member
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddo.driver
+        LEFT JOIN dele_company dc ON dc.id = ddo.company
+        WHERE 1=1 AND ddo.service_type = ? AND ddo.del_flag = ? AND ddo.auto_dispatch_order = ? AND ddo.status = ? -- where
+        GROUP BY ddo.id
+        ORDER BY
+        ddo.status ASC,ddo.create_time DESC,ddo.last_update_time DESC
+    </sql>
+
+    <sql id="findMoreById">
+        SELECT ddo.*,IFNULL(ddmi.phone,dddi.phone) introducer_phone,IFNULL(ddmi.real_name,dddi.real_name)
+        introducer_name FROM dele_order ddo
+        LEFT JOIN dele_member_info dmi ON dmi.login_id = ddo.member = dmi.id
+        LEFT JOIN dele_member_info ddmi ON ddmi.login_id = dmi.introducer_login_id
+        LEFT JOIN dele_driver_info dddi ON dddi.login_id = dmi.introducer_login_id
+        WHERE ddo.id = ?
+        LIMIT 1
+    </sql>
+    <sql id="findCountByStatusServiceType">
+        SELECT
+        SUM(dd.amount) sum,
+        COUNT(*) count,
+        driver,dd.company dcompany,ddi.company,SUM(yh_amount)
+        sum1,SUM(real_pay) sum2,
+        sum(dcl.amount) sum3
+        ,SUM(dca.amount) sum4
+        FROM dele_order dd
+        LEFT JOIN dele_company_account dca ON dca.company = dd.company
+        LEFT JOIN dele_driver_info ddi ON driver = ddi.id
+        LEFT JOIN dele_capital_log dcl ON dcl.order_id = dd.id
+        WHERE dd.service_type=? AND dd.`status`=? AND dd.create_time BETWEEN ? AND ? -- where
+        HAVING dcompany = company
+    </sql>
+
+    <sql id="find1">
+        SELECT IFNULL(SUM(dd.amount),0) sum,COUNT(*) count,IFNULL(SUM(dd.yh_amount),0) sum1,IFNULL(SUM(dd.real_pay),0)
+        sum2
+        FROM dele_order dd
+        LEFT JOIN dele_driver_info ddi ON dd.company = ddi.company AND ddi.id = dd.driver
+        WHERE dd.service_type=? AND dd.`status`=?
+        AND dd.create_time BETWEEN ? AND ? -- where
+    </sql>
+    <sql id="find2">
+        SELECT IFNULL(SUM(dcl.amount),0) sum3
+        FROM dele_capital_log dcl
+        LEFT JOIN dele_order dd ON dcl.order_id = dd.id
+        WHERE dd.service_type = ? AND dd.`status` = ? AND dcl.create_time BETWEEN ? AND ? and dcl.operation_type != ? -- where
+    </sql>
+    <sql id="find3">
+        SELECT SUM(amount) sum4 FROM dele_company_rebate dc where service_type=? and rebate_time between ? and ? -- where
+    </sql>
+
+    <sql id="find4">
+        SELECT IFNULL(SUM(sum),0) sum5 FROM
+        (SELECT -1*SUM(dcl.amount) sum
+        FROM dele_capital_log dcl
+        LEFT JOIN dele_order dd ON dcl.order_id = dd.id
+        LEFT JOIN dele_company_account_log dal ON SUBSTR(dal.remark,15,24)= dd.`no`
+        WHERE dcl.operation_type = ? AND dd.service_type=? AND dd.status = ? AND dd.create_time AND dd.pay_time BETWEEN
+        ? AND ? -- where
+        UNION
+        SELECT SUM(dal.amount) sum FROM dele_company_account_log dal
+        JOIN dele_order dd ON SUBSTR(dal.remark,15,24)= dd.`no`
+        WHERE dal.opeart_type = ? AND dd.service_type=? AND dd.status = ? AND dd.create_time AND dd.pay_time BETWEEN ?
+        AND ?
+        -- where
+        )a
+    </sql>
+
+    <sql id="year1">
+        SELECT MONTH(create_time) month,COUNT(*) count FROM dele_order dd
+        WHERE dd.`status` = ? AND YEAR(create_time)= ? AND service_type = ? -- where
+        GROUP BY MONTH(create_time)
+    </sql>
+    <sql id="year2">
+        SELECT MONTH(create_time) month,SUM(amount) sum FROM dele_order dd
+        WHERE YEAR(create_time)= ? AND service_type = ? -- where
+        GROUP BY MONTH(create_time)
+    </sql>
+    <sql id="year3">
+        SELECT MONTH(create_time) month,COUNT(*) count FROM dele_order dd
+        WHERE dd.`status` = ? AND YEAR(create_time)= ? AND dd.service_type = ? -- where
+        GROUP BY MONTH(create_time)
+    </sql>
+
+    <sql id="month1">
+        SELECT DAY(create_time) day,COUNT(*) count FROM dele_order dd
+        WHERE dd.`status` = ? AND MONTH(create_time)= ? AND service_type = ? AND YEAR(create_time)=? -- where
+        GROUP BY DAY(create_time)
+    </sql>
+    <sql id="month2">
+        SELECT DAY(create_time) day,SUM(amount) sum FROM dele_order dd
+        WHERE MONTH(create_time)= ? AND service_type = ? AND YEAR(create_time)=? -- where
+        GROUP BY DAY(create_time)
+    </sql>
+    <sql id="month3">
+        SELECT DAY(create_time) day,COUNT(*) count FROM dele_order dd
+        WHERE dd.`status` = ? AND MONTH(create_time)= ? AND service_type = ? AND YEAR(create_time)=? -- where
+        GROUP BY DAY(create_time)
+    </sql>
+
+    <sql id="day1">
+        SELECT HOUR(create_time) hour,COUNT(*) count FROM dele_order dd
+        WHERE dd.`status` = ? AND DAY(create_time)= ? AND service_type = ? AND YEAR(create_time)=? AND
+        MONTH(create_time)= ? -- where
+        GROUP BY HOUR(create_time)
+    </sql>
+    <sql id="day2">
+        SELECT HOUR(create_time) hour,SUM(amount) sum FROM dele_order dd
+        WHERE DAY(create_time)= ? AND service_type = ? AND YEAR(create_time)=? AND MONTH(create_time)= ? -- where
+        GROUP BY HOUR(create_time)
+    </sql>
+    <sql id="day3">
+        SELECT HOUR(create_time) hour,COUNT(*) count FROM dele_order dd
+        WHERE dd.`status` = ? AND DAY(create_time)= ? AND service_type = ? AND YEAR(create_time)=? AND
+        MONTH(create_time)= ? -- where
+        GROUP BY HOUR(create_time)
+    </sql>
+
+    <sql id="findCountByMember">
+        SELECT COUNT(1) c FROM dele_order
+        WHERE member = ?
+    </sql>
+    <sql id="findCountByMemberAndDate">
+        SELECT COUNT(1) c FROM dele_order
+        WHERE member = ? AND create_time BETWEEN ? AND ?
+        AND del_flag = 0
+    </sql>
+    <sql id="findCompleteCountByMember">
+        SELECT COUNT(1) c FROM dele_order
+        WHERE member = ? AND status = ?
+    </sql>
+    <sql id="findCompleteCountByMemberAndDate">
+        SELECT COUNT(1) c FROM dele_order
+        WHERE member = ? AND create_time BETWEEN ? AND ?
+        AND del_flag = 0 AND status = ?
+    </sql>
+
+    <sql id="column6">
+        SELECT
+        user_name,real_name,dc.`name`,job_type,count,sum,tsum,count1,sum1,tsum1,count2,sum2,tsum2,count3,sum3,tsum3,count4,sum4,tsum4,count5,sum5,tsum5,count6,sum6,tsum6
+    </sql>
+    <sql id="where6">
+        FROM dele_driver_info ddi
+        LEFT JOIN
+        (SELECT COUNT(*)/3 COUNT,SUM(dd.amount)/3 SUM,SUM(dcl.amount)/3 tsum,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 2 -- time
+        GROUP BY driver)aa
+        ON ddi.id = aa.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count1,SUM(dd.amount)/3 sum1,SUM(dcl.amount)/3 tsum1,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 1 -- time
+        GROUP BY driver)bb
+        ON ddi.id = bb.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count2,SUM(dd.amount)/3 sum2,SUM(dcl.amount)/3 tsum2,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 3 -- time
+        GROUP BY driver)cc
+        ON ddi.id = cc.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count3,SUM(dd.amount)/3 sum3,SUM(dcl.amount)/3 tsum3,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 4 -- time
+        GROUP BY driver)dd
+        ON ddi.id = dd.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count4,SUM(dd.amount)/2 sum4,SUM(dcl.amount)/2 tsum4,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 5 -- time
+        GROUP BY driver)ee
+        ON ddi.id = ee.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count5,SUM(dd.amount)/2 sum5,SUM(dcl.amount)/2 tsum5,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 6 -- time
+        GROUP BY driver)ff
+        ON ddi.id = ff.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count6,SUM(dd.amount)/2 sum6,SUM(dcl.amount)/2 tsum6,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 7 -- time
+        GROUP BY driver)gg
+        ON ddi.id = gg.driver
+
+        JOIN dele_member_login dml ON ddi.login_id = dml.id
+        JOIN dele_company dc ON dc.id = ddi.company
+        WHERE 1= 1 -- where
+        GROUP BY ddi.id
+    </sql>
+
+    <sql id="columnPage6">
+        SELECT
+        count (*) c
+    </sql>
+    <sql id="wherePage6">
+        FROM dele_driver_info ddi
+        LEFT JOIN
+        (SELECT COUNT(*)/3 COUNT,SUM(dd.amount)/3 SUM,SUM(dcl.amount)/3 tsum,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 2 -- time
+        GROUP BY driver)aa
+        ON ddi.id = aa.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count1,SUM(dd.amount)/3 sum1,SUM(dcl.amount)/3 tsum1,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 1 -- time
+        GROUP BY driver)bb
+        ON ddi.id = bb.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count2,SUM(dd.amount)/3 sum2,SUM(dcl.amount)/3 tsum2,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 3 -- time
+        GROUP BY driver)cc
+        ON ddi.id = cc.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count3,SUM(dd.amount)/3 sum3,SUM(dcl.amount)/3 tsum3,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 4 -- time
+        GROUP BY driver)dd
+        ON ddi.id = dd.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count4,SUM(dd.amount)/2 sum4,SUM(dcl.amount)/2 tsum4,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 5 -- time
+        GROUP BY driver)ee
+        ON ddi.id = ee.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count5,SUM(dd.amount)/2 sum5,SUM(dcl.amount)/2 tsum5,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 6 -- time
+        GROUP BY driver)ff
+        ON ddi.id = ff.driver
+
+        LEFT JOIN
+        (SELECT COUNT(*)/3 count6,SUM(dd.amount)/2 sum6,SUM(dcl.amount)/2 tsum6,driver FROM dele_order dd
+        JOIN dele_capital_log dcl ON dd.id = dcl.order_id
+        WHERE dd.service_type = 7 -- time
+        GROUP BY driver)gg
+        ON ddi.id = gg.driver
+
+        JOIN dele_member_login dml ON ddi.login_id = dml.id
+        JOIN dele_company dc ON dc.id = ddi.company
+        WHERE 1= 1 -- where
+    </sql>
+
+    <sql id="column7">
+        SELECT dd.no,dd.amount,dd.pay_time,dcl.amount damount
+    </sql>
+    <sql id="where7">
+        FROM dele_order dd
+        JOIN dele_driver_info ddi ON dd.driver = ddi.id
+        JOIN dele_member_login dml ON ddi.login_id = dml.id
+        JOIN dele_capital_log dcl ON ddi.login_id = dcl.login_id AND dcl.order_id = dd.id
+        WHERE dd.service_type= ? AND dml.user_name = ?
+        -- where
+    </sql>
+    <sql id="findByDriver">
+        SELECT * FROM dele_order WHERE driver = ? AND status = ? LIMIT ?,?
+    </sql>
+    <sql id="findByDriverNoComplete">
+        select
+        create_time createTime,
+        reservation_address reservationAddress,
+        yg_amount ygAmount,
+        other_charges otherCharges,
+        remark,
+        wait_time waitTime,
+        no,
+        yh_amount yhAmount,
+        setouttime,
+        type,
+        id,
+        amount,
+        base_amount baseAmount,
+        distance,
+        real_distance realDistance,
+        real_pay realPay,
+        remote_fee remoteFee,
+        road_toll roadToll,
+        from_type fromType,
+        member,
+        status,
+        distance_amount distanceAmount,
+        pd_flag pdFlag,
+        time_out_amount timeOutAmount,
+        wait_amount waitAmount,
+        service_type serviceType,
+        destination,
+        pay_status payStatus,
+        company,
+        phone,
+        car,
+        set_out_flag setOutFlag,
+        del_flag delFlag,
+        vip_activity_flag,
+        by_meter
+        from dele_order WHERE driver = ? AND status != ? AND service_type != 5 AND status != ? AND
+        status != ? AND status != ? AND status != ? AND set_out_flag = ? ORDER BY create_time DESC
+    </sql>
+    <sql id="findByDriverNoCompleteAndYuyue">
+        select
+        create_time createTime,
+        reservation_address reservationAddress,
+        yg_amount ygAmount,
+        other_charges otherCharges,
+        remark,
+        wait_time waitTime,
+        no,
+        yh_amount yhAmount,
+        setouttime,
+        type,
+        id,
+        amount,
+        base_amount baseAmount,
+        distance,
+        real_distance realDistance,
+        real_pay realPay,
+        remote_fee remoteFee,
+        road_toll roadToll,
+        from_type fromType,
+        member,
+        status,
+        distance_amount distanceAmount,
+        pd_flag pdFlag,
+        time_out_amount timeOutAmount,
+        wait_amount waitAmount,
+        service_type serviceType,
+        destination,
+        pay_status payStatus,
+        company,
+        phone,
+        car,
+        set_out_flag setOutFlag,
+        del_flag delFlag,
+        vip_activity_flag,
+        by_meter
+        from dele_order WHERE driver = ? AND status != ? AND status != ? AND status != ? AND
+        status != ? AND status != ? AND status != ? AND set_out_flag = ? ORDER BY create_time DESC
+    </sql>
+    <sql id="findByNo">
+        SELECT * FROM dele_order WHERE no = ? LIMIT 1
+    </sql>
+    <sql id="findByMemberAndDateServiceTypePage">
+        SELECT
+        o.id,
+        o.status,
+        o.reservation_address,
+        o.destination,
+        o.real_pay,
+        o.create_time,
+        o.pay_status,
+        o.no,
+        o.destination,
+        o.reservation_address,
+        distance,
+        o.road_toll,
+        o.remote_fee,
+        o.other_charges,
+        IFNULL(g.score,5) as score,
+        IFNULL(g.content,'默认好评') as content
+        FROM dele_order AS o LEFT JOIN `dele_grade` AS g ON (o.id=g.order_id)
+        WHERE o.member = ? AND o.service_type = ?
+        AND (o.status = ? OR o.status = ? OR o.status = ?) AND o.create_time BETWEEN ? AND ? ORDER BY o.create_time DESC
+        LIMIT ?,?
+    </sql>
+    <sql id="findByDriverAndDateServiceTypePage">
+        SELECT
+        o.id,
+        o.status,
+        o.reservation_address,
+        o.destination,
+        o.amount,
+        o.real_pay,
+        IFNULL(o.amount,0)+IFNULL(o.road_toll,0)+IFNULL(o.other_charges,0)+IFNULL(o.remote_fee,0) AS total_fee,
+        o.create_time,
+        o.pay_status,
+        o.no,
+        o.destination,
+        o.reservation_address,
+        distance,
+        o.road_toll,
+        o.remote_fee,
+        o.other_charges,
+        IFNULL(g.score,5) as score,
+        IFNULL(g.content,'默认好评') as content
+
+        FROM dele_order AS o LEFT JOIN `dele_grade` AS g ON (o.id=g.order_id)
+        WHERE o.driver = ? AND o.service_type = ?
+        AND (o.status = ? OR o.status = ? OR o.status = ?) AND o.create_time BETWEEN ? AND ? ORDER BY o.create_time DESC
+        LIMIT ?,?
+    </sql>
+    <sql id="findByMemberForZhuanXianNoPay">
+        SELECT *
+        FROM dele_order
+        WHERE member = ? AND status = ? AND driver is NOT NULL LIMIT 1
+    </sql>
+    <sql id="findByMemberForNoPay">
+        SELECT *
+        FROM dele_order
+        WHERE member = ? AND status !=? AND status !=? AND status !=? AND set_out_flag = ? AND
+        driver is NOT NULL LIMIT 1
+    </sql>
+
+    <sql id="findByMemberForExecute">
+        SELECT *
+        FROM dele_order
+        WHERE member = ? AND id =? AND set_out_flag = 0
+    </sql>
+
+    <sql id="findByMemberForExecute2">
+        SELECT *
+        FROM dele_order
+        WHERE member = ? AND STATUS =1 AND service_type!=5 AND service_type!=6 AND service_type!=7 AND set_out_flag = 0
+    </sql>
+
+    <sql id="findByMemberForNoPayYuyue">
+        SELECT *
+        FROM dele_order
+        WHERE member = ? AND status !=? AND status !=? AND status !=? AND status !=? AND set_out_flag = ? AND driver is
+        NOT NULL LIMIT 1
+    </sql>
+    <sql id="findByMemberComplete">
+        SELECT * FROM dele_order
+        WHERE member = ? AND status = ? AND pay_status = ?
+    </sql>
+    <sql id="findByDriverComplete">
+        SELECT * FROM dele_order
+        WHERE driver = ? AND status = ? AND pay_status = ?
+    </sql>
+    <sql id="findCountByDriverAndDate">
+        SELECT count(1) c FROM dele_order
+        WHERE driver = ? AND status = ? AND create_time BETWEEN ? AND ? LIMIT 1
+    </sql>
+    <sql id="findCountByMemberComplete">
+        SELECT count(1) c FROM dele_order
+        WHERE member = ? AND status = ? LIMIT 1
+    </sql>
+    <sql id="findByMemberCompleteAndDate">
+        SELECT count(1) c FROM dele_order
+        WHERE member = ? AND status = ? AND create_time BETWEEN ? AND ? LIMIT 1
+    </sql>
+    <sql id="findByMemberForhasorder">
+        SELECT * FROM dele_order deo
+        WHERE member = ? AND status != ? AND status != ? AND service_type = ?
+    </sql>
+    <sql id="weipaidandingdancolumn">
+        SELECT do.type,do.service_type,
+        do.id,do.destination,do.company,do.reservation_address,dst.name,
+        dt.start_longitude,dt.end_latitude,
+        dt.start_latitude,dt.end_longitude,do.setouttime,dmi.real_name,dmi.phone
+    </sql>
+    <sql id="weipaidandingdanwhere">
+        FROM dele_order do LEFT JOIN dele_trip dt ON dt.order_id = do.id
+        LEFT JOIN dele_service_type dst ON dst.id = do.service_type
+        LEFT JOIN dele_member_info dmi ON dmi.id = do.member
+        WHERE 1=1 -- where
+        ORDER BY do.setouttime DESC
+    </sql>
+    <sql id="findByDateAndStatus">
+        SELECT * FROM dele_order WHERE setouttime BETWEEN ? AND ? AND status=? AND set_out_flag = ?
+    </sql>
+    <sql id="findCountByDriverYuyue">
+        SELECT COUNT(1) c FROM dele_order WHERE set_out_flag = ? AND driver = ? AND status = ? AND setouttime &gt; ?
+    </sql>
+    <sql id="findYuyuedingdanByDriver">
+        select do.*,dmi.real_name,dmi.phone
+        from dele_order do LEFT JOIN dele_member_info dmi ON dmi.id=do.member
+        WHERE do.driver = ? AND do.status = ? AND do.set_out_flag = ? AND do.setouttime &gt; ?
+    </sql>
+    <sql id="findOrderByDriver">
+        SELECT COUNT(*) c FROM dele_order WHERE service_type = 2 AND driver = ? AND STATUS IN (?,?,?)
+
+    </sql>
+
+    <sql id="findYuyuedingdanByMember">
+        select do.*,ddi.real_name,ddi.phone
+        from dele_order do LEFT JOIN dele_driver_info ddi ON ddi.id = do.driver
+        WHERE do.member = ? AND do.status = ? AND do.set_out_flag = ? AND do.setouttime &gt; ?
+    </sql>
+    <sql id="findByYuyueAndDate">
+        select do.*
+        from dele_order do
+        WHERE do.status = ? AND do.set_out_flag = ? AND do.setouttime BETWEEN ? AND ?
+    </sql>
+    <sql id="findNoInvoiceByMember">
+        SELECT
+        ddo.id,
+        ddo.no,
+        ddo.real_pay AS realPay,
+        ddo.create_time createTime,
+        ddo.distance,
+        ddo.reservation_address reservationAddress,
+        ddo.destination
+        FROM
+        dele_order ddo
+        LEFT JOIN dele_invoice_order dio ON dio.order_id = ddo.id
+        WHERE
+        dio.order_id IS NULL
+        AND ddo.member = ?
+        AND ddo.status = ?
+        ORDER BY ddo.create_time DESC
+        LIMIT ?,?
+    </sql>
+
+    <sql id="findPeopleNumberByDriverId">
+        SELECT SUM(deo.people) number,deo.people FROM dele_specialdriver_order dso
+        LEFT JOIN dele_special_driver dsd ON dso.special_driver = dsd.id
+        LEFT JOIN dele_order deo ON deo.id = dso.orderid
+        WHERE dsd.driver_info_id = ? AND deo.status = ?
+    </sql>
+
+    <sql id="findByIds">
+        SELECT
+        ddo.*
+        FROM
+        dele_order ddo
+        LEFT JOIN dele_invoice_order dio ON dio.order_id = ddo.id
+        WHERE
+        dio.order_id IS NULL
+        AND ddo.id IN (INSQL)
+        ORDER BY ddo.create_time DESC
+    </sql>
+
+    <sql id="pinche">
+        SELECT COUNT(*) c FROM dele_order dd WHERE driver = ? AND dd.`status`= ? AND pd_flag = 1
+    </sql>
+
+    <sql id="findOrderPd">
+        SELECT * FROM dele_order WHERE service_type = ? AND driver = ? AND pd_flag = TRUE AND status = ?
+    </sql>
+
+    <sql id="findOrdersRateByAll">
+
+        SELECT SUM(zc) zc,SUM(dj) dj,SUM(czc) czc,SUM(kc) kc,SUM(sfc) sfc,SUM(zx) zx,SUM(ALLs) alls FROM (
+        SELECT COUNT(service_type) zc,0 dj ,0 czc,0 kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE service_type =1 AND
+        STATUS=5
+        UNION
+        SELECT 0 zc,COUNT(service_type) dj ,0 czc,0 kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE service_type =2 AND
+        STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,COUNT(service_type) czc,0 kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE service_type =3 AND
+        STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,COUNT(service_type) kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE service_type =4 AND
+        STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,COUNT(service_type) sfc, 0 zx,0 ALLs FROM `dele_order` WHERE service_type =5 AND
+        STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,0 sfc, COUNT(service_type) zx,0 ALLs FROM `dele_order` WHERE service_type =6 AND
+        STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,0 sfc,0 zx, COUNT(service_type) ALLs FROM `dele_order` WHERE STATUS=5
+        ) AS tab1
+    </sql>
+
+    <sql id="findOrdersRateById">
+        SELECT SUM(zc) zc,SUM(dj) dj,SUM(czc) czc,SUM(kc) kc,SUM(sfc) sfc,SUM(zx) zx,SUM(ALLs) alls FROM (
+        SELECT COUNT(service_type) zc,0 dj ,0 czc,0 kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE driver=? AND
+        service_type =1 AND STATUS=5
+        UNION
+        SELECT 0 zc,COUNT(service_type) dj ,0 czc,0 kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE driver=? AND
+        service_type =2 AND STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,COUNT(service_type) czc,0 kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE driver=? AND
+        service_type =3 AND STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,COUNT(service_type) kc,0 sfc, 0 zx,0 ALLs FROM `dele_order` WHERE driver=? AND
+        service_type =4 AND STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,COUNT(service_type) sfc, 0 zx,0 ALLs FROM `dele_order` WHERE driver=? AND
+        service_type =5 AND STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,0 sfc, COUNT(service_type) zx,0 ALLs FROM `dele_order` WHERE driver=? AND
+        service_type =6 AND STATUS=5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,0 sfc,0 zx, COUNT(service_type) ALLs FROM `dele_order` WHERE driver=? AND STATUS=5
+        ) AS tab1
+    </sql>
+
+    <sql id="findOrdersRateByIdAndTime">
+        SELECT IFNULL(SUM(zc),0) zc,IFNULL(SUM(dj),0) dj,IFNULL(SUM(czc),0) czc,IFNULL(SUM(kc),0) kc,IFNULL(SUM(sfc),0)
+        sfc,IFNULL(SUM(zx),0) zx,IFNULL(SUM(ALLs),0) alls ,create_time FROM (
+        SELECT COUNT(service_type) zc,0 dj ,0 czc,0 kc,0 sfc, 0 zx,0 ALLs ,create_time FROM `dele_order` WHERE driver=?
+        AND service_type =1
+        UNION
+        SELECT 0 zc,COUNT(service_type) dj ,0 czc,0 kc,0 sfc, 0 zx,0 ALLs ,create_time FROM `dele_order` WHERE driver=?
+        AND service_type =2
+        UNION
+        SELECT 0 zc,0 dj ,COUNT(service_type) czc,0 kc,0 sfc, 0 zx,0 ALLs ,create_time FROM `dele_order` WHERE driver=?
+        AND service_type =3
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,COUNT(service_type) kc,0 sfc, 0 zx,0 ALLs ,create_time FROM `dele_order` WHERE driver=?
+        AND service_type =4
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,COUNT(service_type) sfc, 0 zx,0 ALLs ,create_time FROM `dele_order` WHERE driver=?
+        AND service_type =5
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,0 sfc, COUNT(service_type) zx,0 ALLs ,create_time FROM `dele_order` WHERE driver=?
+        AND service_type =6
+        UNION
+        SELECT 0 zc,0 dj ,0 czc,0 kc,0 sfc,0 zx, COUNT(service_type) ALLs ,create_time FROM `dele_order` WHERE driver=?
+        -- where
+        ) AS tab1 where 1=1 -- where
+    </sql>
+    <sql id="findOrder">
+        SELECT * FROM dele_order WHERE traverId = ? AND member = ? AND `status` = ?
+    </sql>
+    <!-- 交通部发起订单接口 -->
+    <sql id="findDataAddA32">
+        SELECT o.id,
+        o.no ,
+        o.setouttime ,
+        o.create_time,
+        o.reservation_address Departure,
+        o.destination as Destination,
+        o.last_update_time ,
+        t.start_longitude as DepLongitude,
+        t.start_latitude as DepLatitude,
+        t.end_longitude as DestLongitude,
+        t.end_latitude as DestLatitude
+        FROM `dele_order` o LEFT JOIN `dele_trip` t ON (o.id=t.order_id)
+        WHERE
+        (o.STATUS=5 OR o.STATUS=6) AND o.setouttime IS NOT NULL
+        AND last_update_time IS NOT NULL
+        AND reservation_address IS NOT NULL
+        AND reservation_address NOT IN ('')
+        AND destination IS NOT NULL
+        AND destination NOT IN ('')
+        AND driver IS NOT NULL
+        AND o.setouttime &gt; '2017-07-11 '
+        GROUP BY o.no
+    </sql>
+    <!-- 交通部完成订单接口 -->
+    <sql id="findDataAddA34">
+        SELECT o.id,
+        o.no,
+        o.status,
+        o.setouttime,
+        o.create_time,
+        o.reservation_address Departure,
+        o.destination as Destination,
+        o.last_update_time ,
+        t.start_longitude as DepLongitude,
+        t.start_latitude as DepLatitude,
+        t.end_longitude as DestLongitude,
+        t.end_latitude as DestLatitude
+        FROM `dele_order` o LEFT JOIN `dele_trip` t ON (o.id=t.order_id)
+        WHERE
+        (o.STATUS=5 OR o.STATUS=6) AND o.setouttime IS NOT NULL
+        AND last_update_time IS NOT NULL
+        AND reservation_address IS NOT NULL
+        AND reservation_address NOT IN ('')
+        AND destination IS NOT NULL
+        AND destination NOT IN ('')
+        AND driver IS NOT NULL
+        AND o.setouttime &gt; '2017-07-11 '
+        GROUP BY o.no
+    </sql>
+    <!-- 交通部撤销订单接口 -->
+    <sql id="findDataAddA36">
+        SELECT no,create_time,last_update_time FROM `dele_order` WHERE
+        no IN ('SJDD20170719155648ZMHSAP','SJDD20170719155427XWBZJS') AND
+        STATUS=6 AND setouttime IS NOT NULL
+    </sql>
+    <sql id="findDataAddA46">
+        SELECT
+        o.id,
+        o.no,
+        o.status,
+        o.pay_channel,
+        o.amount,
+        o.driver,
+        o.setouttime,
+        o.reservation_address,
+        o.destination,
+        o.distance,
+        o.create_time,
+        o.pay_time,
+        o.last_update_time,
+        TIMESTAMPDIFF(SECOND,o.create_time,o.last_update_time) AS DriveTime,
+        o.real_pay,
+        o.yh_amount,
+        IFNULL(a.amount,0) AS OtherUpPrice,
+        bc.plate_no AS VehicleNo,
+        cm.name AS BookModel
+        FROM `dele_order` o
+        LEFT JOIN dele_order_add_amount_record a ON(o.id=a.order_id)
+        LEFT JOIN `dele_driver_car` AS c ON (o.driver = c.driver)
+        LEFT JOIN `dele_base_car` AS bc ON (c.car = bc.id)
+        LEFT JOIN `dele_car_model` AS cm ON (cm.id = bc.model_type)
+        WHERE o.no IN ('SJDD20170719160033KHLKVI','SJDD20170719154254OEITBX')
+        AND
+        o.type=44 AND o.STATUS=5
+        AND o.driver IS NOT NULL AND o.car IS NOT NULL
+        AND o.STATUS=5 AND o.setouttime IS NOT NULL
+        GROUP BY o.no
+    </sql>
+    <sql id="findDataAddA48">
+        SELECT
+        DISTINCT o.no,
+        o.driver,
+        i.certificate_no AS LicenseId,
+        bc.plate_no AS VehicleNo,
+        o.create_time,
+        o.last_update_time
+        FROM `dele_order` o
+        LEFT JOIN `dele_driver_info` AS i ON (o.driver = i.id)
+        LEFT JOIN `dele_driver_car` AS c ON (i.id = c.driver)
+        LEFT JOIN `dele_base_car` AS bc ON (c.car = bc.id)
+        WHERE
+        o.no IN ('SJDD20170719160033KHLKVI','SJDD20170719154254OEITBX')
+        AND i.certificate_no IS NOT NULL
+        GROUP BY o.no
+    </sql>
+    <sql id="findDataAddA62">
+        SELECT DISTINCT o.no,
+        o.id,
+        o.create_time,
+        o.setouttime,
+        o.reservation_address,
+        o.destination,
+        o.distance AS RouteMile,
+        o.last_update_time,
+        i.real_name AS DriverName,
+        i.phone AS DriverPhone,
+        i.certificate_no AS LicenseId,
+        bc.plate_no AS VehicleNo
+        FROM `dele_order` o
+        LEFT JOIN `dele_driver_info` AS i ON (o.driver = i.id)
+        LEFT JOIN `dele_driver_car` AS c ON (i.id = c.driver)
+        LEFT JOIN `dele_base_car` AS bc ON (c.car = bc.id)
+        WHERE
+        o.no IN ('SJDD20170719160033KHLKVI','SJDD20170719154254OEITBX')
+        AND i.certificate_no IS NOT NULL
+        AND o.last_update_time IS NOT NULL
+        GROUP BY o.no
+    </sql>
+    <sql id="findDataAddA66">
+        SELECT DISTINCT o.no,
+        o.id,
+        o.pay_channel,
+        o.setouttime,
+        o.create_time,
+        o.reservation_address,
+        o.destination,
+        o.distance AS RouteMile,
+        o.last_update_time,
+        o.distance,
+        TIMESTAMPDIFF(SECOND,o.create_time,o.last_update_time) AS DriveTime,
+        o.real_pay AS FactPrice,
+        o.amount AS Price,
+        o.type,
+        o.yh_amount AS BenfitPrice,
+        o.status,
+        i.real_name AS DriverName,
+        i.phone AS DriverPhone,
+        i.certificate_no AS LicenseId,
+        bc.plate_no AS VehicleNo
+        FROM `dele_order` o
+        LEFT JOIN `dele_driver_info` AS i ON (o.driver = i.id)
+        LEFT JOIN `dele_driver_car` AS c ON (i.id = c.driver)
+        LEFT JOIN `dele_base_car` AS bc ON (c.car = bc.id)
+        WHERE
+        o.no IN ('SJDD20170719160033KHLKVI','SJDD20170719154254OEITBX')
+        AND i.certificate_no IS NOT NULL AND o.last_update_time IS NOT NULL
+        AND o.reservation_address IS NOT NULL AND o.destination IS NOT NULL
+        GROUP BY o.no
+    </sql>
+    <sql id="findOrderAll">
+        SELECT *
+        FROM `dele_order` o LEFT JOIN `dele_trip` t ON (o.id=t.order_id)
+        WHERE
+        (o.STATUS=5) AND o.setouttime IS NOT NULL
+        AND last_update_time IS NOT NULL
+        AND reservation_address IS NOT NULL
+        AND reservation_address NOT IN ('')
+        AND destination IS NOT NULL
+        AND destination NOT IN ('')
+        AND driver IS NOT NULL
+        AND o.setouttime > '2017-07-11 '
+        AND o.no =?
+        GROUP BY o.no
+    </sql>
+    <!--查询司机需要执行的顺风车订单-->
+    <sql id="findCountShunByDid">
+        SELECT COUNT(1) c FROM dele_order WHERE driver = ? AND service_type = 5 AND `status` IN (8,7,3)
+    </sql>
+    <!--因为代驾莫名出现多个时间相同的订单，暂定将当前订单的其他相同订单去除-->
+    <sql id="findIllegalOrder">
+        SELECT
+        id,
+        status
+        FROM
+        dele_order
+        WHERE
+        status = ? And service_type = ? AND setouttime = ? AND driver = ? AND no != ?
+    </sql>
+    <sql id="findOrderByPayTime">
+        SELECT * FROM `dele_order` WHERE status =5 and pay_time BETWEEN ? AND ?
+    </sql>
+    <sql id="findByOnlineScanning">
+        SELECT COUNT(1) c FROM `dele_order` WHERE   STATUS != ? AND STATUS != ? AND STATUS != ? AND STATUS != ? AND STATUS != ? AND driver = ?
+    </sql>
+    <sql id="findByPhone">
+        SELECT id,no,create_time,driver  FROM `dele_order` WHERE     phone = ? AND STATUS  &lt;  3
+    </sql>
+</sqlGroup>

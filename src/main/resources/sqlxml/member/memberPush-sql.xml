@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberPush">
+    <sql id="findByMemberId">
+        SELECT * FROM member_push_id WHERE member_id = ?
+    </sql>
+
+</sqlGroup>

@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="baseinfo">
+
+    <!--网约车平台公司运营规模信息接口 driverstat-->
+    <sql id="companyStat">
+    SELECT
+        SUM(VehicleNum) VehicleNum,
+        SUM(DriverNum) DriverNum,
+        1 Flag,
+        DATE_FORMAT(now(),'%Y-%m-%d %h:%i:%s') UpdateTime
+    FROM(
+            SELECT
+                count(*) VehicleNum,
+                0 DriverNum
+            FROM
+                dele_driver_info
+            UNION
+                SELECT
+                    0 VehicleNum,
+                    count(*) DriverNum
+                FROM
+                    dele_base_car
+        ) t
+    </sql>
+
+    <!--网约车平台公司支付信息接口-->
+    <sql id="companypay">
+    SELECT
+        PayName,
+        PayId,
+        PayType,
+        PayScope,
+        PrepareBank,
+        CountDate,
+        State,
+        Flag,
+        UpdateTime
+    FROM
+        dele_company_pay
+    </sql>
+
+    <!--网约车平台公司服务机构接口-->
+    <sql id="companyservice">
+    SELECT
+        Address,
+        ServiceName,
+        ServiceNo,
+        DatailAddress,
+        ResponsibleName,
+        ResponsiblePhone,
+        ManagerName,
+        ManagerPhone,
+        MailAddress,
+        DATE_FORMAT(CreateDate, '%Y-%m-%d') CreateDate,
+        State,
+        Flag,
+        DATE_FORMAT(UpdateTime,'%Y-%m-%d %h:%i:%s') UpdateTime
+    FROM
+        dele_company_serve
+    </sql>
+
+    <!--网约车平台公司经营许可接口-->
+    <sql id="companypermit">
+     SELECT
+        Address,
+        Certificate,
+        OperationArea,
+        OwnerName,
+        DATE_FORMAT(StartDate, '%Y-%m-%d') StartDate,
+        DATE_FORMAT(StopDate, '%Y-%m-%d') StopDate,
+        DATE_FORMAT(CertifyDate, '%Y-%m-%d') CertifyDate,
+        State,
+        Flag,
+        DATE_FORMAT(UpdateTime,'%Y-%m-%d %h:%i:%s') UpdateTime
+    FROM
+        dele_company_permit
+    </sql>
+
+    <!--网约车平台公司运价信息接口-->
+    <sql id="companyfare">
+    SELECT
+        dc.`name`,
+        d.city Address,
+        ds.id FareType,
+        DATE_FORMAT(
+            dc.create_time,
+            '%Y-%m-%d %h:%i:%s'
+        ) FareValidOn,
+        dcs.base_amount StartFare,
+        dcs.chaoguogonglishu StartMile,
+        dcs.gonglijiashoujine UnitPricePerMile,
+        dcs.fengzhongjiashoujine UnitPricePerMinute,
+        0 MorningPeakTimeOn,
+        0 MorningPeakTimeOff,
+        0 EveningPeakTimeOn,
+        0 EveningPeakTimeOff,
+        0 PeakPriceStartMile,
+        0 PeakUtilPrice,
+        0 State,
+        1 Flag,
+        DATE_FORMAT(
+            dc.last_update_time,
+            '%Y-%m-%d %h:%i:%s'
+        ) UpdateTime
+    FROM
+        dele_company_service dd
+    LEFT JOIN dele_charge_standard dc ON dd.charge_standard = dc.id
+    LEFT JOIN dele_service_type_item ds ON dd.service_type_item = ds.id
+    LEFT JOIN dele_charge_standard_item dcs ON dcs.charge_standard = dc.id
+    LEFT JOIN dele_company d ON d.id = dd.company
+    GROUP BY
+        dd.id
+    </sql>
+
+    <!--车辆基本信息定义-->
+    <sql id="vehicle">
+    SELECT
+        c.city Address,
+        b.plate_no VehicleNo,
+        b.plate_color PlateColor,
+        b.Seats,
+        cb.`name` Brand,
+        b.model_type Model,
+        b.OwnerName,
+        b.color VehicleColor,
+        b.EngineId,
+        b.vin,
+        DATE_FORMAT(b.CertifyDateA, '%Y-%m-%d') CertifyDateA,
+        b.FuelType,
+        b.EngineDisplace,
+        b.TransAgency,
+        b.TransArea,
+        DATE_FORMAT(b.TransDateStart, '%Y-%m-%d') TransDateStart,
+        DATE_FORMAT(b.TransDateStop, '%Y-%m-%d') TransDateStop,
+        DATE_FORMAT(b.CertifyDateB, '%Y-%m-%d') CertifyDateB,
+        b.FixState,
+        b.CheckState,
+        b.FeePrintId,
+        b.GPSBrand,
+        b.GPSModel,
+        DATE_FORMAT(b.GPSinstallDate, '%Y-%m-%d') GPSinstallDate,
+        DATE_FORMAT(b.RegisterDate, '%Y-%m-%d') RegisterDate,
+        b.CommercialType,
+        s.id,
+        0 State,
+        1 Flay,
+        DATE_FORMAT(b.UpdateTime,'%Y-%m-%d%h%m%s') UpdateTime
+    FROM
+        dele_base_car b
+    LEFT JOIN dele_car_info c ON c.car_id = b.id
+    LEFT JOIN dele_car_brand cb ON b.brand = cb.id
+    LEFT JOIN dele_service_type_item s ON b.type = s.id
+    </sql>
+
+    <!--车辆保险信息定义-->
+    <sql id="vehicleinsurance">
+        SELECT
+        b.plate_no VehicleNo,
+        di.insurcom InsurCom,
+        di.insurnum InsurNum,
+        di.insurtype InsurType,
+        di.insurcount InsurCount,
+        di.insureff InsurEff,
+        di.insurexp InsurExp,
+        di.flag Flag,
+        DATE_FORMAT( di.updatetime,'%Y-%m-%d %h:%i:%s') UpdateTime
+        FROM
+        dele_base_car b
+        LEFT JOIN dele_insurance di ON b.id = di.car_id
+    </sql>
+
+    <!--网约车车辆里程信息接口-->
+    <sql id="vehicletotalmile">
+    SELECT
+        c.city Address,
+        b.plate_no VehicleNo,
+        c.distance,
+        1 Flay,
+        DATE_FORMAT(NOW(),'%Y-%m-%d %h:%i:%s') UpdateTime
+    FROM
+        dele_car_info c
+    LEFT JOIN dele_base_car b ON c.car_id = b.id
+    </sql>
+
+    <!--驾驶员基本信息接口-->
+    <sql id="driver">
+        SELECT
+        d.city Address,
+        d.phone DriverPhone,
+        d.gender riverGender,
+        DATE_FORMAT(d.birthday, '%Y-%m-%d') DriverBirthday,
+        '汉' 驾驶员民族,
+        d.address DriverContactAddress,
+        d.LicenseId,
+        DATE_FORMAT(
+        d.GetDriverLicenseDate,
+        '%Y-%m-%d'
+        ) GetDriverLicenseDate,
+        DATE_FORMAT(
+        d.DriverLicenseOff,
+        '%Y-%m-%d'
+        ) DriverLicenseOff,
+        DATE_FORMAT(d.DriverLicenseOn, '%Y-%m-%d') DriverLicenseOn,
+        d.TaxiDriver,
+        d.CertificateNo2 CertificateNo,
+        d.NetworkCarIssueOrganization,
+        DATE_FORMAT(
+        d.NetworkCarIssueDate,
+        '%Y-%m-%d'
+        ) NetworkCarIssueDate,
+        DATE_FORMAT(
+        d.NetworkCarProofOn,
+        '%Y-%m-%d'
+        ) NetworkCarProofOn,
+        DATE_FORMAT(
+        d.NetworkCarProofOff,
+        '%Y-%m-%d'
+        ) NetworkCarProofOff,
+        DATE_FORMAT(d.RegisterDate, '%Y-%m-%d') RegisterDate,
+        d.CommercialType,
+        d.ContractCompany,
+        DATE_FORMAT(d.ContractOn, '%Y-%m-%d') ContractOn,
+        DATE_FORMAT(d.ContractOff, '%Y-%m-%d') ContractOff,
+        0 State,
+        1 Flag,
+        DATE_FORMAT(
+        d.last_update_time,
+        '%Y-%m-%d %h:%i:%s'
+        ) UpadteTime,
+        d.DriverLicenseId
+        FROM
+        dele_driver_info d
+    </sql>
+
+    <!--网约车驾驶员培训信息接口-->
+    <sql id="drivereducate">
+    SELECT
+        dc.city Address,
+        ddi.LicenseId,
+        ddt.coursename CourseName,
+        ddt.coursedate CourseDate,
+        ddt.duration Duration,
+        ddt.starttime StartTime,
+        ddt.stoptime StopTime,
+        ddt.flag Flag,
+        DATE_FORMAT(ddt.updatetime,'%Y-%m-%d %h:%i:%s') UpdateTime
+    FROM
+        dele_driver_train ddt
+    LEFT JOIN dele_driver_info ddi ON ddt.driver_id = ddi.id
+    LEFT JOIN dele_company dc ON dc.id = ddi.company
+    </sql>
+
+    <!--驾驶员移动终端信息接口-->
+    <sql id="driverapp">
+    SELECT
+        dc.city Address,
+        i.LicenseId,
+        i.phone,
+        d.NetType,
+        d.AppVersion,
+        d.MapType,
+        d.State,
+        1 Flag,
+        DATE_FORMAT(d.UpdateTime,'%Y-%m-%d %h:%i:%s') UpdateTime
+    FROM
+        dele_driver_app d
+    LEFT JOIN dele_driver_info i ON d.driver_id = i.id
+        left join dele_company dc on dc.id = i.company
+    </sql>
+
+    <!--网约车驾驶员统计接口-->
+    <sql id="driverstat">
+    SELECT
+        d.id,
+        c.city Address,
+        d.LicenseId,
+        DATE_FORMAT(NOW(),'%Y%m') Cycle,
+        COUNT(o.id) OrderCount,
+        0 TrafficViolationCount,
+        0 ComplainedCount,
+        IF(d.last_update_time,2,1) Flay,
+        DATE_FORMAT(NOW(),'%Y-%m-%d %h:%i:%s') UpdateTime
+    FROM
+        dele_driver_info d
+    LEFT JOIN dele_driver_car dc ON d.id = dc.driver
+    LEFT JOIN dele_car_info c ON dc.car = c.car_id
+    LEFT JOIN dele_order o ON d.id = o.driver
+    GROUP BY
+        d.id,
+        c.city,
+        d.LicenseId
+    </sql>
+
+    <!--乘客基本信息接口-->
+    <sql id="passenger">
+        SELECT
+        l.create_time RegisterDate,
+        i.phone PassengerPhone,
+        0 State,
+        IF(i.last_update_time,2,1) Flag,
+        DATE_FORMAT(NOW(),'%Y-%m-%d %h:%i:%s') UpdateTime
+        FROM
+        dele_member_login l
+        LEFT JOIN dele_member_info i ON l.id = i.login_id
+    </sql>
+
+    <sql id="findDriverInfos">
+        SELECT
+        ddi.real_name DriverName,
+        ddi.phone DriverPhone,
+        ddi.gender DriverGender,
+        ddi.birthday DriverBirthday,
+        ddi.DriverNation,
+        ddli.photo PhotoId,
+        ddi.LicenseId,
+        ddli.driver_license LicensePhotoId,
+        ddi.TaxiDriver,
+        ddi.CertificateNo2 CertificateNo,
+        ddi.NetworkCarIssueOrganization,
+        ddi.NetworkCarIssueDate,
+        ddi.GetNetworkCarProofDate,
+        ddi.NetworkCarProofOn,
+        ddi.NetworkCarProofOff,
+        ddi.RegisterDate,
+        ddi.job_type FullTimeDriver,
+        ddi.InDriverBlacklist,
+        ddi.CommercialType,
+        ddi.ContractCompany,
+        ddi.ContractOn,
+        ddi.ContractOff,
+        ddi.DriverNationality,
+        ddi.DriverMaritalStatus,
+        ddi.DriverLanguageLevel,
+        ddi.DriverEducation,
+        ddi.DriverCensus,
+        ddi.DriverAddress,
+        ddi.DriverContactAddress,
+        ddi.DriverType,
+        ddi.EmergencyContact,
+        ddi.EmergencyContactPhone,
+        ddi.EmergencyContactAddress,
+        ddi.State,
+        ddi.Flag,
+        ddi.GetDriverLicenseDate,
+        ddi.DriverLicenseOn,
+        ddi.DriverLicenseId
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        LEFT JOIN dele_driver_license_info ddli ON ddli.driver = ddi.id
+        WHERE
+        ddi.id IN (
+        157,156,153,139,138,243,500,225,235,230,226,171,167,190,177,164,439,393,437,442,445,443,189,387,390,343,385,379,375,347,460,411,412,414,395,178,503,416,417,376,461,459,193,220,221,223,219,448,451,449,452,453,408,447,280,307,304,300,290,293,288,129,130,134,133,234,179,187,111,161,162,158,175,199,168,173,137,131,241,229,245,251,242,135,207,180,204,200,201,255,246,148,155,149,151,152,154,150
+        )
+    </sql>
+
+
+    <sql id="driverInfoPhone">
+        SELECT
+        ddi.LicenseId,
+        ddi.phone DriverPhone
+        FROM
+        dele_driver_info ddi
+        WHERE ddi.id IN (157,156,153,139,138,243,500,225,235,230,226,171,167,190,177,164,439,393,437,442,445,443,189,387,390,343,385,379,375,347,460,411,412,414,395,178,503,416,417,376,461,459,193,220,221,223,219,448,451,449,452,453,408,447,280,307,304,300,290,293,288,129,130,134,133,234,179,187,111,161,162,158,175,199,168,173,137,131,241,229,245,251,242,135,207,180,204,200,201,255,246,148,155,149,151,152,154,150)    </sql>
+    <sql id="findDataById">
+        SELECT * FROM  `dele_driver_info` WHERE id =?
+    </sql>
+
+    <sql id="ratedDriver">
+        SELECT
+        ddi.phone,
+        ddi.LicenseId
+        FROM
+        dele_driver_info ddi
+        WHERE
+        ddi.id IN (
+        157,
+        156,
+        153,
+        139,
+        138,
+        243,
+        500,
+        225,
+        235,
+        230,
+        226,
+        171,
+        167,
+        190,
+        177,
+        164,
+        439,
+        393,
+        437,
+        442,
+        445,
+        443,
+        189,
+        387,
+        390,
+        343,
+        385,
+        379,
+        375,
+        347,
+        460,
+        411,
+        412,
+        414,
+        395,
+        178,
+        503,
+        416,
+        417,
+        376,
+        461,
+        459,
+        193,
+        220,
+        221,
+        223,
+        219,
+        448,
+        451,
+        449,
+        452,
+        453,
+        408,
+        447,
+        280,
+        307,
+        304,
+        300,
+        290,
+        293,
+        288,
+        129,
+        130,
+        134,
+        133,
+        234,
+        179,
+        187,
+        111,
+        161,
+        162,
+        158,
+        175,
+        199,
+        168,
+        173,
+        137,
+        131,
+        241,
+        229,
+        245,
+        251,
+        242,
+        135,
+        207,
+        180,
+        204,
+        200,
+        201,
+        255,
+        246,
+        148,
+        155,
+        149,
+        151,
+        152,
+        154,
+        150
+        )
+    </sql>
+
+    <sql id="PunishDriver">
+        SELECT
+        DISTINCT a34.LicenseId ,a54.*
+        FROM a34 a34
+        LEFT JOIN a54 a54 ON a54.OrderId = a34.OrderId
+        WHERE a54.id IS NOT NULL
+    </sql>
+
+</sqlGroup>

@@ -1,0 +1,270 @@
+#main {
+    border: 1px solid #D0D0D0;
+    width: 90%;
+    border-radius: 10px;
+    margin: 0 auto;
+    padding: 10px;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+div.top_one {
+    margin-bottom: 15px;
+}
+
+div.top_one > h3 {
+    margin-top: 10px;
+}
+
+div.top_one > p {
+    color: #9D9D9D;
+    padding-top: 10px;
+}
+
+div.top_two {
+    height: 50px;
+    border-top: 1px solid #D0D0D0;
+    border-bottom: 1px solid #D0D0D0;
+}
+
+div.top_yzm {
+    border-bottom: 1px solid #D0D0D0;
+}
+
+div.top_two span {
+    width: 10%;
+    height: 48px;
+    float: left;
+    line-height: 48px;
+}
+
+div.top_two input, div.closed {
+    float: left;
+    width: 70%;
+    height: 46px;
+    outline: none;
+    border: none;
+}
+
+div.top_position > input {
+    width: 80%;
+    overflow: hidden;
+    padding-right: 3px;
+}
+
+.top_position > div.closed {
+    width: 10%;
+    float: right;
+    position: relative;
+}
+
+#main div.top_tel > input {
+    width: 50%;
+}
+
+#main div.top_tel div.huoqu {
+    float: left;
+    width: 40%;
+    height: 48px;
+    text-align: center;
+    /*margin-top: 3px;*/
+    border-left: 1px solid #CECECE
+}
+
+#main div.top_tel div.huoqu input {
+    display: inline-block;
+    width: 100%;
+    height: 48px;
+    text-decoration: none;
+    line-height: 49px;
+    color: #676767;
+}
+
+div.top_btn {
+    margin-top: 20px;
+}
+
+.clear {
+    clear: both
+}
+
+.carousel-inner img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    min-height: 100%;
+}
+
+#div1 {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+#div1 div.carousel-inner, #div1 div.carousel-inner div.item {
+    width: 100%;
+    height: 150px;
+}
+
+/*5.5号修改*/
+#driverCount, #distance {
+    color: #F85E00;
+}
+
+div.top_xy {
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    padding-top: 5px;
+}
+
+div.top_xy > div > a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    line-height: 30px;
+    text-decoration: none;
+    color: #00A0E9;
+}
+
+div.top_xy > div.top_xy_right > a {
+    text-align: right;
+}
+
+.aaa {
+    color: #969696
+}
+
+.bbb {
+    font-weight: 100;
+}
+
+.ccc {
+    display: none;
+}
+
+div.top_xy > div.top_xy_left {
+    width: 80%;
+    height: 30px;
+    float: left;
+}
+
+div.top_xy > div.top_xy_right {
+    width: 20%;
+    height: 30px;
+    float: right;
+}
+
+div.top_xy_down {
+    height: 30px;
+    color: red;
+    font-size: 12px;
+}
+
+#div2 {
+    border: 1px solid #D0D0D0;
+    width: 90%;
+    border-radius: 10px;
+    margin: 0 auto;
+    padding: 10px;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+#div2 ul {
+    padding-left: 18%;
+}
+
+#div2 ul li {
+    height: 18px;
+}
+
+#div2 ul li > div {
+    float: left;
+    height: 20px;
+}
+
+.stroke-ul-li-div1 {
+    width: 20%;
+}
+
+.stroke-ul-li-div2 {
+    width: 15%;
+    color: #00AC65;
+    min-height: 20px;
+    /*background: #0AA0D3 !important;*/
+}
+div.top10 {
+    width: 15%;
+    color: #00AC65;
+    min-height: 23px;
+    /*background: #0AA0D3 !important;*/
+}
+
+.stroke-ul-li-div3 {
+    width: 65%;
+}
+
+#div2 ul li.li2 {
+    height: 63px;
+
+}
+
+
+.top1{
+    background: url("../../static/weixin/images/1.png") no-repeat center;
+    background-size: 19px;
+}
+
+#div2 ul li > div.top2{
+    height: 80%;
+    background: url("../../static/weixin/images/2.png") no-repeat center;
+    background-size: 19px;
+}
+#div2 ul li > div.top10{
+    height: 59px;
+    background: url("../../static/weixin/images/5.png") no-repeat center;
+    background-size: 19px;
+}
+
+.top3{
+    background: url("../../static/weixin/images/2.png") no-repeat center;
+    background-size:19px;
+}
+.top8{
+    background: url("../../static/weixin/images/2.png") no-repeat center;
+    background-size:19px;
+}
+
+.top4{
+    background: url("../../static/weixin/images/2.png") no-repeat center;
+    background-size: 19px;
+}
+.top5{
+    background: url("../../static/weixin/images/4.png") no-repeat center;
+    background-size: 19px;
+}
+.top6{
+    height:37px !important;
+    background: url("../../static/weixin/images/4.png") no-repeat center;
+    background-size: 19px;
+}
+.li_6{
+    /*padding-top: 15px;*/
+    height:37px !important;
+}
+.li_6 div.stroke-ul-li-div1,.li_6 div.stroke-ul-li-div3{
+    padding-top: 17px;
+
+}
+.li_5{
+    height: 37px !important;
+}
+.li_5 div.stroke-ul-li-div1,.li_5 div.stroke-ul-li-div3{
+    padding-top: 17px;
+}
+.li_5 div.stroke-ul-li-div2{
+    height: 37px !important;
+}

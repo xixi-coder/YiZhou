@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="zxLine">
+    <sql id="column">
+        SELECT
+        dzl.*,dc.`name`
+    </sql>
+    <sql id="where">
+        FROM
+        dele_zx_line dzl
+        LEFT JOIN dele_company dc ON dc.id = dzl.company_id
+        where type = ? AND del_flag = 0 -- where
+        order by update_time desc
+    </sql>
+    <sql id="columnPage">
+        select count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM
+        dele_zx_line dzl
+        LEFT JOIN dele_company dc ON dc.id = dzl.company_id
+        where type = ? AND del_flag = 0 -- where
+    </sql>
+
+    <sql id="updateflag">
+        UPDATE dele_zx_line SET del_flag = ? WHERE id = ?
+    </sql>
+
+    <sql id="findZxLineList">
+        SELECT
+            dzl.id,
+            dzl.start_address_detail startAddress,
+            dzl.end_address_detail endAddress,
+            dzl.start_code startCode,
+            dzl.end_code endCode,
+            da.`name` endCityName
+        FROM
+            dele_zx_line dzl
+        LEFT JOIN dele_area da ON da.adcode = dzl.end_code
+        WHERE dzl.type = ? AND dzl.start_code = ? AND dzl.del_flag = 0
+    </sql>
+
+    <sql id="findByStartCityCode">
+        SELECT
+        dzl.id,
+        dzl.start_address_detail startAddress,
+        dzl.end_address_detail endAddress,
+        dzl.start_code startCode,
+        dzl.end_code endCode,
+        da.`name` endCityName
+        FROM
+        dele_zx_line dzl
+        LEFT JOIN dele_area da ON da.adcode = dzl.end_code
+        WHERE dzl.type = ? AND dzl.start_code = ? AND dzl.del_flag = 0
+    </sql>
+</sqlGroup>

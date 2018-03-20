@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberRealLocation">
+    <sql id="findByMember">
+        SELECT
+        *
+        FROM
+        dele_member_real_location
+        WHERE
+        member = ?
+    </sql>
+</sqlGroup>

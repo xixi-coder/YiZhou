@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberMessage">
+    <sql id="findByLoginId">
+        SELECT *,DATE_FORMAT(create_time, '%Y年%m月%d日') screate_time
+        FROM
+        dele_member_message
+        WHERE
+        login_id = ?
+        AND create_time BETWEEN ? AND ?
+        ORDER BY create_time DESC
+    </sql>
+    <sql id="delByNoticeId">
+        DELETE FROM dele_member_message WHERE notice_id = ?
+    </sql>
+</sqlGroup>

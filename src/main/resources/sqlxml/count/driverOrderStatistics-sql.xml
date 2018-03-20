@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="driverOrderStatistics">
+    <sql id="findByDriverId">
+        SELECT * FROM driver_order_statistics
+        WHERE driver_id = ?
+    </sql>
+</sqlGroup>

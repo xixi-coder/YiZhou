@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="chargeStandard">
+    <sql id="findByCompanyAndType">
+        SELECT
+        ddcs.*
+        FROM
+        dele_company_service dcs
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dcs.service_type_item
+        LEFT JOIN dele_charge_standard ddcs ON ddcs.id = dcs.charge_standard
+        WHERE dcs.company = ?
+        AND dsti.id = ?
+        ORDER BY dcs.last_update_time desc
+    </sql>
+    <sql id="column">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_charge_standard where 1=1 -- where
+    </sql>
+    <sql id="findAll">
+        SELECT * FROM dele_charge_standard
+    </sql>
+    <sql id="findDefaultByServiceType">
+        SELECT
+        ddcs.*
+        FROM
+        dele_service_type_item dsti
+        LEFT JOIN dele_charge_standard ddcs ON ddcs.id = dsti.charge_standard
+        WHERE dsti.type = ?
+        ORDER BY dsti.last_update_time desc
+    </sql>
+    <sql id="findByCompanyAndServiceType">
+          SELECT
+        ddcs.*
+        FROM
+        dele_company_service dcs
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dcs.service_type_item
+        LEFT JOIN dele_charge_standard ddcs ON ddcs.id = dcs.charge_standard
+        WHERE dcs.company = ?
+        AND dsti.type = ?
+        ORDER BY dcs.last_update_time desc
+    </sql>
+</sqlGroup>

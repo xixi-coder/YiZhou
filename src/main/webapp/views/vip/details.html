@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <title></title>
+    <style>
+        body,html{
+            width: 100%;height: 100%;margin: 0%;padding: 0;
+        }
+        .color{
+            color: #E1B964;
+        }
+        #box{
+            position: relative;
+            width: 100%;height: 100%;
+            background: url("img/VIPTQbg.png") no-repeat center;
+            background-size: cover;
+        }
+        .nav{
+            width: 100%;
+        }
+        .nav h2{
+            width: 100%;
+            text-align: center;
+            color: #2F3345;
+            padding:45px 0;margin: 0;
+            padding-bottom: 20px;;
+        }
+         .content{
+             padding: 0 42px;
+         }
+         .content ul{
+             padding: 0;
+             margin: 0;
+             list-style: none;
+         }
+        .content ul li {
+            color: #303445;
+            line-height: 35px;
+            font-size: 15px;
+            letter-spacing: inherit;
+            font-family: "微软雅黑";
+         }
+        .footer{
+            position: absolute;
+            bottom:30px;
+            width: 100%;
+            text-align: center;
+            color: #414453;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <div class="nav">
+        <h2>司机点点VIP特权</h2>
+    </div>
+    <div class="content">
+       <ul>
+           <li>1、一次性充值 <span class="jine">60</span> 元即可成为VIP会员</li>
+           <li>2、vip会员可享受每次乘车就能领取一瓶矿泉水的优惠</li>
+           <li>3、每次乘车可从<span class="jine">60</span>元中抵用一部分现金</li>
+       </ul>
+    </div>
+    <div class="footer">
+        <p>可抵用金额还剩<span style="color: #E1B964;font-size: 30px;"></span>元</p>
+    </div>
+</div>
+
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script>
+    var path = "http://139.196.5.217:8081/Jfinal";
+
+    $(document).ready(function () {
+//           获取APP对应参数
+        $.ajax({
+            url: path+"/api/getVipAmount",
+            headers:{
+                appType:2,
+                secret:sessionStorage.secret,
+                token:sessionStorage.token,
+                devicetype:3,
+                deviceno:"H5-"
+            },
+            success:function(data){
+                if(data.status=="NOAUTH"){
+                    layer.open({
+                        title: '温馨提示'
+                        ,content: '您还没有登录！'
+                    });
+                    return ;
+                }
+
+                $("span.jine").html(data.data.balance);
+                $(".footer span").html(data.data.balance);
+            }
+        })
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, button {
+    padding: 0;
+    margin: 0;
+}
+
+.schedule-box {
+    width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    font-family: "微软雅黑";
+}
+
+.sc-t1, .sc-t2, .sc-t3, .sc-t4, .sc-t5 {
+    margin: 0 auto;
+    overflow: hidden;
+    width: 1000px;
+    height: 40px;
+    margin-top: 80px;
+    background-repeat: no-repeat;
+    background-image: url(images/schedule_bg.png);
+}
+
+.sc-t1 {
+    background-position: -9px -16px;
+}
+
+.sc-t2 {
+    background-position: -9px -64px;
+}
+
+.sc-t3 {
+    background-position: -9px -111px;
+}
+
+.sc-t4 {
+    background-position: -9px -158px;
+}
+
+.sc-t5 {
+    background-position: -9px -205px;
+}
+
+.schedule-box ul {
+    top: -50px;
+    position: absolute;
+}
+
+.sc-text1 {
+    width: 86px;
+    height: 46px;
+    background: url(images/sc-text1_03.png) no-repeat;
+}
+
+.schedule-box ul {
+    width: 106%;
+}
+
+.schedule-box li:nth-child(5n) {
+    margin-right: 0;
+}
+
+.schedule-box ul li {
+    float: left;
+    width: 156px;
+    color: #fff;
+    margin-left: 10px;
+    line-height: 36px;
+    margin-right: 57px;
+    list-style-type: none;
+}
+
+.schedule-box li b {
+    font-size: 14px;
+    width: 86px;
+    display: block;
+    text-align: center;
+    font-weight: normal;
+}
+
+.schedule-box li.l-Blue {
+    background: url(images/l-Blue_bg_03.png) no-repeat;
+}
+
+.sc-time {
+    width: 102%;
+}
+
+.sc-time span:nth-child(5n) {
+    margin-right: 0;
+}
+
+.sc-time span {
+    color: #0094ff;
+    float: left;
+    width: 180px;
+    margin-top: 8px;
+    margin-left: -20px;
+    margin-right: 54px;
+    text-align: center;
+}
+
+.points_click {
+    padding: 7px 8px;
+}

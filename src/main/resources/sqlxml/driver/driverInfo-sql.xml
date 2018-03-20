@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="driverInfo">
+    <sql id="findCarById">
+        SELECT
+        dci.car_id carInfoId,
+        dci.distance distance,
+        dci.province province,
+        dci.city city,
+        dci.county county,
+        dbc.brand brand,
+        dcb.name brandName,
+        dbc.model_type model,
+        dcm.name modelName,
+        dbc.plate_no plateNumber,
+        dbc.type type,
+        dsti.name typeName,
+        dbc.vin vin,
+        dbc.color color,
+        dbc.picture picture,
+        dbc.status carStatus,
+        dbc.CertifyDateB certifyDateB
+        FROM dele_driver_car ddc
+        LEFT JOIN dele_base_car dbc ON ddc.car = dbc.id
+        LEFT JOIN dele_car_info dci ON ddc.car = dci.car_id
+        LEFT JOIN dele_car_brand dcb ON dbc.brand = dcb.id
+        LEFT JOIN dele_car_model dcm ON dbc.model_type = dcm.id
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddc.driver
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dbc.type
+        WHERE driver = ?
+    </sql>
+    <sql id="findCarById1">
+        SELECT
+        dci.car_id carInfoId,
+        dci.distance distance,
+        dci.province province,
+        dci.city city,
+        dci.county county,
+        dbc.brand brand,
+        dcb.name brandName,
+        dbc.model_type model,
+        dcm.name modelName,
+        dbc.plate_no plateNumber,
+        dbc.type type,
+        dsti.name typeName,
+        dbc.vin vin,
+        dbc.color color,
+        dbc.picture picture,
+        dbc.status carStatus,
+        dbc.CertifyDateB certifyDateB
+        FROM dele_driver_car ddc
+        LEFT JOIN dele_base_car dbc ON ddc.car = dbc.id
+        LEFT JOIN dele_car_info dci ON ddc.car = dci.car_id
+        LEFT JOIN dele_car_brand dcb ON dbc.brand = dcb.id
+        LEFT JOIN dele_car_model dcm ON dbc.model_type = dcm.id
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddc.driver
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dbc.type
+        WHERE driver = ? AND dbc.`status` = ?
+    </sql>
+    <sql id="column">
+        SELECT driver,
+        plate_no,
+        vin,
+        color,
+        dcb.`name` bname,
+        dcm.`name` mname,
+        dbc.create_time,
+        distance,join_time,car_id,dbc.status,
+        dsti.name sname
+    </sql>
+    <sql id="where">
+        FROM dele_driver_car ddc
+        LEFT JOIN dele_base_car dbc ON ddc.car = dbc.id
+        LEFT JOIN dele_car_info dci ON ddc.car = dci.car_id
+        LEFT JOIN dele_car_brand dcb ON dbc.brand = dcb.id
+        LEFT JOIN dele_car_model dcm ON dbc.model_type = dcm.id
+        LEFT JOIN dele_driver_info ddi ON ddi.id = ddc.driver
+        LEFT JOIN dele_service_type_item dsti ON dsti.id = dbc.type
+        WHERE driver = ?
+    </sql>
+
+    <sql id="column2">
+        SELECT ddi.id,ddl.driver_license,ddl.driving_license,ddl.photo,ddl.create_time
+    </sql>
+    <sql id="where2">
+        FROM dele_driver_info ddi JOIN dele_driver_license_info ddl ON ddi.id = ddl.driver
+        where ddi.id = ?
+    </sql>
+
+    <sql id="findCountByPhone">
+        SELECT count(1) c FROM dele_driver_info WHERE phone = ? AND `status` != 2
+    </sql>
+    <sql id="findByLoginId">
+        SELECT * FROM dele_driver_info WHERE login_id = ? LIMIT 1
+    </sql>
+    <sql id="findByLocation">
+        SELECT * FROM (
+        SELECT
+        bc.plate_no,
+        ddi.nick_name as nick_name,
+        <!--ddi.phone,-->
+        ddrl.latitude,
+        ddrl.longitude,
+        ddrl.speed,
+        ddrl.orientation,
+        ddi.id,
+        dml.`status` AS statusg,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        LEFT JOIN dele_driver_car ddc ON ddc.driver = ddi.id
+        LEFT JOIN dele_base_car bc ON bc.id = ddc.car AND ddc.use_flag =1
+        WHERE
+        (dml.`status` = ? OR dml.status = 4)
+        AND ddi.STATUS = ? -- where
+        AND bc.type = ?
+        ORDER BY distance ASC) AS a
+        WHERE latitude is NOT NULL
+        LIMIT ?,?
+    </sql>
+    <sql id="findByLocationForDj">
+        SELECT * FROM (
+        SELECT
+        ddi.nick_name nick_name,
+        <!--ddi.phone,-->
+        ddrl.latitude,
+        ddrl.longitude,
+        ddrl.speed,
+        ddrl.orientation,
+        ddi.id,
+        dml.`status` AS statusg,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE
+        (dml.`status` = ? OR dml.status = 4)
+        AND ddi.STATUS = ? -- where
+        AND dml.service_type = ?
+        ORDER BY distance ASC) AS a
+        WHERE latitude is NOT NULL
+        LIMIT ?,?
+    </sql>
+    <!--查询专线订单推送司机-->
+    <sql id="findAllDriver">
+        SELECT
+        ddi.login_id,
+        ddi.id
+        FROM
+        dele_specialline_order dso
+        LEFT JOIN dele_order deo ON deo.id = dso.orderId
+        LEFT JOIN dele_special_driver dsd ON dsd.special_car_id = dso.specialcarId
+        LEFT JOIN dele_driver_info ddi ON dsd.driver_info_id = ddi.id
+        WHERE
+        dso.orderId = ? AND dsd.line_status = ? AND dsd.flag = 0
+    </sql>
+    <sql id="findAllDriver1">
+        SELECT
+        ddi.login_id,
+        ddi.id
+        FROM
+        dele_specialline_order dso
+        LEFT JOIN dele_order deo ON deo.id = dso.orderId
+        LEFT JOIN dele_special_driver dsd ON dsd.special_car_id = dso.specialcarId
+        LEFT JOIN dele_driver_info ddi ON dsd.driver_info_id = ddi.id
+        WHERE
+        dso.orderId = ? AND dsd.line_status = ? AND dsd.flag = 0 AND dsd.driver_info_id
+        NOT IN (SELECT driver_info_id FROM dele_special_driver WHERE line_status = ? AND dsd.flag = 0)
+    </sql>
+    <sql id="findAllDriver2">
+        SELECT
+        ddi.login_id,
+        ddi.id
+        FROM
+        dele_specialline_order dso
+        LEFT JOIN dele_order deo ON deo.id = dso.orderId
+        LEFT JOIN dele_special_driver dsd ON dsd.special_car_id = dso.specialcarId
+        LEFT JOIN dele_driver_info ddi ON dsd.driver_info_id = ddi.id
+        WHERE
+        dso.orderId = ? AND dsd.line_status = ? AND dsd.flag = 0
+    </sql>
+
+    <sql id="findAllDriver3">
+        SELECT ddi.login_id,ddi.id FROM dele_driver_info ddi
+        LEFT JOIN dele_order deo ON deo.driver = ddi.id
+        WHERE deo.driver = ? AND deo.status = ? AND deo.service_type = ? AND deo.pd_flag = FALSE
+    </sql>
+
+    <!--bu拼单的-->
+    <sql id="findByDistance">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.`status` = ? AND ddi.status = ? AND ddi.company = ? AND dml.service_type = ?
+        ORDER BY
+        distance ASC) AS a
+        WHERE a.distance BETWEEN ? AND ?
+    </sql>
+    <!--拼单的-->
+    <sql id="findByDistanceForPd">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.`status` = ? AND ddi.status = ? AND ddi.company = ? AND dml.service_type = ?
+        ORDER BY
+        distance ASC) AS a
+        WHERE a.distance BETWEEN ? AND ?
+    </sql>
+    <sql id="findByDistanceForDaiJia">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.`status` = ? AND ddi.status = ? AND ddi.company = ? AND dml.service_type = ?
+        ORDER BY
+        distance ASC) AS a
+        WHERE a.distance BETWEEN ? AND ?
+    </sql>
+    <!--bu拼单的-->
+    <sql id="findByDistanceNoLimit">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.`status` = ? AND ddi.status = ? AND dml.service_type = ?
+        ORDER BY
+        distance ASC) AS a
+        WHERE a.distance BETWEEN ? AND ?
+    </sql>
+    <!--拼单的-->
+    <sql id="findByDistanceForPdNoLimit">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.`status` = ? AND ddi.status = ? AND dml.service_type = ?
+        ORDER BY
+        distance ASC) AS a
+        WHERE a.distance BETWEEN ? AND ?
+    </sql>
+    <sql id="findByZxLine">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.`status` = ? AND ddi.status = ? AND dml.service_type = ?
+        ORDER BY
+        distance ASC) AS a
+    </sql>
+    <sql id="ZxLinedriverInfos">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        LEFT JOIN dele_order deo ON deo.driver = ddi.id
+        WHERE dml.`status` = ? AND ddi.status = ? AND dml.service_type = ? AND deo.zx_line = ? AND (deo.`status` = ? OR deo.`status` = ?)
+        ORDER BY
+        distance ASC) AS a
+    </sql>
+    <sql id="findByDistanceForDaiJiaNoLimit">
+        SELECT * FROM (SELECT
+        ddi.id,
+        ddi.phone,
+        ddi.company,
+        ddi.real_name,
+        ddi.nick_name,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.`status` = ? AND ddi.status = ? AND dml.service_type = ?
+        ORDER BY
+        distance ASC) AS a
+        WHERE a.distance BETWEEN ? AND ?
+    </sql>
+
+    <sql id="column1">
+        SELECT
+        info.id,
+        info.nick_name,
+        info.head_portrait,
+        info.real_name,
+        info.province,
+        info.city,
+        info.county,
+        info.certificate_no,
+        info.certificate_type,
+        info.phone,
+        info.email,
+        info.address,
+        info.post_code,
+        info.login_id,
+        info.last_update_time,
+        info.gender,
+        info.type,
+        info.job_type,
+        info.`status`,
+        info.level,
+        login.id idg,
+        login.create_time,
+        login.user_name,
+        login.`password`,
+        login.salt,
+        login.type typeg,
+        login.device_no,
+        login.last_login_time,
+        login.`status` `statusg`,
+        login.device_type,
+        inst.user_name inst_phone,
+        dmca.amount,
+        dc.name cname
+    </sql>
+    <sql id="where1">
+        FROM
+        dele_driver_info info
+        LEFT JOIN dele_member_login login ON login.id = info.login_id
+        LEFT JOIN dele_member_capital_account dmca ON dmca.login_id = login.id
+        LEFT JOIN dele_member_login inst ON inst.id = info.introducer_login_id
+        LEFT JOIN dele_company dc ON dc.id= info.company
+        WHERE
+        info.login_id = login.id
+        AND login.id = dmca.login_id -- where
+        GROUP BY info.id
+        ORDER BY
+        login.create_time DESC
+    </sql>
+    <sql id="columnPage">
+        SELECT
+        count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM
+        dele_driver_info info
+        LEFT JOIN dele_member_login login ON login.id = info.login_id
+        LEFT JOIN dele_member_capital_account dmca ON dmca.login_id = login.id
+        LEFT JOIN dele_member_login inst ON inst.id = info.introducer_login_id
+        LEFT JOIN dele_company dc ON dc.id= info.company
+        WHERE
+        info.login_id = login.id
+        AND login.id = dmca.login_id -- where
+    </sql>
+    <sql id="column6">
+        SELECT *
+    </sql>
+    <sql id="where6">
+        FROM(
+        SELECT dg.id,ddi.real_name aname,ddn.real_name ename,content,score,create_time,master_id FROM dele_grade dg
+        JOIN dele_driver_info ddi ON dg.master_id = ddi.login_id
+        JOIN dele_driver_info ddn ON dg.member_id = ddn.login_id
+        UNION
+        SELECT dg.id,ddi.real_name aname,dmi.real_name ename,content,score,create_time,master_id FROM dele_grade dg
+        JOIN dele_driver_info ddi ON dg.master_id = ddi.login_id
+        JOIN dele_member_info dmi ON dg.member_id = dmi.login_id
+        )cc
+        WHERE cc.master_id = ?
+    </sql>
+    <sql id="webColumn">
+        SELECT a.*
+    </sql>
+    <sql id="webWhere">
+        FROM (SELECT
+        ddi.id,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        ddi.real_name,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance,
+        (SELECT COUNT(1) FROM dele_order o where o.driver = ddi.id AND o.setouttime BETWEEN ? AND ?) as day_order_count,
+        (SELECT COUNT(1) FROM dele_order o where o.driver = ddi.id AND o.setouttime BETWEEN ? AND ?) as
+        month_order_count
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE (dml.`status` = ? OR dml.`status` = ? ) AND ddi.status = ? AND ddi.company = ? AND ddi.type LIKE ? AND dml.service_type = ? -- where
+        ORDER BY
+        distance ASC) a ORDER BY a.distance ASC
+    </sql>
+    <sql id="webColumnPage">
+        SELECT count(1) c
+    </sql>
+    <sql id="webWherePage">
+        FROM (SELECT
+        ddi.id,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        ddi.real_name,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance,
+        (SELECT COUNT(1) FROM dele_order o where o.driver = ddi.id AND o.setouttime BETWEEN ? AND ?) as day_order_count,
+        (SELECT COUNT(1) FROM dele_order o where o.driver = ddi.id AND o.setouttime BETWEEN ? AND ?) as
+        month_order_count
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE (dml.`status` = ? OR dml.`status` = ? ) AND ddi.status = ? AND ddi.company = ? AND ddi.type LIKE ? AND dml.service_type = ? -- where
+        ORDER BY
+        distance ASC) a ORDER BY a.distance ASC
+    </sql>
+    <sql id="findByIds">
+        SELECT ddi.* FROM dele_driver_info ddi
+        LEFT JOIN dele_member_login dml ON dml.id=ddi.login_id
+        WHERE 1=1 -- where
+    </sql>
+    <sql id="findByPhone">
+        SELECT * FROM dele_driver_info WHERE phone = ? LIMIT 1
+    </sql>
+    <sql id="findByTj">
+        SELECT id,phone,nick_name,real_name,head_portrait FROM dele_driver_info WHERE introducer_login_id = ?
+    </sql>
+    <sql id="findByCompanyAndLogined">
+        SELECT * FROM dele_driver_info ddi INNER JOIN dele_member_login dml ON ddi.login_id = dml.id
+        WHERE ddi.company = ? AND dml.status != ?
+    </sql>
+    <sql id="noticeDriverListCloumn">
+        SELECT id,CONCAT(real_name,'-',nick_name,'-',phone) name,0 pId
+    </sql>
+    <sql id="noticeDriverListWhere">
+        FROM dele_driver_info
+        WHERE company=? -- where
+        ORDER BY id LIMIT 0,30
+    </sql>
+    <sql id="noticeDriverList">
+        SELECT
+        ddi.nick_name,ddi.real_name,ddi.phone,dml.cache_key,ddi.company,ddi.login_id,dml.registration_id,dml.device_type,dml.type
+        FROM dele_driver_info ddi LEFT JOIN dele_member_login dml ON dml.id= ddi.login_id
+        WHERE ddi.company = ? -- where
+    </sql>
+    <sql id="findByCountByLocationAndCompany">
+        SELECT count(1) c,FORMAT(distance, 2) distance FROM (SELECT
+        ddi.id,
+        ddi.login_id,
+        ddrl.longitude,
+        ddrl.latitude,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance
+        FROM
+        dele_driver_info ddi LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        LEFT JOIN dele_driver_car ddc ON ddc.driver = ddi.id
+        WHERE dml.`status` = ? AND ddi.status = ? AND ddi.company = ? AND ddi.type LIKE ?
+        AND (ddc.use_flag !=1 OR ddc.use_flag is NULL)
+        GROUP BY ddi.id
+        ORDER BY
+        distance ASC) AS a
+        WHERE a.distance BETWEEN ? AND ?
+    </sql>
+    <sql id="findByCreaterAndCompanyForZtree">
+        SELECT
+        IF (
+        ddi.creater = ?,
+        1,
+        0
+        ) checked,
+        CONCAT(ddi.real_name,'-',ddi.phone) name,
+        0 pId,
+        ddi.id
+        FROM
+        dele_driver_info ddi
+        WHERE ddi.company = ?
+    </sql>
+    <sql id="updateCreater">
+        UPDATE dele_driver_info SET creater = ? WHERE id = ?
+    </sql>
+    <sql id="rewardForDriver">
+        SELECT
+        ddi.real_name,oo.total,oo.c,ddi.login_id as id,ddi.phone
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN (
+        SELECT
+        SUM(amount) total,
+        COUNT(1) c,
+        driver
+        FROM
+        dele_order
+        WHERE 1=1 -- where
+        GROUP BY
+        driver
+        ) oo ON oo.driver = ddi.id
+        WHERE oo.total IS NOT NULL
+    </sql>
+    <sql id="rechangeScreen">
+        SELECT
+        ddi.real_name,ddi.phone,dmca.amount,dml.id
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        LEFT JOIN dele_member_capital_account dmca ON dmca.login_id = dml.id
+        WHERE 1=1 -- where
+    </sql>
+    <sql id="kongxiansijicolumn">
+        SELECT *
+    </sql>
+    <sql id="kongxiansijiwhere">
+        FROM
+        (
+        SELECT
+        ddi.phone,
+        ddi.real_name,
+        ddi.id,
+        ddi.nick_name,
+        ddi.company,
+        julijisuan(ddrl.latitude,ddrl.longitude,?,?)/1000 AS distance,
+        ddrl.longitude,
+        ddrl.latitude
+        FROM
+        dele_driver_info ddi
+        LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        LEFT JOIN dele_driver_real_location ddrl ON ddrl.driver = ddi.id
+        WHERE
+        ddi.`status` = ?
+        AND dml.status = ?
+        AND dml.service_type = ?
+        ) c
+        WHERE
+        1 = 1 -- where
+        ORDER BY distance ASC
+    </sql>
+    <sql id="zhixingzhongsijicolumn">
+        SELECT
+        ddi.phone,ddi.real_name,dlo.destination,dlo.reservation_address,ddi.id,dlo.no
+    </sql>
+    <sql id="zhixingzhongsijiwhere">
+        FROM
+        dele_order dlo
+        LEFT JOIN dele_driver_info ddi ON dlo.driver = ddi.id
+        WHERE 1=1 AND (dlo.status = ? OR dlo.status = ? OR dlo.status = ? OR dlo.status = ? )-- where
+    </sql>
+    <sql id="findByCompany">
+        SELECT * FROM dele_driver_info WHERE company = ? AND status = ?
+    </sql>
+    <sql id="findForOnLine">
+        SELECT ddi.* FROM dele_driver_info ddi LEFT JOIN dele_member_login dml ON dml.id = ddi.login_id
+        WHERE dml.status != ? AND dml.status !=?
+    </sql>
+</sqlGroup>

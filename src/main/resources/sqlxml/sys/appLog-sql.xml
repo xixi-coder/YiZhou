@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="appLog">
+    <sql id="column">
+        select *
+    </sql>
+    <sql id="where">
+        from dele_applog WHERE 1=1 -- where
+        ORDER BY create_time DESC
+    </sql>
+    <sql id="columnPage">
+        select count(*) c
+    </sql>
+    <sql id="wherePage">
+        from dele_applog WHERE 1=1 -- where
+    </sql>
+    <sql id="wherebyTime">
+        from dele_applog WHERE 1=1
+        and create_time BETWEEN ? and ?
+        ORDER BY create_time DESC
+    </sql>
+</sqlGroup>

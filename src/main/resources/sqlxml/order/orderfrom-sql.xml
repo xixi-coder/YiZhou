@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="orderfrom">
+   <sql id="app">
+       SELECT COUNT(*) count,SUM(amount) sum FROM dele_order WHERE service_type = ? AND from_type = 1 AND pay_time BETWEEN ? AND ? -- where
+   </sql>
+    <sql id="weixin">
+        SELECT COUNT(*) count,SUM(amount) sum FROM dele_order WHERE service_type = ? AND from_type = 2 AND pay_time BETWEEN ? AND ? -- where
+    </sql>
+    <sql id="phone">
+        SELECT COUNT(*) count,SUM(amount) sum FROM dele_order WHERE service_type = ? AND from_type = 3 AND pay_time BETWEEN ? AND ? -- where
+    </sql>
+    <sql id="service">
+        SELECT COUNT(*) count,SUM(amount) sum FROM dele_order WHERE service_type = ? AND from_type = 4 AND pay_time BETWEEN ? AND ? -- where
+    </sql>
+</sqlGroup>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+    var url=document.location.search;
+    var code=url.slice(6,-10);
+    sessionStorage.code=url;
+
+    var secret="af7a835e5a035ac85a45467df0b91bd1";
+    location.href="http://...:81/pay.html?code="+code;
+
+    // location.href="https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx826b8548114650e1&secret="+secret+"&code="+code+
+    // "&grant_type=authorization_code";   //返回值里面有openid  放后台调
+</script>
+</body>
+</html>

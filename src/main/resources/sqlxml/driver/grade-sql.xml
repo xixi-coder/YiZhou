@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="grade">
+    <sql id="countByOrder">
+        SELECT count(1) c FROM dele_grade WHERE order_id = ?
+    </sql>
+    <sql id="column">
+        SELECT dg.id,dd.`no`,dmi.real_name mname,ddi.real_name dname,score,dg.create_time
+    </sql>
+    <sql id="where">
+        FROM dele_grade dg
+        LEFT JOIN dele_member_info dmi ON dmi.id = dg.member_id
+        LEFT JOIN dele_driver_info ddi ON ddi.id = dg.master_id
+        JOIN dele_order dd ON dg.order_id = dd.id
+        WHERE 1=1 -- where
+        ORDER BY dg.create_time DESC
+    </sql>
+    <sql id="driverFavorableRate">
+        SELECT AVG(score) avg FROM `dele_grade` WHERE master_id = ?
+    </sql>
+</sqlGroup>

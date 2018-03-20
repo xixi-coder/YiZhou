@@ -1,0 +1,155 @@
+body, label, input {
+    margin: 0;
+    padding: 0;
+}
+
+.container input {
+    border-radius: 5px;
+    border: 0;
+    padding-left: 5px;
+    coloe: #A6A6A6;
+    outline: #67AAE4;
+}
+
+/*外 大框*/
+body #beijng {
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    width: 90%;
+    border: 1px solid #A7D9D9;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 12px;
+    margin: auto;
+    background: -webkit-linear-gradient(left bottom, #3B83BF, #8EC9CF);
+    background: -o-linear-gradient(left bottom, #3B83BF, #8EC9CF); /* Safari 5.1 - 6.0 */
+    background: -moz-linear-gradient(left bottom, #3B83BF, #8EC9CF); /* Opera 11.1 - 12.0 */
+    background: linear-gradient(left bottom, #3B83BF, #8EC9CF);
+}
+
+/* Firefox 3.6 - 15 */
+/*内 小框*/
+.zaixian {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+}
+
+.zaixian > span {
+    font-size: 25px;
+}
+
+.box {
+    width: 100%;
+    height: 26px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.area {
+    height: 105px;
+}
+
+.box label {
+    display: inline-block;
+    float: left;
+    width: 30%;
+    height: 100%;
+    text-align: left;
+    line-height: 28px;
+}
+
+/*right input样式*/
+.box .box_right {
+    float: left;
+    width: 70%;
+    height: 100%;
+}
+
+.box .box_right input[name=name], .box .box_right input[name=phone], .box .box_right input[name=tphone] {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+
+/*.box .box_right input[type=sex]{float:left;width:55%;height:100%; }*/
+.box .box_right input[id=smsCode] {
+    float: left;
+    width: 50%;
+    height: 100%;
+}
+
+.box .box_right input[type=button] {
+    float: right;
+    width: 40%;
+    height: 100%;
+    background: #489BB7;
+    border-radius: 5px;
+    outline: none;
+}
+
+/*选择类型*/
+.container .box_che {
+    width: 100%;
+    height: 75px;
+    margin-top: 10px;
+}
+
+.box .box_right input[type=checkbox] {
+    vertical-align: middle;
+    margin: 0;
+}
+
+/*下面三个照片*/
+.box .box_right input[type=file] {
+    width: 40%;
+    height: 100%;
+    opacity: 0;
+}
+
+/*背景file表单*/
+.box .box_right div.file_btn {
+    background: #489BB7;
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 26px;
+}
+
+.box .box_right span {
+    position: relative;
+    right: -40%;
+    top: 33%;
+}
+
+/*提交按钮*/
+.box > .tijiao, .box > .chongzhi {
+    width: 20%;
+    height: 100%;
+    background: #489BB7;
+    position: absolute;
+}
+
+.box > .tijiao {
+    border-radius: 5px;
+    left: 20%;
+}
+
+.box > .chongzhi {
+    left: 60%;
+}
+
+#tijiao {
+    text-align: center;
+    line-height: 30px;
+}
+
+.box_right span {
+    opacity: 0;
+}
+#distpicker2 select{height:26px;}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="serviceTypeItem">
+    <sql id="column">
+        SELECT sr.id,rid,dcs.id cid,sname,screate_time,screater,stype,rtype,rname,time_point,rcreate_time,rcreater,sr.company,dcs.`name` cname,
+        dcs.creater ccreater,dcs.create_time ccreate_time,`desc`,last_update_time
+    </sql>
+    <sql id="where">
+        FROM(SELECT dst.id,drs.id rid,dst.`name` sname,dst.create_time screate_time,dst.creater screater,dst.type
+        stype,drs.type rtype,
+        drs.`name` rname,time_point,drs.create_time rcreate_time,drs.creater rcreater,company,charge_standard
+        FROM dele_service_type_item dst
+        JOIN dele_royalty_standard drs ON dst.royalty_standard = drs.id)sr
+        JOIN dele_charge_standard dcs ON sr.charge_standard = dcs.id
+        where 1=1 -- where
+    </sql>
+    <sql id="listforcompanycolumn">
+        SELECT
+        dsti.`name` AS serviceName,
+        dst.`name` AS typeName,
+        dc. name AS companyName,
+        dcs.`name` AS chargeStandardName,
+        drs.`name` AS royaltyStandardName,
+        dsti.id AS serviceTypeItemId,
+        dc.id AS companyId,
+        ddcs.last_update_time,
+        ddcs.id
+    </sql>
+    <sql id="listforcompanywhere">
+        FROM
+        dele_company_service ddcs
+        LEFT JOIN dele_service_type_item dsti ON ddcs.service_type_item = dsti.id
+        LEFT JOIN dele_service_type dst ON dst.id = dsti.type
+        LEFT JOIN dele_charge_standard dcs ON dcs.id = ddcs.charge_standard
+        LEFT JOIN dele_royalty_standard drs ON drs.id = ddcs.royalty_standard
+        LEFT JOIN dele_company dc ON dc.id = ddcs.company
+        WHERE 1=1 -- where
+        GROUP BY ddcs.id
+        ORDER BY dc.id
+    </sql>
+    <sql id="findByAll">
+        SELECT * FROM dele_service_type_item where charge_standard is not null
+    </sql>
+    <sql id="findByType">
+        SELECT * FROM dele_service_type_item WHERE type = ? and charge_standard is not null ORDER BY type desc
+    </sql>
+
+    <sql id="findZXType">
+        SELECT * FROM dele_service_type_item WHERE type = ? OR type = ? and charge_standard is not null
+    </sql>
+    <sql id="appFindByType">
+        SELECT id,name,type
+        FROM dele_service_type_item
+        WHERE type = ? and charge_standard is not null ORDER BY type desc
+    </sql>
+</sqlGroup>

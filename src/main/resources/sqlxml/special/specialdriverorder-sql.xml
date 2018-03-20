@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="specialdriverorder">
+    <sql id="findOver">
+        SELECT
+            *
+        FROM
+            dele_specialdriver_order
+        WHERE
+           special_driver = ? AND orderid = ?
+    </sql>
+</sqlGroup>

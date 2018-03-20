@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="companyRebate">
+    <sql id="column">
+        select dc.name,dcr.amount,dor.`no`,rebate_time,login_id,user_name
+    </sql>
+    <sql id="where">
+        FROM dele_company_rebate dcr
+        JOIN dele_driver_info ddi ON dcr.driver = ddi.id
+        JOIN dele_order dor ON dcr.order_id = dor.id
+        JOIN dele_company dc ON dcr.company = dc.id
+        JOIN dele_member_login dml ON login_id = dml.id -- where
+        GROUP BY dcr.id
+        ORDER BY dcr.rebate_time DESC
+    </sql>
+    <sql id="columnPage">
+        select count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM dele_company_rebate dcr
+        JOIN dele_driver_info ddi ON dcr.driver = ddi.id
+        JOIN dele_order dor ON dcr.order_id = dor.id
+        JOIN dele_company dc ON dcr.company = dc.id
+        JOIN dele_member_login dml ON login_id = dml.id -- where
+    </sql>
+</sqlGroup>

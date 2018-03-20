@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="bank">
+    <sql id="findByPage">
+        select * from dele_bank where 1 = 1 -- where
+        LIMIT ?,?
+    </sql>
+</sqlGroup>

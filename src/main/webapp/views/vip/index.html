@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .color {
+            color: #E1B964;
+        }
+
+        #box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: url("img/VIPbg.png") no-repeat center;
+            background-size: cover;
+        }
+
+        .container {
+            position: absolute;
+            top: 25%;
+            width: 100%;
+            text-align: center;
+        }
+
+        .top {
+            /*position: absolute;top: 26%;*/
+            margin-top: 10px;
+            margin-bottom: 29px;
+
+        }
+
+        .top h2 {
+            width: 100%;
+            text-align: center;
+            font-size: 27px;
+            color: #2E3244;
+            margin: 0;
+        }
+
+        .top h2 b {
+            font-size: 60px;
+            font-family: cursive;
+        }
+
+        .top2 {
+            color: #35384A;
+            padding: 20px 0;
+            padding-top: 5px;
+        }
+
+        .top2 p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .top2 p.p2 {
+            font-size: 12px;
+            padding-top: 5px;
+        }
+
+        .btn_sub {
+            /*padding-top: 20px;*/
+        }
+
+        .btn_sub img {
+            width: 60%;
+        }
+
+        .shade {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(143, 143, 143,.6);
+        }
+
+       .shade .shade_box {
+            box-sizing: border-box;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 90%;
+            height: 34%;
+            margin-left: -45%;
+            margin-top: -25%;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+       .shade .shade_box > p {
+            text-align: center;
+            font-size: 25px;
+            font-family: cursive;
+            margin: 15px auto;
+        }
+
+        .shade .shade_box > .father {
+            display: flex;
+            padding-top: 20px;
+        }
+
+        .shade .shade_box > .father div.flex-item {
+            width: 100%;
+            text-align: center;
+        }
+
+        .shade .shade_box > .father div.flex-item img {
+            width: 25%;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <div class="container">
+        <div class="top">
+            <h2>一次性充值 <span class="color"><b>60</b>元</span></h2>
+            <h2 style="margin-top: 3px;">即可成为 <span class="color">VIP</span> 会员</h2>
+        </div>
+        <div class="top2">
+            <p class="p1">
+                VIP会员可享受每乘车一次 <br/>
+                领取一瓶<span class="color">矿泉水</span>的优惠 <br/>
+            </p>
+            <p class="p2">领取上限<span>60</span>次</p>
+        </div>
+        <div class="btn_sub">
+            <img src="img/chongzhi.png" alt="" onclick="$('.shade').slideDown()"/>
+        </div>
+    </div>
+
+    <!--支付选择-->
+    <div class="shade">
+        <div class="shade_box">
+           <p>支付方式</p>
+            <div class="father">
+                <!--<div class="flex-item" onclick="wx_pay()">-->
+                <!--<img src="img/wechat_xh.png" alt=""/>-->
+                <!--<p>微信支付</p>-->
+                <!--</div>-->
+                <div class="flex-item" onclick="zfb()">
+                    <img src="img/zfb_xh.png" alt=""/>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script>
+    var path = "http://139.196.5.217:8081/Jfinal";
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    };
+
+    $(document).ready(function () {
+//           获取APP对应参数
+        var Request = new Object();
+        Request = GetRequest();
+        sessionStorage.secret = Request.secret;
+        sessionStorage.token = Request.token;
+
+        $.ajax({
+            url: path + "/api/getVipAmount",
+            headers: {
+                appType: 2,
+                secret: sessionStorage.secret,
+                token: sessionStorage.token,
+                devicetype: 3,
+                deviceno: "H5-"
+            },
+            success: function (data) {
+
+                if(data.status=="NOAUTH"){
+                    layer.open({
+                        title: '温馨提示'
+                        ,content: '您还没有登录！'
+                    });
+                    return ;
+                }
+                var price = parseInt((data.data.vipAmount) / (data.data.vipSingleSpendingAmount));
+                $(".top h2 b").html(data.data.vipAmount);
+                $(".top2 p.p2 span").html(price);
+            }
+        })
+
+    });
+
+    //支付宝
+    function zfb() {
+        $.ajax({
+            url: path + "/api/order/recharge",
+            data: {
+                vip: true
+            },
+            headers: {
+                appType: 2,
+                secret: sessionStorage.secret,
+                token: sessionStorage.token,
+                devicetype: 3,
+                deviceno: "H5-"
+            },
+            success: function (data) {
+                if(data.status=="NOAUTH"){
+                    layer.open({
+                        title: '温馨提示'
+                        ,content: '您还没有登录！'
+                    });
+                    return ;
+                }
+                location.href = "https://openapi.alipay.com/gateway.do?" + data.msg;
+            }
+        })
+    }
+
+    //    微信
+    function wx_pay() {
+        $.ajax({
+            url: path + "/api/order/wxrecharge",
+            data: {
+                vip: true
+            },
+            headers: {
+                appType: 2,
+                secret: sessionStorage.secret,
+                token: sessionStorage.token,
+                devicetype: 3,
+                deviceno: "H5-"
+            },
+            success: function (data) {
+                if(data.status=="NOAUTH"){
+                    layer.open({
+                        title: '温馨提示'
+                        ,content: '您还没有登录！'
+                    });
+                    return ;
+                }
+//                location.href="https://openapi.alipay.com/gateway.do?"+data.msg;
+            }
+        })
+    }
+</script>
+<script type="text/javascript" src="../../static/js/layer/layer.js"></script>
+
+</body>
+</html>

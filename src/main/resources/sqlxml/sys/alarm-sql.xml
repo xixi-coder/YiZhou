@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="alarm">
+    <sql id="column">
+        SELECT
+            al.id,
+            al.alarm_login_id,
+            al.company_id,
+            dc.`name` AS company_name,
+            al.back_phone,
+            al.alarm_name,
+            al.alarm_message,
+            al.dispose_message,
+            al.user_id,
+            us.`name` AS user_name,
+            al.`status`,
+            al.create_time,
+            al.update_time
+    </sql>
+    <sql id="where">
+        FROM
+            dele_alarm al
+        LEFT JOIN
+            dele_company dc ON dc.id = al.company_id
+        LEFT JOIN
+            dele_user us ON us.id = al.user_id
+        WHERE
+            1=1 -- where
+        GROUP BY
+            al.create_time DESC
+    </sql>
+
+</sqlGroup>

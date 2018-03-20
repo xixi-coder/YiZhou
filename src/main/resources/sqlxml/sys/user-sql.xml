@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="user">
+    <sql id="findByUserName">
+        select * from dele_user where username = ? LIMIT 1
+    </sql>
+    <sql id="findByCount">
+        select count(1) c from dele_user where username = ? AND id != ?
+    </sql>
+    <sql id="findByLikeName">
+        SELECT
+        id,name,0 pId,ISNULL(du.role) as checked
+        FROM
+        dele_user du
+        WHERE
+        1=1 AND (du.role = ?
+        OR du.role IS NULL OR du.role=0)
+    </sql>
+    <sql id="column">
+        select *
+    </sql>
+    <sql id="where">
+        from dele_user WHERE 1=1 -- where
+    </sql>
+    <sql id="findByRoleId">
+        SELECT
+        user_id id
+        FROM
+        dele_user dur
+        LEFT JOIN dele_role dr ON dr.id = dur.role
+        WHERE role_id = ?
+    </sql>
+    <sql id="isUseRole">
+        SELECT
+        count(1) c
+        FROM
+        dele_user
+        WHERE role = ?
+    </sql>
+    <sql id="findByCompany">
+        SELECT * FROM dele_user WHERE company = ?
+    </sql>
+    <sql id="findByLoingId">
+        SELECT * FROM dele_user WHERE login_id = ? LIMIT 1
+    </sql>
+    <sql id="findByCompanyAndType">
+        select * from dele_user WHERE company = ? AND type = ?;
+    </sql>
+    <sql id="disableByCompany">
+        UPDATE dele_user SET status = ? WHERE company = ?
+    </sql>
+</sqlGroup>

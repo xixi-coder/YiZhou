@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="carModel">
+    <sql id="findByBrandAndPage">
+        SELECT
+        *
+        FROM
+        dele_car_model
+        WHERE
+        brand = ? -- where
+        LIMIT ?,?
+    </sql>
+    <sql id="findAll">
+        SELECT * FROM dele_car_model where 1=1
+    </sql>
+    <sql id="column">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_car_model where brand = ? -- where
+    </sql>
+</sqlGroup>

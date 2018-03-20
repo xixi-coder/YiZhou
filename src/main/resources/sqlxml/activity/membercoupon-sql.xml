@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="memberCoupon">
+    <sql id="findByCouponId">
+        SELECT * FROM dele_member_coupon WHERE coupon_id = ?
+    </sql>
+    <sql id="findByCouponIdOne">
+        SELECT * FROM dele_member_coupon WHERE coupon_id = ? AND status = ? AND login_id is NULL GROUP BY id DESC LIMIT 1
+    </sql>
+    <sql id="findByLoginId">
+        SELECT
+            dc.id couponId,
+            dc.start_time startTime,
+            dc.end_time endTime,
+            dc.coupon_title couponTitle,
+            dc.amount,
+            dc.base_amount baseAmount,
+            dc.percent,
+            dc.percent_amount percentAmount,
+            dc.service_type serviceType,
+            dc.coupon_type couponType
+        FROM
+            dele_member_coupon dmc
+        LEFT JOIN dele_coupon dc ON dc.id = dmc.coupon_id WHERE login_id = ? AND dmc.status = ? AND ? BETWEEN dmc.start_time AND dmc.end_time ORDER
+        BY dmc.gain_time DESC
+    </sql>
+    <sql id="getCouponForPay">
+        SELECT
+        dmc.id couponId,
+        dc.start_time startTime,
+        dc.end_time endTime,
+        dc.coupon_title couponTitle,
+        dc.amount,
+        dc.base_amount baseAmount,
+        dc.percent,
+        dc.percent_amount percentAmount,
+        dc.service_type serviceType,
+        dc.coupon_type couponType
+        FROM
+        dele_member_coupon dmc
+        LEFT JOIN dele_coupon dc ON dc.id = dmc.coupon_id
+        WHERE
+        login_id = ?
+        AND dmc. STATUS = ?
+        AND ? >= base_amount
+        AND service_type = ?
+        AND ? BETWEEN dmc.start_time AND dmc.end_time
+        OR
+        login_id = ?
+        AND dmc. STATUS = ?
+        AND ? >= base_amount
+        AND service_type = ?
+        AND ? BETWEEN dmc.start_time AND dmc.end_time ORDER
+        BY dmc.gain_time DESC
+    </sql>
+    <sql id="findByCodeAndDate">
+        SELECT * FROM dele_member_coupon WHERE no = ? AND ? BETWEEN start_time AND end_time AND login_id is NULL LIMIT 1
+    </sql>
+    <sql id="findByDate">
+        SELECT * FROM dele_member_coupon WHERE end_time BETWEEN ? AND ? AND status != ?
+    </sql>
+    <sql id="findByDate2">
+        SELECT * FROM dele_member_coupon WHERE end_time BETWEEN ? AND ? AND status = ?
+    </sql>
+</sqlGroup>

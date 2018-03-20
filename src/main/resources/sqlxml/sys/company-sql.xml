@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="company">
+    <sql id="findByEnable">
+        select * from dele_company GROUP BY id
+    </sql>
+    <sql id="findByCity">
+        select * from dele_company where county = ? OR city = ?
+    </sql>
+    <sql id="findByProvince">
+        select * from dele_company where province = ? OR city = ?
+    </sql>
+    <sql id="column">
+        SELECT
+        dc.*,province.`name` p_name,city.`name` c_name,county.`name` cc_name,dca.amount,dca.sms_count smsCount,dca.activity_amount activityAmount,dca.insurance_amount insuranceAmount
+    </sql>
+    <sql id="where">
+        FROM
+        dele_company dc
+        LEFT JOIN dele_area province ON dc.province = province.adcode
+        left join dele_area city ON dc.city = city.adcode
+        LEFT JOIN dele_area county ON dc.county = county.adcode
+        LEFT JOIN dele_company_account dca ON  company = dc.id
+        where 1=1 -- where
+        GROUP BY dc.id
+    </sql>
+    <sql id="findByArea">
+        SELECT *
+        FROM
+        dele_company
+    </sql>
+    <sql id="findByUser">
+        SELECT * FROM dele_user u INNER JOIN dele_company c ON c.id = u.company WHERE u.id = ? LIMIT 1
+    </sql>
+    <sql id="findByCompanyId">
+        SELECT * FROM  dele_company WHERE id = ? LIMIT 1
+    </sql>
+    <sql id="findAllByCompanyId">
+        SELECT * FROM  dele_company WHERE id = ?
+    </sql>
+    <sql id="findMaxId">
+        SELECT max(id) id FROM dele_company
+    </sql>
+
+    <sql id="findAllCompany">
+        SELECT * FROM dele_company
+    </sql>
+</sqlGroup>

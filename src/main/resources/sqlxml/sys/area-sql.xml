@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="area">
+    <sql id="findByLevelAndParent">
+        SELECT
+        *
+        FROM
+        dele_area
+        WHERE
+        LEVEL = ?
+        AND parent = ?
+    </sql>
+    <sql id="findByAdCode">
+        SELECT
+        *
+        FROM
+        dele_area
+        WHERE
+        adcode = ?
+    </sql>
+    <sql id="findByCityCode">
+        SELECT
+        *
+        FROM
+        dele_area
+        WHERE
+        citycode = ?
+    </sql>
+    <sql id="findByName">
+        SELECT
+        *
+        FROM
+        dele_area
+        WHERE
+        name = ?
+    </sql>
+    <sql id="findByParent">
+        SELECT * FROM dele_area WHERE parent = ? LIMIT 1
+    </sql>
+</sqlGroup>

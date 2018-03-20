@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="distribution">
+    <sql id="column">
+        SELECT dds.id,dds.type,dds.name,dc.name cname
+    </sql>
+    <sql id="where">
+        FROM
+        dele_distribution_setting dds
+        LEFT JOIN dele_company dc ON dc.id = dds.company
+        WHERE 1=1 -- where
+        GROUP BY dds.id
+    </sql>
+    <sql id="delete">
+        DELETE FROM dele_distribution_setting WHERE id = ?
+    </sql>
+    <sql id="findByCompanyAndStyle">
+        SELECT * FROM dele_distribution_setting WHERE company = ? AND style = ? AND service_type = ? LIMIT 1
+    </sql>
+</sqlGroup>

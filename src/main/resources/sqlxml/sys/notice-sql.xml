@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="notice">
+    <sql id="cloumn">
+        SELECT *
+    </sql>
+    <sql id="where">
+        FROM dele_notice
+        WHERE 1=1 -- where
+        ORDER BY create_time DESC
+    </sql>
+    <sql id="cloumnPage">
+        SELECT count(*) c
+    </sql>
+    <sql id="wherePage">
+        FROM dele_notice
+        WHERE 1=1 -- where
+    </sql>
+    <sql id="findByCompanyAndDate">
+        SELECT *,DATE_FORMAT(create_time, '%Y年%m月%d日') screate_time
+        FROM dele_notice WHERE company = ? AND type = ? AND (recive_type = ? OR recive_type=?) AND ? BETWEEN start_time AND end_time ORDER BY create_time DESC
+    </sql>
+    <sql id="findNoticeAndSmsByDate">
+        SELECT * FROM dele_notice WHERE type = ? AND send_time = ?
+    </sql>
+    <sql id="findMessageByCompany">
+        SELECT *,DATE_FORMAT(create_time, '%Y年%m月%d日') screate_time FROM dele_notice WHERE company = ? AND type = ? AND send_type=? AND create_time BETWEEN ? AND ? ORDER BY create_time DESC
+    </sql>
+</sqlGroup>

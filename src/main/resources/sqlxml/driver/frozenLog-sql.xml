@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="frozenLog">
+    <sql id="updateStatusByDriverAndDate">
+       UPDATE dele_frozen_log SET status = ? WHERE login_id = ? AND ? BETWEEN start_time AND end_time
+    </sql>
+    <sql id="findByDateAndStatus">
+        SELECT * FROM dele_frozen_log WHERE status = ? AND end_time BETWEEN ? AND ?
+    </sql>
+</sqlGroup>

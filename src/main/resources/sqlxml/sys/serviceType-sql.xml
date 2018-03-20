@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sqlGroup name="serviceType">
+    <sql id="findAll">
+        SELECT * FROM dele_service_type ORDER BY sort ASC
+    </sql>
+    <sql id="getServiceType">
+        SELECT id,name,create_time,creater FROM `dele_service_type` WHERE id IN (
+            SELECT TYPE FROM `dele_service_type_item` WHERE id IN(
+                SELECT service_type_item FROM `dele_company_service` WHERE company = ? and status=1
+                )
+        ) ORDER BY sort ASC
+    </sql>
+    <sql id="findZxServiceType">
+        SELECT id,name,create_time,creater FROM `dele_service_type` WHERE id IN (
+        SELECT TYPE FROM `dele_service_type_item` WHERE id IN(
+        SELECT service_type_item FROM `dele_company_service` WHERE company = ?)) AND id = 6 OR id = 7 ORDER BY sort ASC
+    </sql>
+    <sql id="findZxAll">
+        SELECT * FROM dele_service_type where id = 6 or id = 7 ORDER BY sort ASC
+    </sql>
+    <sql id="serviceTypeDisabled">
+        SELECT * FROM `dele_company_service` WHERE company = ? AND service_type_item IN(
+        SELECT id FROM `dele_service_type_item` WHERE TYPE = ? )
+    </sql>
+</sqlGroup>
