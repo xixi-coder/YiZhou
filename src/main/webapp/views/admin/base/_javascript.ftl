@@ -32,15 +32,6 @@
 <!--初始化 -->
 <script src="${ctx}/static/js/base.js"></script>
 <script src="${ctx}/static/js/dict.js"></script>
-<script type="text/javascript">
-    var g = {
-        ctx: '${ctx}',
-        websocket: '${websocket}',
-        user: '${_USER_.id}',
-        company: '${_USER_.company}'
-    }
-    var menu;
-</script>
 <script>
     $(document).ready(function () {
 
@@ -55,7 +46,7 @@
             timeout: 1000,
             success: function (data) {
                 if (data.data > 0) {
-                    $("#Player").get(0).innerHTML = "<audio src='/Jfinal/static/music/4031.mp3' autoplay='false' ></audio>";
+                    $("#Player").get(0).innerHTML = "<audio src='/${ctx}/static/music/4031.mp3' autoplay='false' ></audio>";
                 } else {
                     $("#Player").get(0).innerHTML = "<audio src=''></audio>";
                 }
@@ -72,7 +63,7 @@
             timeout:1000,
             success:function(data){
                 if(data.data > 0){
-                    $("#Player").get(0).innerHTML="<audio src='/Jfinal/static/music/neworder.mp3' autoplay='false' ></audio>";
+                    $("#Player").get(0).innerHTML="<audio src='/${ctx}/static/music/neworder.mp3' autoplay='false' ></audio>";
                 }else {
                     $("#Player").get(0).innerHTML="<audio src=''></audio>";
                 }
@@ -83,4 +74,13 @@
             }
         });
     }
+</script>
+<script type="text/javascript">
+    var g = {
+        ctx: '${ctx}',
+        websocket: '${websocket}',
+        user: '${_USER_.id}',
+        company: '${_USER_.company}'
+    }
+    var menu;
 </script>
