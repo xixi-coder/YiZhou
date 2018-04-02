@@ -97,11 +97,13 @@
                                     <i class="fa fa-file-excel-o"></i>导出此页面订单
                                 </button>
                             </#if>
-                            <#if hasPermission("order_create")>
-                                <button type="button" class="btn btn-info"
-                                        onclick="window.open('${ctx}/admin/order/createitem', '_blank', 'height=770,width=1220,scrollbars=yes,resizable=yes,alwaysRaised=yes,toolbar=no');">
-                                    <b>+</b>&nbsp;&nbsp;添加订单
-                                </button>
+                            <#if "${type!}"=="2">
+                                <#if hasPermission("order_create")>
+                                    <button type="button" class="btn btn-info"
+                                            onclick="window.open('${ctx}/admin/order/createitem', '_blank', 'height=770,width=1220,scrollbars=yes,resizable=yes,alwaysRaised=yes,toolbar=no');">
+                                        <b>+</b>&nbsp;&nbsp;添加订单
+                                    </button>
+                                </#if>
                             </#if>
                         </td>
                     </tr>
