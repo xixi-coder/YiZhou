@@ -6,6 +6,8 @@ import base.Constant;
 import com.google.common.collect.Lists;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.IPlugin;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.IDataSourceProvider;
@@ -123,12 +125,13 @@ public abstract class JFinalConfig extends com.jfinal.config.JFinalConfig {
         me.add(arp);
         me.add(new SqlInXmlPlugin());
         me.add(new EhCachePlugin(this.getClass().getClassLoader().getResource("ehcache.xml").getPath()));
-        me.add(new RedisPlugin(Constant.LOGINMEMBER_CACHE, getProperty("redis.host", "127.0.0.1"), getPropertyToInt("redis.port", 6379), 5000, getProperty("redis.pass", "HGsjdd2017Redis")));
-        me.add(new RedisPlugin(Constant.USECAR_ID_CACHE, getProperty("redis.host", "127.0.0.1"), getPropertyToInt("redis.port", 6379), 5000, getProperty("redis.pass", "HGsjdd2017Redis")));
-        me.add(new RedisPlugin(Constant.WS_ID, getProperty("redis.host", "127.0.0.1"), getPropertyToInt("redis.port", 6379), 5000, getProperty("redis.pass", "HGsjdd2017Redis")));
-        me.add(new RedisPlugin(Constant.MEMBER_ORDER_CACHE, getProperty("redis.host", "127.0.0.1"), getPropertyToInt("redis.port", 6379), 5000, getProperty("redis.pass", "HGsjdd2017Redis")));
-        me.add(new RedisPlugin(Constant.DRIVER_ORDER_CACHE, getProperty("redis.host", "127.0.0.1"), getPropertyToInt("redis.port", 6379), 5000, getProperty("redis.pass", "HGsjdd2017Redis")));
-        me.add(new RedisPlugin(Constant.DRIVER_STATUS_CACHE, getProperty("redis.host", "127.0.0.1"), getPropertyToInt("redis.port", 6379), 5000, getProperty("redis.pass", "HGsjdd2017Redis")));
+        Prop prop = PropKit.use("redis_config.properties");
+        me.add(new RedisPlugin(Constant.LOGINMEMBER_CACHE, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
+        me.add(new RedisPlugin(Constant.USECAR_ID_CACHE, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
+        me.add(new RedisPlugin(Constant.WS_ID, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
+        me.add(new RedisPlugin(Constant.MEMBER_ORDER_CACHE, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
+        me.add(new RedisPlugin(Constant.DRIVER_ORDER_CACHE, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
+        me.add(new RedisPlugin(Constant.DRIVER_STATUS_CACHE, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
         me.add(new QuartzPlugin());
         // 初始化插件
         EventPlugin eventPlugin = new EventPlugin();
