@@ -1,6 +1,7 @@
 package base;
 
 import com.google.common.collect.Lists;
+import com.jfinal.kit.Prop;
 import com.jfinal.plugin.redis.Redis;
 import redis.clients.jedis.Jedis;
 
@@ -14,6 +15,7 @@ import java.util.Properties;
  */
 public class Constant {
     public static Properties properties;
+    public static Prop prop;
 
     public static int SHUNFENGCHE_SHENHE = 1;
 

@@ -9,6 +9,7 @@ import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
 import com.jfinal.core.Const;
 import com.jfinal.ext.handler.ContextPathHandler;
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.IDataSourceProvider;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.render.FreeMarkerRender;
@@ -36,6 +37,7 @@ public class Config extends JFinalConfig {
 
     public void configConstant(Constants me) {
         Constant.properties = loadPropertyFile("config.properties");
+        Constant.prop = PropKit.use("push.properties");
         me.setDevMode(getPropertyToBoolean("devMode", true));
         me.setFreeMarkerViewExtension(".ftl");
         me.setError401View("/views/errors/401.html");

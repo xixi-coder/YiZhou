@@ -62,10 +62,7 @@
             <li><a href="${ctx}/admin/member/driver/carinfo/{{d.car_id}}-${id}?id=${id}">编辑</a></li>
             <li><a href="${ctx}/admin/member/driver/carInsurance/?plateNo={{d.plateNo}}">车辆保险信息</a></li>
             <li><a class="delete" href="javascript:void(0);" data-id="{{d.car_id}}">删除</a></li>
-            {{# if(d.status==null){ }}
             <li><a class="audit" href="javascript:void(0);" data-id="{{d.car_id}}" status="{{d.status}}">审核</a></li>
-            {{# } }}
-
         </ul>
     </div>
 </script>

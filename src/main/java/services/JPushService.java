@@ -16,10 +16,10 @@ public class JPushService {
     JPushClient driverClient;
 
     private JPushService() {
-        final String memberAppKey = Constant.properties.getProperty("jpush.member.appkey");
-        final String memberMasterSecret = Constant.properties.getProperty("jpush.member.secret");
-        final String driverAppKey = Constant.properties.getProperty("jpush.driver.appkey");
-        final String driverMasterSecret = Constant.properties.getProperty("jpush.driver.secret");
+        final String memberAppKey = Constant.prop.get("jpush.member.appkey");
+        final String memberMasterSecret = Constant.prop.get("jpush.member.secret");
+        final String driverAppKey = Constant.prop.get("jpush.driver.appkey");
+        final String driverMasterSecret = Constant.prop.get("jpush.driver.secret");
         ClientConfig config = ClientConfig.getInstance();
         config.setMaxRetryTimes(5);
         config.setConnectionTimeout(10 * 1000);    // 10 seconds
