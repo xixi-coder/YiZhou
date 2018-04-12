@@ -24,7 +24,7 @@ public class DriverCar extends BaseDriverCar<DriverCar> {
      */
     public List<DriverCar> findByDriver(int driver) {
 
-        return find(SqlManager.sql("driverCar."), driver, Constant.DriverCarStatus.ShengHeTongGuo);
+        return find(SqlManager.sql("driverCar.findByDriver"), driver, Constant.DriverCarStatus.ShengHeTongGuo);
     }
 
     public DriverCar findByCar(int car) {

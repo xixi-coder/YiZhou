@@ -37,7 +37,11 @@ import utils.AESOperator;
 import utils.PortUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -659,12 +663,22 @@ public class IndexController extends BaseApiController {
         if (version == null) {
             renderAjaxNoData();
         } else {
-            //获取version的size
-            String uploadDir = Constant.properties.getProperty("attachment.dir", "");
-            File file = new File(uploadDir.substring(0, uploadDir.indexOf("attachment")) + version.getFilePath());
-            if (file.exists() && file.isFile()) {
-                version.put("length", file.length());
+            URL url = null;
+            try {
+                url = new URL(version.getFilePath());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                renderAjaxError("获取文件错误");
             }
+            HttpURLConnection urlcon = null;
+            try {
+                urlcon = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                renderAjaxError("获取文件错误");
+            }
+            //根据响应获取文件大小
+            version.put("length", urlcon.getContentLength());
             //加密
             if (version.getFilePath() != null) {
                 version.setFilePath(AESOperator.getInstance().encrypt(version.getFilePath()));
