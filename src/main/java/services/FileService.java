@@ -67,36 +67,14 @@ public class FileService {
      * @return
      */
     public String mkdir(String uploadPath) {
-        File file;
-        file = new File(uploadPath);
-        if (!file.exists() && !file.isDirectory()) {
-            boolean isOk = file.mkdir();
-            logger.info(isOk + "");
-        }
         DateTime now = DateTime.now();
-        String year = now.year().get() + "";
-        uploadPath = uploadPath + year;
-        file = new File(uploadPath);
-        if (!file.exists() && !file.isDirectory()) {
-            boolean isOk = file.mkdir();
-            logger.info(isOk + "");
-        }
-
-        String month = now.monthOfYear().get() + "";
-        uploadPath = uploadPath + File.separator + month;
-        file = new File(uploadPath);
-        if (!file.exists() && !file.isDirectory()) {
-            boolean isOk = file.mkdir();
-            logger.info(isOk + "");
-        }
-        String day = now.dayOfMonth().get() + "";
-        uploadPath = uploadPath + File.separator + day;
-        file = new File(uploadPath);
-        if (!file.exists() && !file.isDirectory()) {
-            boolean isOk = file.mkdir();
-            logger.info(isOk + "");
-        }
-        return uploadPath + File.separator;
+        String year = now.getYear()+"";
+        String month = now.getMonthOfYear()+"";
+        String day = now.getDayOfMonth()+"";
+        uploadPath += File.separator + year + File.separator + month + File.separator + day + File.separator;
+        File file = new File(uploadPath);
+        file.mkdirs();
+        return uploadPath;
     }
 
 
