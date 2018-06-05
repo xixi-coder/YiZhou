@@ -33,7 +33,6 @@ import services.ActivityService;
 import services.FileService;
 import services.JPushService;
 import services.OnlineService;
-import utils.AlyFileUpload;
 import wechatpay.GetWxOrderno;
 import wechatpay.WechatPayKit;
 
@@ -50,11 +49,8 @@ import java.util.UUID;
 public class FileController extends BaseController {
     Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    /**
-     * 老上传文件接口
-     */
-    @Deprecated
-    public void index_old() {
+
+    public void index() {
         Attachment attachment = new Attachment();
         attachment.setUploadTime(DateTime.now().toDate());
         UploadFile uf = getFile();
@@ -97,43 +93,6 @@ public class FileController extends BaseController {
         }
     }
 
-    /**
-     * 新上传文件使用阿里云的对象存储
-     */
-    public void index() {
-        Attachment attachment = new Attachment();
-        attachment.setUploadTime(DateTime.now().toDate());
-        UploadFile uf = getFile();
-        File file = uf.getFile();
-        String fileType = file.getName();
-        if (fileType.lastIndexOf(".") > -1) {
-            fileType = fileType.substring(fileType.lastIndexOf(".") + 1, fileType.length());
-        } else {
-            fileType = "";
-        }
-        attachment.setType(fileType);
-        String path = "";
-        if (fileType.equals("apk")) {
-            path = "SJDD_APP" + RandomStringUtils.randomNumeric(4) + "." + fileType;
-        } else {
-            path = UUID.randomUUID().toString() + "." + fileType;
-        }
-
-        attachment.setName(path);
-        attachment.setSize(BigDecimal.valueOf(file.length() / 1000));
-        try {
-            attachment.setPath(AlyFileUpload.getIntance().uploadByInputStream(file, path));
-            file.delete();
-            if (attachment.save()) {
-                renderAjaxSuccess(attachment);
-            } else {
-                renderAjaxError("上传失败");
-            }
-        } catch (Exception e) {
-            file.delete();
-            renderAjaxError("上传失败");
-        }
-    }
 
     public void edit() {
         Attachment attachment = new Attachment();
