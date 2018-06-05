@@ -125,7 +125,7 @@ public abstract class JFinalConfig extends com.jfinal.config.JFinalConfig {
         me.add(arp);
         me.add(new SqlInXmlPlugin());
         me.add(new EhCachePlugin(this.getClass().getClassLoader().getResource("ehcache.xml").getPath()));
-        Prop prop = PropKit.use("redis_config.properties");
+        Prop prop = PropKit.use("config.properties");
         me.add(new RedisPlugin(Constant.LOGINMEMBER_CACHE, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
         me.add(new RedisPlugin(Constant.USECAR_ID_CACHE, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));
         me.add(new RedisPlugin(Constant.WS_ID, prop.get("redis.host", "127.0.0.1"), prop.getInt("redis.port", 6379), 5000, prop.get("redis.pass", "HGsjdd2017Redis")));

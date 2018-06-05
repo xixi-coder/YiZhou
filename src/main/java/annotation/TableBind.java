@@ -10,6 +10,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface TableBind {
     String tableName() default "";//这里默认为Model的名字小写
-
     String pks() default "id";
 }

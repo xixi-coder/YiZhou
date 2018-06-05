@@ -14,26 +14,26 @@ public class RedisUtils {
     /**
      * Redis服务器IP
      */
-    private static String ADDR = PropKit.use("redis_config.properties").get("redis.host", "127.0.0.1");
-    private static String PWD = PropKit.use("redis_config.properties").get("redis.pass");
+    private static String ADDR = PropKit.use("config.properties").get("redis.host", "127.0.0.1");
+    private static String PWD = PropKit.use("config.properties").get("redis.pass");
     
     /**
      * Redis的端口号
      */
-    private static int PORT = Integer.valueOf(PropKit.use("redis_config.properties").get("redis.port", "6379"));
+    private static int PORT = Integer.valueOf(PropKit.use("config.properties").get("redis.port", "6379"));
     /**
      * 可用连接实例的最大数目，默认值为8；
      * 如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。
      */
-    private static int MAX_ACTIVE = Integer.valueOf(PropKit.use("redis_config.properties").get("redis.max_active", "1024"));
+    private static int MAX_ACTIVE = Integer.valueOf(PropKit.use("config.properties").get("redis.max_active", "1024"));
     /**
      * 控制一个pool最多有多少个状态为idle(空闲的)的jedis实例，默认值也是8。
      */
-    private static int MAX_IDLE = Integer.valueOf(PropKit.use("redis_config.properties").get("redis.max_idle", "200"));
+    private static int MAX_IDLE = Integer.valueOf(PropKit.use("config.properties").get("redis.max_idle", "200"));
     /**
      * 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException；
      */
-    private static int MAX_WAIT = Integer.valueOf(PropKit.use("redis_config.properties").get("redis.max_wait", "10000"));
+    private static int MAX_WAIT = Integer.valueOf(PropKit.use("config.properties").get("redis.max_wait", "10000"));
     
     /**
      * 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；

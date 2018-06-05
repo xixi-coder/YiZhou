@@ -14,6 +14,7 @@ import com.gexin.rp.sdk.template.LinkTemplate;
 import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.gexin.rp.sdk.template.style.Style0;
+import com.jfinal.kit.Prop;
 import dto.TemplateParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,57 +46,15 @@ public class GeTuiPushUtil {
     static String host = "http://sdk.open.api.igexin.com/apiex.htm";
 
     static {
-        InputStream inputStream = GeTuiPushUtil.class.getClassLoader().getResourceAsStream("push.properties");
-        Properties properties = new Properties();
-        try {
-            properties.load(inputStream);
-            Object d_appidObject = properties.get("G.D.APPID");
-            Object d_appkeyObject = properties.get("G.D.APPKEY");
-            Object d_tasknameObject = properties.get("G.D.TASKNAME");
-            Object d_masterSecretObject = properties.get("G.D.MASTERSECRET");
-            Object m_appidObject = properties.get("G.M.APPID");
-            Object m_appkeyObject = properties.get("G.M.APPKEY");
-            Object m_tasknameObject = properties.get("G.M.TASKNAME");
-            Object m_masterSecretObject = properties.get("G.M.MASTERSECRET");
-            if (d_appidObject == null) {
-                throw new RuntimeException("d_appid在push.properties中不存在");
-            }
-            if (d_appkeyObject == null) {
-                throw new RuntimeException("d_appkey在push.properties中不存在");
-            }
-            if (d_masterSecretObject == null) {
-                throw new RuntimeException("d_masterSecret在push.properties中不存在");
-            }
-            if (d_tasknameObject == null) {
-                throw new RuntimeException("d_TASKNAME在push.properties中不存在");
-            }
-
-            if (m_appidObject == null) {
-                throw new RuntimeException("m_appid在push.properties中不存在");
-            }
-            if (m_appkeyObject == null) {
-                throw new RuntimeException("m_appkey在push.properties中不存在");
-            }
-            if (m_masterSecretObject == null) {
-                throw new RuntimeException("m_masterSecret在push.properties中不存在");
-            }
-            if (m_tasknameObject == null) {
-                throw new RuntimeException("m_TASKNAME在push.properties中不存在");
-            }
-
-            d_appid = d_appidObject.toString();
-            d_appkey = d_appkeyObject.toString();
-            d_taskname = d_tasknameObject.toString();
-            d_mastersecret = d_masterSecretObject.toString();
-
-            m_appid = m_appidObject.toString();
-            m_appkey = m_appkeyObject.toString();
-            m_taskname = m_tasknameObject.toString();
-            m_mastersecret = m_masterSecretObject.toString();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        Prop prop = new Prop("config.properties");
+        d_appid = prop.get("G.D.APPID");
+        d_appkey = prop.get("G.D.APPKEY");
+        d_taskname = prop.get("G.D.TASKNAME");
+        d_mastersecret = prop.get("G.D.MASTERSECRET");
+        m_appid = prop.get("G.M.APPID");
+        m_appkey = prop.get("G.M.APPKEY");
+        m_taskname = prop.get("G.M.TASKNAME");
+        m_mastersecret = prop.get("G.M.MASTERSECRET");
     }
 
 

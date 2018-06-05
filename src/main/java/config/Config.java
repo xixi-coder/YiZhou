@@ -37,7 +37,7 @@ public class Config extends JFinalConfig {
 
     public void configConstant(Constants me) {
         Constant.properties = loadPropertyFile("config.properties");
-        Constant.prop = PropKit.use("push.properties");
+        Constant.prop = PropKit.use("config.properties");
         me.setDevMode(getPropertyToBoolean("devMode", true));
         me.setFreeMarkerViewExtension(".ftl");
         me.setError401View("/views/errors/401.html");
