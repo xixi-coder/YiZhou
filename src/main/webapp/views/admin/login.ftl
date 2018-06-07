@@ -58,7 +58,7 @@
 	  <div class='success'>
 	  </div>
 	  <div class='disclaimer'>
-	    <p>欢迎登录司机点点后台管理系统</p>
+	    <p>欢迎登录彝州出行后台管理系统</p>
 	  </div>
 	</div>
 	<div class='authent'>

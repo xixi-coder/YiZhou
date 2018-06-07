@@ -11,9 +11,9 @@
     <!-- 设置编译版本 -->
     <properties>
         <!-- 正式版域名地址 -->
-        <Online.host>...</Online.host>
+        <Online.host>www.cxyzzc.com</Online.host>
         <!-- war名称 -->
-        <Online.finalName>Jfinal</Online.finalName>
+        <Online.finalName>LiZhou</Online.finalName>
         <!-- 端口号 -->
         <Online.port>8081</Online.port>
     </properties>

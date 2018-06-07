@@ -24,7 +24,7 @@ public class A58 extends BaseA58<A58> {
 				A58 A58 = new A58();
 				A58.setLicenseId((String) driverInfo.get("LicenseId"));
 				A58.setLevel(5);
-				A58.setTestDepartment("安徽省合肥市司机点点运营中心");
+				A58.setTestDepartment("安徽省合肥市彝州出行运营中心");
 				A58.setTestDate(Long.valueOf("20170719"));
 				A58.save();
 			}catch (Exception e){

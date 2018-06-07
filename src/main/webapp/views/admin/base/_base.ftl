@@ -80,7 +80,7 @@
                     data-target="navbar">
                 <i class="glyphicon glyphicon-align-justify" style="color: white; font-size: 20px;"></i>
             </button>
-            <a class="navbar-brand" style="color: white;" href="#">司机点点</a>
+            <a class="navbar-brand" style="color: white;" href="#">彝州出行</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">

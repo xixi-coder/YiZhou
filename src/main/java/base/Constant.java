@@ -20,7 +20,7 @@ public class Constant {
     public static int SHUNFENGCHE_SHENHE = 1;
 
     //短信模板
-    public final static String COMPANY = "司机点点";
+    public final static String COMPANY = "彝州出行";
 
     public static class downUrl {
         //域名访问的下载地址

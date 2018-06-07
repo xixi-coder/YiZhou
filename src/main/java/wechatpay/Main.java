@@ -37,7 +37,7 @@ public class Main {
             //String body = describe;
 
             //商品描述根据情况修改
-            String body = "司机点点-打车服务费";
+            String body = "彝州出行-打车服务费";
             //商户订单号
             String out_trade_no = "2017020202222";
             String spbill_create_ip = "121.40.142.141";

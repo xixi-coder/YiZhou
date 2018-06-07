@@ -126,7 +126,7 @@ public class SendNoticeService {
     
     public void sendSms(List<Record> info, String content) {
         for (Record record : info) {
-            String xcontent = Constant.properties.getProperty("SMS.Signature", "【司机点点】") + content.replace("NAME", record.getStr("real_name"));
+            String xcontent = Constant.properties.getProperty("SMS.Signature", "【彝州出行】") + content.replace("NAME", record.getStr("real_name"));
             SmsKit.nomorlSms(record.getStr("phone"), xcontent, record.getNumber("company").intValue());
         }
     }
