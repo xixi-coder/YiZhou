@@ -4,14 +4,12 @@ import annotation.Controller;
 import base.Constant;
 import base.controller.BaseApiController;
 import com.jfinal.core.ActionKey;
-import com.jfinal.kit.Prop;
 import com.jfinal.upload.UploadFile;
 import models.member.MemberLogin;
 import models.sys.Applog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import services.FileService;
-import utils.AlyFileUpload;
 import utils.DateUtil;
 
 import java.io.File;
