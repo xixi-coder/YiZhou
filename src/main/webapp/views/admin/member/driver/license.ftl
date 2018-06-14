@@ -21,7 +21,7 @@
                     <td><label for="driver_license" class="control-label">驾驶证照:</label></td>
                     <td colspan="15">
                         <img id="portrait_show" style="height: 150px;"
-                             src="${ctx}/<#if driverLicenseInfo.driver_license??>${(driverLicenseInfo.driver_license)!}<#else>/static/images/default-user.jpg</#if>"/></span>
+                             src="/<#if driverLicenseInfo.driver_license??>${(driverLicenseInfo.driver_license)!}<#else>/static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
