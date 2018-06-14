@@ -13,7 +13,7 @@
         <!-- 正式版域名地址 -->
         <Online.host>www.cxyzzc.com</Online.host>
         <!-- war名称 -->
-        <Online.finalName>LiZhou</Online.finalName>
+        <Online.finalName>YiZhou</Online.finalName>
         <!-- 端口号 -->
         <Online.port>8081</Online.port>
     </properties>
@@ -25,9 +25,9 @@
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <!--mysql-->
-                <profile.jdbc.Url>jdbc:mysql://rm-uf61zk9j2ba98wcm5o.mysql.rds.aliyuncs.com/custom_new?useUnicode=true<![CDATA[&]]>characterEncoding=utf-8<![CDATA[&]]>useSSL=false</profile.jdbc.Url>
-                <profile.user>huage1</profile.user>
-                <profile.password>HG2017@@</profile.password>
+                <profile.jdbc.Url>jdbc:mysql://rm-uf6e5503gc6jco6n36o.mysql.rds.aliyuncs.com/yizhou?useUnicode=true<![CDATA[&]]>characterEncoding=utf-8<![CDATA[&]]>useSSL=false</profile.jdbc.Url>
+                <profile.user>huage2018</profile.user>
+                <profile.password>@@HUAGE2018</profile.password>
                 <!-- 测试时开启 -->
                 <profile.log.level>DEBUG,console</profile.log.level>
             </properties>
