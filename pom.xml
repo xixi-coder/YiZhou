@@ -11,11 +11,11 @@
     <!-- 设置编译版本 -->
     <properties>
         <!-- 正式版域名地址 -->
-        <Online.host>admin.cxyzzc.com</Online.host>
+        <Online.host>www.cxyzzc.com</Online.host>
         <!-- war名称 -->
         <Online.finalName>YiZhou</Online.finalName>
         <!-- 端口号 -->
-        <Online.port>8086</Online.port>
+        <Online.port>8084</Online.port>
     </properties>
 
     <!-- 设置编译版本 -->
