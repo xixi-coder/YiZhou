@@ -21,7 +21,7 @@
                     <td><label for="driver_license" class="control-label">驾驶证照:</label></td>
                     <td colspan="15">
                         <img id="portrait_show" style="height: 150px;"
-                             src="<#if driverLicenseInfo.driver_license??>${(driverLicenseInfo.driver_license)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                             src="${ctx}/<#if driverLicenseInfo.driver_license??>${(driverLicenseInfo.driver_license)!}<#else>/static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
@@ -38,7 +38,7 @@
                     <td><label for="driving_license" class="control-label">行驶证照:</label></td>
                     <td colspan="15">
                         <img id="portrait_show1" style="height: 150px;"
-                             src="<#if driverLicenseInfo.driving_license??>${(driverLicenseInfo.driving_license)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                             src="${ctx}/<#if driverLicenseInfo.driving_license??>${(driverLicenseInfo.driving_license)!}<#else>/static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader1">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
@@ -77,7 +77,7 @@
                     <td><label for="id_card" class="control-label">身份证照:</label></td>
                     <td colspan="15">
                         <img id="portrait_show2" style="height: 150px;"
-                             src="<#if driverLicenseInfo.id_card??>${(driverLicenseInfo.id_card)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                             src="${ctx}/<#if driverLicenseInfo.id_card??>${(driverLicenseInfo.id_card)!}<#else>/static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
@@ -95,7 +95,7 @@
                     <td><label for="pgoto" class="control-label">上身照:</label></td>
                     <td colspan="15">
                         <img id="portrait_show3" style="height: 150px;"
-                             src="<#if driverLicenseInfo.photo??>${(driverLicenseInfo.photo)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                             src="${ctx}/<#if driverLicenseInfo.photo??>${(driverLicenseInfo.photo)!}<#else>/static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader1">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
@@ -115,7 +115,7 @@
                     <td><label for="qualification_certificate" class="control-label">从业资格证:</label></td>
                     <td colspan="15">
                         <img id="portrait_show4" style="height: 150px;"
-                             src="<#if driverLicenseInfo.qualification_certificate??>${(driverLicenseInfo.qualification_certificate)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                             src="${ctx}/<#if driverLicenseInfo.qualification_certificate??>${(driverLicenseInfo.qualification_certificate)!}<#else>/static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader1">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
