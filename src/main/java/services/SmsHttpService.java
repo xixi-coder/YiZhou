@@ -26,10 +26,6 @@ import java.util.List;
 public class SmsHttpService {
     private static Logger logger = LoggerFactory.getLogger(SmsHttpService.class);
 
-    private final String httpUrl = "http://120.26.66.24/msg/HttpBatchSendSM";
-    private final String account = "hfdllxx_hy";
-    private final String pswd = "hfdllxx_hy123";
-
     private SmsHttpService() {
     }
 
@@ -56,21 +52,29 @@ public class SmsHttpService {
     }
 
     public static boolean send(String phone, String content) {
+        /**原准备放到类静态变量，因为线上太多，替换要重启，只能热部署**/
+        String SMS_HTTP_URL = "http://120.26.66.24/msg/HttpBatchSendSM";
+        String SMS_HTTP_ACCOUNT = "ahhghy_sjdd";
+        String SMS_HTTP_PWD = "ahhghy_123456";
+        //短信产品
+        String SMS_HTTP_PRODUCT = "1353292971";
+        //扩展字段
+        String SMS_HTTP_EXTNO = "88128888";
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpPost httppost = new HttpPost("http://120.26.66.24/msg/HttpBatchSendSM");
+        HttpPost httppost = new HttpPost(SMS_HTTP_URL);
         SmsServiceLog smsServiceLog = new SmsServiceLog();
         smsServiceLog.setCreateTime(DateTime.now().toDate());
         smsServiceLog.setPhones(phone);
         smsServiceLog.setContent(content);
 
         List<NameValuePair> formparams = Lists.newArrayList();
-        formparams.add(new BasicNameValuePair("account", "hfdllxx_hy"));
-        formparams.add(new BasicNameValuePair("pswd", "hfdllxx_hy123"));
+        formparams.add(new BasicNameValuePair("account",SMS_HTTP_ACCOUNT));
+        formparams.add(new BasicNameValuePair("pswd", SMS_HTTP_PWD));
         formparams.add(new BasicNameValuePair("mobile", phone));
         formparams.add(new BasicNameValuePair("msg", content));
         formparams.add(new BasicNameValuePair("needstatus", "false"));
-        formparams.add(new BasicNameValuePair("product", "85047007"));
-        formparams.add(new BasicNameValuePair("extno", "1199 "));
+        formparams.add(new BasicNameValuePair("product", SMS_HTTP_PRODUCT));
+        formparams.add(new BasicNameValuePair("extno", SMS_HTTP_EXTNO));
         UrlEncodedFormEntity uefEntity;
         try {
             uefEntity = new UrlEncodedFormEntity(formparams, "UTF-8");
@@ -107,4 +111,8 @@ public class SmsHttpService {
             return false;
         }
     }
+
+//    public static void main(String[] args) {
+//        SmsHttpService.getInstance().sendSms("【叫个司机】验证码为CODE，请保存好不要随意给其他人，有效期为30分钟。","18756075099");
+//    }
 }
