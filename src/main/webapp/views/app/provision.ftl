@@ -7,6 +7,8 @@
     <#if provision.provision??&&provision.provision==4>关于我们</#if>
     <#if provision.provision??&&provision.provision==5>出租车用户协议</#if>
     <#if provision.provision??&&provision.provision==6 >专车使用条款</#if>
+    <#if provision.provision??&&provision.provision==7>顺风车/专线</#if>
+    <#if provision.provision??&&provision.provision==8 >顺风车/专线用户协议</#if>
     </title>
     <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
 </head>
