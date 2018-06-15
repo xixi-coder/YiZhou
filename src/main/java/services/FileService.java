@@ -71,7 +71,7 @@ public class FileService {
         String year = now.getYear()+"";
         String month = now.getMonthOfYear()+"";
         String day = now.getDayOfMonth()+"";
-        uploadPath += File.separator + year + File.separator + month + File.separator + day + File.separator;
+        uploadPath += year + File.separator + month + File.separator + day + File.separator;
         File file = new File(uploadPath);
         file.mkdirs();
         return uploadPath;

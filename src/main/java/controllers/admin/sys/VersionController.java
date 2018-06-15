@@ -49,11 +49,10 @@ public class VersionController extends BaseAdminController {
     public void save() throws IOException, WriterException {
         Version version = getModel(Version.class, "version");
         String downURL = version.getFilePath();
-        String qcode = "";
-        if (version.getType() == 1) {
-            downURL = "app/download/1";
-        } else {
-            downURL = "app/download/2";
+        if(version.getType()==1){
+            downURL = Constant.downUrl.DOWNURL + "app/download/1";
+        }else{
+            downURL = Constant.downUrl.DOWNURL + "app/download/2";
         }
         downURL = downURL.replace("\\", "/");
         if (version.getId() != null) {
@@ -66,9 +65,7 @@ public class VersionController extends BaseAdminController {
             }
         } else {
             version.setCreateTime(DateTime.now().toDate());
-          /*  if (version.getOsType() == Constant.ANDROID) {
-                String qcode = ZXinCodeService.getInstance().createByURL(downURL);
-            }*/
+            String qcode = ZXinCodeService.getInstance().createByURL(downURL);
             version.setQcode(qcode);
             if (version.save()) {
                 renderAjaxSuccess("添加成功！");
