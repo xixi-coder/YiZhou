@@ -54,12 +54,12 @@ public class SmsHttpService {
     public static boolean send(String phone, String content) {
         /**原准备放到类静态变量，因为线上太多，替换要重启，只能热部署**/
         String SMS_HTTP_URL = "http://120.26.66.24/msg/HttpBatchSendSM";
-        String SMS_HTTP_ACCOUNT = "ahhghy_sjdd";
+        String SMS_HTTP_ACCOUNT = "ahhghy_yncx";
         String SMS_HTTP_PWD = "ahhghy_123456";
         //短信产品
         String SMS_HTTP_PRODUCT = "1353292971";
         //扩展字段
-        String SMS_HTTP_EXTNO = "88128888";
+        String SMS_HTTP_EXTNO = "88120001";
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(SMS_HTTP_URL);
         SmsServiceLog smsServiceLog = new SmsServiceLog();
