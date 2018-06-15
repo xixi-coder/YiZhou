@@ -60,6 +60,7 @@ public class SmsHttpService {
         String SMS_HTTP_PRODUCT = "1353292971";
         //扩展字段
         String SMS_HTTP_EXTNO = "88120001";
+
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httppost = new HttpPost(SMS_HTTP_URL);
         SmsServiceLog smsServiceLog = new SmsServiceLog();
