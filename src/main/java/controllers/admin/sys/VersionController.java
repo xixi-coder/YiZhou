@@ -8,6 +8,7 @@ import models.sys.Version;
 import org.joda.time.DateTime;
 import services.ZXinCodeService;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -65,7 +66,7 @@ public class VersionController extends BaseAdminController {
             }
         } else {
             version.setCreateTime(DateTime.now().toDate());
-            String qcode = ZXinCodeService.getInstance().createByURL(downURL);
+            String qcode = Constant.downUrl.DOWNURL + File.separator + ZXinCodeService.getInstance().createByURL(downURL);
             version.setQcode(qcode);
             if (version.save()) {
                 renderAjaxSuccess("添加成功！");
