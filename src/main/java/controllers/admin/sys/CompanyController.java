@@ -61,9 +61,7 @@ public class CompanyController extends BaseAdminController {
             }
             //公司服务类型
             List<ServiceType> list = ServiceType.dao.getServiceType(company.getId());
-            List<ServiceType> listAll = ServiceType.dao.findAll();
             setAttr("serviceTypes", list);
-            setAttr("serviceTypesAll", listAll);
 
             setAttr(Constant.ADMIN_ACTION, Constant.ADMIN_ACTION_EDIT);
         } else {
@@ -73,6 +71,9 @@ public class CompanyController extends BaseAdminController {
             setAttr("province", province);
             setAttr(Constant.ADMIN_ACTION, Constant.ADMIN_ACTION_ADD);
         }
+        List<ServiceType> listAll = ServiceType.dao.findAll();
+        setAttr("serviceTypesAll", listAll);
+
     }
 
     @Before(POST.class)
@@ -439,6 +440,10 @@ public class CompanyController extends BaseAdminController {
 
         try {
             List<CompanyService> list = CompanyService.dao.serviceTypeDisabled(company, serviceType);
+            if(list==null || list.size()==0){
+                renderAjaxError("操作失败,请先添加服务类型和对应的收费标准!");
+                return;
+            }
             for (CompanyService type : list) {
                 if (type.getStatus() == 1) {
                     type.setStatus(0);

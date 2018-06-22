@@ -147,6 +147,10 @@ $(document).ready(function () {
         area.del();
     });
     uploadPlug.create("#picker", $('#picture_show'), $('#picture'));
+
+    for (var i = 0; i < $(".serviceType").length; i++) {
+        $(".serviceType")[i].setAttribute("disabled","disabled");
+    }
 });
 
 var company = {
