@@ -1,11 +1,23 @@
 package services;
 
-import base.Constant;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.kit.JsonKit;
 import com.jfinal.plugin.redis.Redis;
+
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import base.Constant;
 import dto.JPushToMemberDto;
 import dto.pushDto.PushMap;
 import dto.pushorder.DispatchSetting;
@@ -25,18 +37,8 @@ import models.order.TraverRecord;
 import models.reject.RejectLog;
 import models.sys.AdminSetting;
 import models.sys.RecordLog;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.AESOperator;
 import utils.GeTuiPushUtil;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by BOGONj on 2016/9/6.
@@ -501,6 +503,9 @@ public class PushOrderService {
                 if (r.nextInt(12) != 0) {
                     carDurableYears += r.nextInt(5) + "个月";
                 }
+                if("".equals(carDurableYears)){
+                    carDurableYears = 0 +"个月";
+                }
                 car.put("carDurableYears", carDurableYears);
             }
         }
@@ -600,6 +605,9 @@ public class PushOrderService {
                 }
                 if (monthNum != 0) {
                     carDurableYears += monthNum + "个月";
+                }
+                if("".equals(carDurableYears)){
+                    carDurableYears = 0 + "个月";
                 }
                 car.put("carDurableYears", carDurableYears);
             } else {
