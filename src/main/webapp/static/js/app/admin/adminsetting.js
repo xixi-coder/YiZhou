@@ -3,6 +3,19 @@
  */
 $(document).ready(function () {
 
+    $('#dj_insurance_amount').val($('#dj_insurance_amount').val().replace(',', '.'));
+    $('#kc_insurance_amount').val($('#kc_insurance_amount').val().replace(',', '.'));
+    $('#ss_insurance_amount').val($('#ss_insurance_amount').val().replace(',', '.'));
+    $('#hh_insurance_amount').val($('#hh_insurance_amount').val().replace(',', '.'));
+    $('#sw_insurance_amount').val($('#sw_insurance_amount').val().replace(',', '.'));
+    $('#cz_insurance_amount').val($('#cz_insurance_amount').val().replace(',', '.'));
+    $('#insurance_overdraft_amount').val($('#insurance_overdraft_amount').val().replace(',', '.'));
+    $('#u_car_charge_rate').val($('#u_car_charge_rate').val().replace(',', '.'));
+    $('#additional_charges').val($('#additional_charges').val().replace(',', '.'));
+    $('.mill').each(function (i, o) {
+        $(o).val($(o).val().replace(',', '.'));
+    })
+
 
     $('#adminsetting_form').validator({
         // debug: true,
