@@ -1,9 +1,6 @@
 
 package controllers.api;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseApiController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
@@ -16,6 +13,25 @@ import com.jfinal.ext.interceptor.POST;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.redis.Redis;
+
+import net.dreamlu.event.EventKit;
+
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseApiController;
 import dto.CalculationDto;
 import dto.JPushToMemberDto;
 import dto.alipaydto.BizContentDto;
@@ -39,31 +55,34 @@ import models.company.CompanyAccount;
 import models.company.CompanyActivity;
 import models.driver.DriverInfo;
 import models.driver.DriverRealLocation;
-import models.member.*;
-import models.order.*;
-import models.sys.*;
+import models.member.CapitalLog;
+import models.member.MemberCapitalAccount;
+import models.member.MemberInfo;
+import models.member.MemberLogin;
+import models.member.MemberRealLocation;
+import models.order.InvoiceOrder;
+import models.order.InvoiceRec;
+import models.order.Order;
+import models.order.OrderAddAmountRecord;
+import models.order.OrderLog;
+import models.order.OrderTrip;
+import models.order.TraverRecord;
+import models.sys.AdminSetting;
+import models.sys.ChargeStandard;
+import models.sys.ChargeStandardItem;
+import models.sys.RecordLog;
+import models.sys.Schedule;
+import models.sys.ServiceTypeItem;
 import models.vip.VipInfo;
 import models.vip.VipLog;
-import net.dreamlu.event.EventKit;
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
-import org.joda.time.format.DateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import services.CalCommissionService;
 import services.CalService;
 import services.GetTraverService;
+import services.OrderService;
 import services.PushOrderService;
 import utils.AESOperator;
 import utils.DateUtil;
 import wechatpay.WechatPayKit;
-
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by BOGONj on 2016/9/1.
@@ -2023,6 +2042,8 @@ public class OrderController extends BaseApiController {
                         });
                     }
                 }
+                //给司机和乘客添加订单统计
+                OrderService.countCompleteOrder(order);
                 renderAjaxSuccess("支付成功了！");
                 MemberOrderCache.getInstance().del(order.getNo());
                 MemberOrderCache.getInstance().del(MemberInfo.dao.findById(order.getMember()));
