@@ -1,29 +1,33 @@
 package services;
 
-import exception.InsuranceException;
-import models.company.CompanyAccount;
-import models.company.CompanyAccountLog;
-import models.company.CompanyRebate;
-import models.order.OrderDetail;
-import models.sys.AdminSetting;
-import org.apache.commons.lang3.RandomStringUtils;
-import utils.BigDecimalMath;
-import utils.DateUtil;
-import base.Constant;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
-import dto.RateDto.OrdersRateDto;
-import kits.SmsKit;
-import models.driver.DriverInfo;
-import models.member.MemberInfo;
-import models.order.Order;
-import models.order.OrderLog;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+
+import base.Constant;
+import dto.RateDto.OrdersRateDto;
+import exception.InsuranceException;
+import kits.SmsKit;
+import models.company.CompanyAccount;
+import models.company.CompanyAccountLog;
+import models.company.CompanyRebate;
+import models.count.DriverOrderStatistics;
+import models.count.MemberOrderStatistics;
+import models.driver.DriverInfo;
+import models.member.MemberInfo;
+import models.order.Order;
+import models.order.OrderDetail;
+import models.order.OrderLog;
+import models.sys.AdminSetting;
+import utils.BigDecimalMath;
+import utils.DateUtil;
 
 /**
  * Created by admin on 2016/12/22.
@@ -206,6 +210,33 @@ public class OrderService {
         
         if (!insuranceOK) {
             throw new InsuranceException("公司透支保险费上限！！请联系管理人员");
+        }
+    }
+
+    /**
+     * 统计完成订单数
+     */
+    @SuppressWarnings("Duplicates")
+    public static void countCompleteOrder(Order order) {
+        MemberOrderStatistics member = MemberOrderStatistics.dao.findByMemberId(order.getMember());
+        DriverOrderStatistics driver = DriverOrderStatistics.dao.findByDriverId(order.getDriver());
+        if (member == null) {
+            final MemberOrderStatistics member1 = new MemberOrderStatistics();
+            member1.setOrderNum(1);
+            member1.setMemberId(order.getMember());
+            member1.save();
+        } else {
+            member.setOrderNum(member.getOrderNum() + 1);
+            member.update();
+        }
+        if (driver == null) {
+            final DriverOrderStatistics driver1 = new DriverOrderStatistics();
+            driver1.setOrderNum(1);
+            driver1.setDriverId(order.getDriver());
+            driver1.save();
+        } else {
+            driver.setOrderNum(driver.getOrderNum() + 1);
+            driver.update();
         }
     }
 }
