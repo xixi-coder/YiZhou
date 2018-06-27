@@ -1,8 +1,5 @@
 package controllers.api;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseApiController;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -17,6 +14,24 @@ import com.jfinal.kit.JsonKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.ehcache.CacheKit;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseApiController;
 import dto.JPushToMemberDto;
 import dto.RateDto.OrdersRateDto;
 import kits.Md5Kit;
@@ -34,21 +49,17 @@ import models.count.DriverOrderStatistics;
 import models.driver.DriverInfo;
 import models.driver.DriverRealLocation;
 import models.driver.Grade;
-import models.member.*;
+import models.member.MemberCapitalAccount;
+import models.member.MemberHistoryLocation;
+import models.member.MemberInfo;
+import models.member.MemberLogin;
+import models.member.MemberRealLocation;
 import models.order.Order;
 import models.order.OrderTrip;
 import models.sys.AdminSetting;
 import models.vip.VipInfo;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import services.OrderService;
 import utils.AESOperator;
-
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 import static base.Constant.DECIMAL_FORMAT;
 
@@ -57,6 +68,7 @@ import static base.Constant.DECIMAL_FORMAT;
  */
 @Controller("/api/member")
 public class MemberController extends BaseApiController {
+
     /**
      * 获取登陆用户信息
      */
@@ -723,6 +735,9 @@ public class MemberController extends BaseApiController {
                 }
                 if (monthNum != 0) {
                     carDurableYears += monthNum + "个月";
+                }
+                if("".equals(carDurableYears)){
+                    carDurableYears = 0 +"个月";
                 }
                 car.put("carDurableYears", carDurableYears);
             } else {
