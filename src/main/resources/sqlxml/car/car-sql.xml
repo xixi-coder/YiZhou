@@ -14,7 +14,12 @@
     </sql>
     <sql id="findByDriver">
         SELECT
-        dbc.color,dbc.picture,dbc.id,dbc.plate_no plateNo, dcb.`name` brandName,
+        dbc.CertifyDateB,
+        dbc.color,
+        dbc.picture,
+        dbc.id,
+        dbc.plate_no plateNo,
+        dcb.`name` brandName,
         dcm.`name` modelName
         FROM
         dele_base_car dbc
