@@ -1,15 +1,22 @@
 package controllers.www;
 
-import utils.AESOperator;
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseController;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.jfinal.core.ActionKey;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.ehcache.CacheKit;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseController;
 import kits.Md5Kit;
 import kits.SmsKit;
 import kits.StringsKit;
@@ -22,12 +29,7 @@ import models.member.MemberInfo;
 import models.member.MemberLogin;
 import models.sys.Area;
 import models.sys.ServiceType;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-
-import java.sql.SQLException;
-import java.util.List;
+import utils.AESOperator;
 
 /**
  * Created by BOGONj on 2016/9/20.
@@ -244,8 +246,10 @@ public class EnrollController extends BaseController {
         //临时解决办法,base64加密问题
         String phone = AESOperator.getInstance().decrypt(getPara("phone").replace(" ", "+"));
         int type = getParaToInt("type");
+        String appId = getPara("appId", null);
         setAttr("phone", phone);
         setAttr("type", type);
+        setAttr("appId",appId);
         render("/views/www/share.ftl");
     }
 
