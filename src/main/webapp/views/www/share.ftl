@@ -48,6 +48,7 @@
     <form id="submit_form" action="" method="post">
         <input type="hidden" id="tphone" name="tphone" value="${phone}"/>
         <input type="hidden" id="type" name="type" value="${type}"/>
+        <input type="hidden" id="appId" name="appid" value="${appId}"/>
         <div class="input-group">
             <input id="phone" name="phone" type="number" class="form-control input-lg" placeholder="请填写您的手机号码"
                    aria-describedby="basic-addon2">
@@ -93,7 +94,10 @@
                     $("#phone").val("");
                     $("#code").val("");
                     var androidUrl = g.ctx + '/app/download/' + $("#type").val() + '-1';
-                    var iosUrl = g.ctx + '/app/download/' + $("#type").val() + '-2';
+                    // var iosUrl = g.ctx + '/app/download/' + $("#type").val() + '-2';
+                    //itunes.apple.com/app/id414478124
+                    var iosUrl = "https://itunes.apple.com/app/"+$("#appId").val();
+                    debugger;
                     zdxz(androidUrl, iosUrl);
                 } else {
                     $("#submit_button").attr("disabled", false);
