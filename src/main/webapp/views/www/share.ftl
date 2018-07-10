@@ -41,6 +41,7 @@
     </style>
 </head>
 <body>
+
 <img src="${ctx}/static/www/images/bg01.png" width="100%" height="100%"
      style="z-index:-100;position:absolute;left:0;top:0">
 <div class="top"></div>
@@ -48,14 +49,14 @@
     <form id="submit_form" action="" method="post">
         <input type="hidden" id="tphone" name="tphone" value="${phone}"/>
         <input type="hidden" id="type" name="type" value="${type}"/>
-        <input type="hidden" id="appId" name="appid" value="${appId}"/>
-        <div class="input-group">
+
+        <div class="input-group" >
             <input id="phone" name="phone" type="number" class="form-control input-lg" placeholder="请填写您的手机号码"
                    aria-describedby="basic-addon2">
             <span class="input-group-addon" style="background-color: #F69D10;color: white;" id="getCode"
                   disable="false">获取验证码</span>
         </div>
-        <div class="input-group">
+        <div class="input-group" >
             <input id="code" name="code" type="number" class="form-control input-lg" placeholder="请填写验证码"
                    aria-describedby="basic-addon2">
             <span class="input-group-addon" style="background-color: #31BF2F;color: white;" id="submit_button">确认</span>
@@ -64,7 +65,9 @@
 </div>
 
 <div id="test"></div>
-<div id="log_window"><img src="${ctx}/static/www/images/loading.gif"/></div>
+<div id="log_window">
+    <img src="${ctx}/static/www/images/loading.gif"/>
+</div>
 </body>
 <script src="${ctx}/static/js/jquery-1.9.1.min.js" type="text/javascript"></script>
 <script src="${ctx}/static/js/bootstrap.js" type="text/javascript"></script>
@@ -94,9 +97,8 @@
                     $("#phone").val("");
                     $("#code").val("");
                     var androidUrl = g.ctx + '/app/download/' + $("#type").val() + '-1';
-                    // var iosUrl = g.ctx + '/app/download/' + $("#type").val() + '-2';
                     //itunes.apple.com/app/id414478124
-                    var iosUrl = "https://itunes.apple.com/app/"+$("#appId").val();
+                    var iosUrl = "https://itunes.apple.com/app/id1406253142";
                     debugger;
                     zdxz(androidUrl, iosUrl);
                 } else {
@@ -203,7 +205,12 @@
     function zdxz(androidUrl, iosUrl) {
         debugger;
         if (is_weixin()) {
-            window.location = g.ctx + '/share/wechat?type=' + $("#type").val();
+            if(browser.versions.ios || browser.versions.iPhone || browser.versions.iPad){
+                window.location = iosUrl;
+            }else if (browser.versions.android) {
+                window.location = g.ctx + '/share/wechat?type=' + $("#type").val();
+            }
+
         } else {
             if (browser.versions.ios || browser.versions.iPhone || browser.versions.iPad) {
                 window.location = iosUrl;
