@@ -1,12 +1,24 @@
 package controllers.admin.menber;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseAdminController;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseAdminController;
 import kits.Md5Kit;
 import kits.SmsKit;
 import kits.StringsKit;
@@ -18,17 +30,7 @@ import models.member.MemberInfo;
 import models.member.MemberLogin;
 import models.sys.CallBack;
 import models.sys.ChargeStandard;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import plugin.sqlInXml.SqlManager;
-
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2016/9/12.
@@ -203,7 +205,8 @@ public class ListController extends BaseAdminController {
             int login_id = memberInfo.getLoginId();
             MemberLogin memberLogin = MemberLogin.dao.findById(login_id);
             String salt = StringsKit.getSalt();
-            String dbPw = Md5Kit.MD5(Md5Kit.MD5("123123") + salt);
+            String password = Md5Kit.MD5("123123");
+            String dbPw = Md5Kit.MD5( password + salt);
             memberLogin.setPassword(dbPw);
             memberLogin.setSalt(salt);
             if (memberLogin.update()) {
