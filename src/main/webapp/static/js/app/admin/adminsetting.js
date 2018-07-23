@@ -10,8 +10,8 @@ $(document).ready(function () {
     $('#sw_insurance_amount').val($('#sw_insurance_amount').val().replace(',', '.'));
     $('#cz_insurance_amount').val($('#cz_insurance_amount').val().replace(',', '.'));
     $('#insurance_overdraft_amount').val($('#insurance_overdraft_amount').val().replace(',', '.'));
-    $('#u_car_charge_rate').val($('#u_car_charge_rate').val().replace(',', '.'));
-    $('#additional_charges').val($('#additional_charges').val().replace(',', '.'));
+    // $('#u_car_charge_rate').val($('#u_car_charge_rate').val().replace(',', '.'));
+    // $('#additional_charges').val($('#additional_charges').val().replace(',', '.'));
     $('.mill').each(function (i, o) {
         $(o).val($(o).val().replace(',', '.'));
     })
