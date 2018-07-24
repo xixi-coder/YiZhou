@@ -660,6 +660,7 @@ public class PushOrderService {
         od.put("destination", order.getDestination());
         od.put("setOutFlag", order.getSetOutFlag());
         od.put("orderId", order.getId());
+        od.put("status", order.getStatus());
         //司机的接单数
         od.put("driverOrderCount", (DriverOrderStatistics.dao.findByDriverId(order.getDriver()) == null ? 0 : DriverOrderStatistics.dao.findByDriverId(order.getDriver()).getOrderNum()));
 
