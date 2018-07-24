@@ -1,11 +1,8 @@
 package services;
 
-import base.Constant;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import dto.CalculationDto;
-import kits.TimeKit;
-import models.sys.*;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
@@ -13,6 +10,15 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import base.Constant;
+import dto.CalculationDto;
+import kits.TimeKit;
+import models.sys.ChargeStandard;
+import models.sys.ChargeStandardItem;
+import models.sys.ChargeStandardMileage;
+import models.sys.ServiceTypeItem;
+import models.sys.ZxLine;
 
 public class CalZxLineService {
     private Logger logger = LoggerFactory.getLogger(CalZxLineService.class);
@@ -231,8 +237,8 @@ public class CalZxLineService {
         if (time1.isAfter(time2) && time1.isBefore(time3)) {
             BigDecimal p = zxLine.getSharingPriceSpecial();
             pricePd = BigDecimal.valueOf(Double.valueOf(peopleNumber)).multiply(p);
-            priceNpd = zxLine.getSharingPrice();
-
+//            priceNpd = zxLine.getSharingPrice();
+            priceNpd = zxLine.getPriceSpecial();
         } else {
             BigDecimal p = zxLine.getSharingPrice();
             pricePd = BigDecimal.valueOf(Double.valueOf(peopleNumber)).multiply(zxLine.getSharingPrice());
