@@ -57,7 +57,8 @@ public class TraverRecord extends BaseTraverRecord<TraverRecord> {
             if (recordType == 2) {
                 traverRecords = find(StringsKit.replaceSql(SqlManager.sql("traver.findRecord"), "and end_adcode IN (SELECT end_adcode FROM dele_traver_record s where s.memberId = ? and s.status = 1)" + where), j, w, type, recordType, memberInfo.getId(), Constant.TraverStatus.CREATE, time, memberInfo.getId(), pageStart, pageSize);
                 if (traverRecords.size() == 0) {
-                    if (eCityCode == null) {
+//                    if (eCityCode == null) {
+                    if("".equals(eCityCode)){
                         traverRecords = find(StringsKit.replaceSql(SqlManager.sql("traver.findRecord"), "and start_adcode=?" + where), j, w, type, recordType, cityCode, Constant.TraverStatus.CREATE, time, cityCode, pageStart, pageSize);
                     } else {
                         traverRecords = find(StringsKit.replaceSql(SqlManager.sql("traver.findRecord"), "and start_adcode=? and end_adcode=?" + where), j, w, type, recordType, cityCode, eCityCode, Constant.TraverStatus.CREATE, time, cityCode, pageStart, pageSize);
