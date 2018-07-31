@@ -83,9 +83,12 @@ public class PayService {
                         throw new RuntimeException("用户优惠卷信息保存失败，直接回滚！！");
                     }
                     CompanyActivity companyActivity = CompanyActivity.dao.findByCouponId(memberCoupon.getId());
-                    companyActivity.setStatus(Constant.DataAuditStatus.AUDITOK);
-                    if (!companyActivity.update()) {
-                        throw new RuntimeException("账户信息保存失败，直接回滚！！");
+                    if (companyActivity != null) {
+                        companyActivity
+                                .setStatus(Constant.DataAuditStatus.AUDITOK);
+                        if (!companyActivity.update()) {
+                            throw new RuntimeException("账户信息保存失败，直接回滚！！");
+                        }
                     }
                 }
                 SmsKit.ordercomplete(order);//发送短信
