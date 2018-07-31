@@ -55,7 +55,7 @@
                            <#--id="endcity">-->
                     <table data-sortable="" style="border:1px solid #ddd;" class="table table-hover table-striped"
                            data-sortable-initialized="true">
-                    <#if hasRole("super_admin")||hasPermission("select-company")>
+                    <#if hasRole("super_admin")>
                         <tr>
                             <td><label for="real_name" class="control-label">公司选择:</label></td>
                             <td>
