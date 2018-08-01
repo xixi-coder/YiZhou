@@ -48,7 +48,7 @@ public class PayService {
                 CalCommissionService.getInstance().commission(order);
                 OrderLog createLog = OrderLog.dao.findByOrderAndPayAction(order.getId(), Constant.OrderAction.CREATE);
                 int minutes = 0;
-                if (createLog == null) {
+                if (createLog != null) {
                     minutes = Minutes.minutesBetween(new DateTime(createLog.getOperationTime()), new DateTime(now)).getMinutes();
                 }
                 DriverInfo driverInfo = DriverInfo.dao.findById(order.getDriver());
