@@ -1,8 +1,5 @@
 package controllers.admin.sys;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseAdminController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -12,21 +9,29 @@ import com.jfinal.aop.Before;
 import com.jfinal.ext.interceptor.POST;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
-import models.company.*;
-import models.driver.DriverInfo;
-import models.sys.AdminSetting;
-import models.sys.Area;
-import models.sys.ServiceType;
-import org.springframework.beans.BeanUtils;
 
 import org.joda.time.DateTime;
-import plugin.sqlInXml.SqlManager;
+import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseAdminController;
+import models.company.Agreement;
+import models.company.Company;
+import models.company.CompanyAccount;
+import models.company.CompanyService;
+import models.company.Distribution;
+import models.driver.DriverInfo;
+import models.sys.AdminSetting;
+import models.sys.Area;
+import models.sys.ServiceType;
+import plugin.sqlInXml.SqlManager;
 
 /**
  * Created by BOGONm on 16/8/10.
@@ -238,6 +243,7 @@ public class CompanyController extends BaseAdminController {
             distribution = new Distribution();
             distribution.setStyle(style);
             distribution.setLevel(0);
+            distribution.setServiceType(serviceType);
         }
         List<Company> companys = Company.dao.findByEnable();
         List servicetype = ServiceType.dao.getServiceType(company);
