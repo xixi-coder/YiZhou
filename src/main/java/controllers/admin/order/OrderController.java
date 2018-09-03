@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
@@ -114,27 +115,27 @@ public class OrderController extends BaseAdminController {
         OrderLog payLog = OrderLog.dao.findByOrderAndPayAction(orderId, Constant.OrderAction.PAYED);
         orderLog.add(0, createLog);
         orderLog.add(payLog);
+        List<OrderLog> allOrderLogs = OrderLog.dao.findByOrder(orderId);
+
         if(null == order.get("consume_time")){
-            Date create_time = new DateTime(order.get("create_time")).toDate();
-            Date last_update_time = new DateTime(order.get("last_update_time")).toDate();
-            if(create_time != null && last_update_time != null){
-                long endTime = last_update_time.getTime();
-                long startTime = create_time.getTime();
-                double tmpMinutes = (double)(endTime - startTime);
-                double time = tmpMinutes/(1000 * 60);
-                if(time >= 60){
-                    time = time /60;
-                    order.set("consume_time",time + "分钟");
-                }else {
-                    order.set("consume_time",time + "秒");
-                }
+            Date startDate = new DateTime(allOrderLogs.get(0).get("operation_time")).toDate();
+            Date endDate = new DateTime(allOrderLogs.get(allOrderLogs.size()-1).get("operation_time")).toDate();
+            long endTime = endDate.getTime();
+            long startTime = startDate.getTime();
+            double tmpMinutes = (double)(endTime - startTime);
+            double time = tmpMinutes/(1000 * 60);
+            if(time >= 60){
+                time = time /60;
+                order.set("consume_time",time + "分钟");
+            }else {
+                DecimalFormat df = new DecimalFormat("#.0");
+                order.set("consume_time",df.format(time) + "秒");
             }
         }else {
-            order.set("consume_time",order.get("consume_time")+"分钟");
+            order.set("consume_time",order.get("consume_time") + "分钟");
         }
-        setAttr("order", order);
-        setAttr("orderLog", orderLog);
-        List<OrderLog> allOrderLogs = OrderLog.dao.findByOrder(orderId);
+
+        setAttr("order",order);
         setAttr("allOrderlogs", allOrderLogs);
         render("item.ftl");
     }
