@@ -1,9 +1,5 @@
 package controllers.admin.order;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseAdminController;
-import base.datatable.DataTablePage;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -11,33 +7,52 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.ehcache.CacheKit;
+
+import net.dreamlu.event.EventKit;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseAdminController;
+import base.datatable.DataTablePage;
 import jobs.pushorder.CancelOrder;
 import jobs.pushorder.PushOrder;
 import models.activity.MemberCoupon;
 import models.company.Company;
 import models.driver.DriverHistoryLocation;
 import models.driver.DriverInfo;
-import models.member.*;
+import models.member.MemberAppraise;
+import models.member.MemberCapitalAccount;
+import models.member.MemberComplain;
+import models.member.MemberInfo;
+import models.member.MemberLogin;
 import models.order.Order;
 import models.order.OrderLog;
 import models.order.OrderTrip;
 import models.reject.RejectLog;
-import models.sys.*;
-import net.dreamlu.event.EventKit;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import models.sys.AdminSetting;
+import models.sys.Schedule;
+import models.sys.ServiceType;
+import models.sys.ServiceTypeItem;
+import models.sys.User;
 import plugin.sqlInXml.SqlManager;
 import services.CalService;
 import services.PushOrderService;
 import utils.DateUtil;
-
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Created by admin on 2016/9/23.
@@ -99,6 +114,24 @@ public class OrderController extends BaseAdminController {
         OrderLog payLog = OrderLog.dao.findByOrderAndPayAction(orderId, Constant.OrderAction.PAYED);
         orderLog.add(0, createLog);
         orderLog.add(payLog);
+        if(null == order.get("consume_time")){
+            Date create_time = new DateTime(order.get("create_time")).toDate();
+            Date last_update_time = new DateTime(order.get("last_update_time")).toDate();
+            if(create_time != null && last_update_time != null){
+                long endTime = last_update_time.getTime();
+                long startTime = create_time.getTime();
+                double tmpMinutes = (double)(endTime - startTime);
+                double time = tmpMinutes/(1000 * 60);
+                if(time >= 60){
+                    time = time /60;
+                    order.set("consume_time",time + "分钟");
+                }else {
+                    order.set("consume_time",time + "秒");
+                }
+            }
+        }else {
+            order.set("consume_time",order.get("consume_time")+"分钟");
+        }
         setAttr("order", order);
         setAttr("orderLog", orderLog);
         List<OrderLog> allOrderLogs = OrderLog.dao.findByOrder(orderId);

@@ -229,7 +229,7 @@
                         <tr>
                             <td>消耗时间</td>
                             <td>
-                            ${ (order.consume_time??) ?string((order.consume_time)!,"0")}分钟
+                            ${ (order.consume_time??) ?string((order.consume_time)!,"0")}
                             </td>
                         </tr>
                         <tr>
