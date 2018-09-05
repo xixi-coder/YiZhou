@@ -118,7 +118,7 @@ public class OrderController extends BaseAdminController {
         List<OrderLog> allOrderLogs = OrderLog.dao.findByOrder(orderId);
 
         if(null == order.get("consume_time")){
-            Date startDate = new DateTime(allOrderLogs.get(0).get("operation_time")).toDate();
+            Date startDate = new DateTime(allOrderLogs.get(2).get("operation_time")).toDate();
             Date endDate = new DateTime(allOrderLogs.get(allOrderLogs.size()-1).get("operation_time")).toDate();
             long endTime = endDate.getTime();
             long startTime = startDate.getTime();
@@ -128,14 +128,21 @@ public class OrderController extends BaseAdminController {
                 time = time /60;
                 order.set("consume_time",time + "分钟");
             }else {
-                DecimalFormat df = new DecimalFormat("#.0");
-                order.set("consume_time",df.format(time) + "秒");
+                DecimalFormat df = new DecimalFormat("#.00");
+                String format = df.format(time);
+                if(format.startsWith(".")){
+                    order.set("consume_time", "0" + format+ "秒");
+                }else {
+                    order.set("consume_time", format+ "秒");
+                }
+
             }
         }else {
             order.set("consume_time",order.get("consume_time") + "分钟");
         }
 
         setAttr("order",order);
+        setAttr("orderLog", orderLog);
         setAttr("allOrderlogs", allOrderLogs);
         render("item.ftl");
     }
