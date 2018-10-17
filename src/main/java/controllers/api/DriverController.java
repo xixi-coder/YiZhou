@@ -1,8 +1,5 @@
 package controllers.api;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseApiController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -19,6 +16,29 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.ehcache.CacheKit;
 import com.jfinal.plugin.redis.Redis;
+
+import net.dreamlu.event.EventKit;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseApiController;
 import dto.CalculationDto;
 import dto.DriverOnlineCache;
 import dto.location.HistoricalLocation;
@@ -27,11 +47,20 @@ import jobs.activity.OrderActivity;
 import jobs.pushtocustomer.PushToCustomer;
 import jobs.pushtocustomer.PushToPay;
 import jobs.reward.Reward;
-import kits.*;
+import kits.ApiAuthKit;
+import kits.Md5Kit;
+import kits.SmsKit;
+import kits.StringsKit;
+import kits.TimeKit;
+import kits.VerificationKit;
 import kits.cache.DriverOrderCache;
 import kits.cache.DriverStatusCache;
 import kits.cache.HistoricalLocationCache;
-import models.car.*;
+import models.car.Car;
+import models.car.CarBrand;
+import models.car.CarInfo;
+import models.car.CarModel;
+import models.car.DriverCar;
 import models.company.Company;
 import models.count.MemberOrderStatistics;
 import models.driver.DriverHistoryLocation;
@@ -49,25 +78,13 @@ import models.reject.RejectLog;
 import models.sys.AdminSetting;
 import models.sys.Area;
 import models.sys.ZxLine;
-import net.dreamlu.event.EventKit;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
-import org.joda.time.format.DateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import services.*;
+import services.CalCommissionService;
+import services.CalService;
+import services.CalZxLineService;
+import services.OnlineService;
+import services.OrderService;
 import utils.AESOperator;
-
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import utils.KeyLock;
 
 
 /**
@@ -78,6 +95,8 @@ import java.util.Map;
 public class DriverController extends BaseApiController {
 
     private static Logger logger = LoggerFactory.getLogger(controllers.admin.order.OrderController.class);
+
+    static KeyLock<String> orderLock=new KeyLock<String>();
 
     /**
      * @api {POST} /api/driver/register   司机注册
@@ -897,18 +916,41 @@ public class DriverController extends BaseApiController {
         }
     }
 
-    public synchronized boolean dealorder(final Order order, final OrderLog orderLog, final MemberLogin memberLogin) {
-        Order Tmp = Order.dao.findById(order.getId());
-        if (Tmp.getStatus() == Constant.OrderStatus.ACCEPT) {
-            renderAjaxError("订单已经被别人抢走了。。。。。");
-            return false;
-        }
-        return Db.tx(new IAtom() {
-            @Override
-            public boolean run() throws SQLException {
-                return order.update() && orderLog.save() && memberLogin.update();
+//    public synchronized boolean dealorder(final Order order, final OrderLog orderLog, final MemberLogin memberLogin) {
+//        Order Tmp = Order.dao.findById(order.getId());
+//        if (Tmp.getStatus() == Constant.OrderStatus.ACCEPT) {
+//            renderAjaxError("订单已经被别人抢走了。。。。。");
+//            return false;
+//        }
+//        return Db.tx(new IAtom() {
+//            @Override
+//            public boolean run() throws SQLException {
+//                return order.update() && orderLog.save() && memberLogin.update();
+//            }
+//        });
+//    }
+
+    private  boolean dealorder(final Order order, final OrderLog orderLog, final MemberLogin memberLogin) {
+        //司机抢单，一单最终只能归到一个司机头上
+        boolean result=false;
+        try {
+            orderLock.lock(order.getNo());
+            Order Tmp = Order.dao.findById(order.getId());
+            if (Tmp.getStatus() == Constant.OrderStatus.ACCEPT) {
+                renderAjaxError("订单已经被别人抢走了。。。。。");
+                return false;
             }
-        });
+            result=Db.tx(new IAtom() {
+                @Override
+                public boolean run() throws SQLException {
+                    return order.update() && orderLog.save() && memberLogin.update();
+                }
+            });
+
+        } finally {
+            orderLock.unlock(order.getNo());
+        }
+        return result;
     }
 
     /**
