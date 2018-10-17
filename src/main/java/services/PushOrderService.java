@@ -58,6 +58,11 @@ public class PushOrderService {
         return PushOrderServiceHolder.intance;
     }
 
+    /**
+     * 城际专线取出司机的ID
+     * @param order 订单
+     * @param driverInfos   司机的信息
+     */
     public void pushToDriverSet(Order order, DriverInfo driverInfos) {
         logger.info("推送接口---------》pushToDriverSet");
         List<DriverInfo> tmp = Lists.newArrayList();
@@ -231,8 +236,8 @@ public class PushOrderService {
         pushMap.setTitle(title);
         pushMap.setContent(od);
         JPushService.getInstance().sendMessageToDriver(title, JSONObject.toJSON(pushMap).toString(), registrationIds);
-        pushMap.setPushType(Constant.PushType.GT);
-        GeTuiPushUtil.getInstance().pushMsgToList(Constant.PushType.SJ, title.toString(), JSONObject.toJSONString(pushMap), order.getNo(), cId);
+//        pushMap.setPushType(Constant.PushType.GT);
+//        GeTuiPushUtil.getInstance().pushMsgToList(Constant.PushType.SJ, title.toString(), JSONObject.toJSONString(pushMap), order.getNo(), cId);
     }
 
     public void pushOrderToAllDriver(Order order) {//通过后台设置规则查询附近的司机
@@ -269,31 +274,37 @@ public class PushOrderService {
                 }
                 pushToDriverSet(order, driverInfo);
                 try {
-                    Thread.sleep(1000 * 300);
+                    Thread.sleep(1000 * 20);
                 } catch (InterruptedException e) {
                     logger.error("推送订单失败了，订单号:{},当前日期:{}", order.getNo(), DateTime.now().toDateTime());
                     e.printStackTrace();
                 }
             }
-            pushToDriverSetList(order, driverInfos);
+            //20秒之后再查一次订单,如果订单还处于未接单的状态,推送给所有司机
+            String no = order.getNo();
+            Order orderbyNo = Order.dao.findByNo(no);
+            if(orderbyNo.getStatus() == Constant.OrderStatus.CREATE){
+                pushToDriverSetList(order, driverInfos);
+            }
 
         } else {
             if (adminSetting.getAutoDispatch()) {
                 //是自动派单
                 List<DispatchSetting> dispatchSettings = Lists.newArrayList();
-                int dispatchMill1 = adminSetting.getDispatchMill1();
+                double dispatchMill1 = adminSetting.getDispatchMill1();
+                double dispatchMillDefault = adminSetting.getDispatchMillDefault();
                 DispatchSetting dispatchSetting1 = new DispatchSetting();
-                dispatchSetting1.setStartDistance(0);
+                dispatchSetting1.setStartDistance(dispatchMillDefault);
                 dispatchSetting1.setEndDistance(dispatchMill1);
                 dispatchSetting1.setTimeOut(adminSetting.getDispatchTimeOut1());
                 dispatchSettings.add(dispatchSetting1);
-                int dispatchMill2 = adminSetting.getDepositAmount2();
+                double dispatchMill2 = adminSetting.getDispatchMill2();
                 DispatchSetting dispatchSetting2 = new DispatchSetting();
                 dispatchSetting2.setStartDistance(dispatchMill1);
                 dispatchSetting2.setEndDistance(dispatchMill2);
                 dispatchSetting2.setTimeOut(adminSetting.getDispatchTimeOut2());
                 dispatchSettings.add(dispatchSetting2);
-                int dispatchMill3 = adminSetting.getDepositAmount3();
+                double dispatchMill3 = adminSetting.getDispatchMill3();
                 DispatchSetting dispatchSetting3 = new DispatchSetting();
                 dispatchSetting3.setStartDistance(dispatchMill2);
                 dispatchSetting3.setEndDistance(dispatchMill3);
@@ -339,19 +350,23 @@ public class PushOrderService {
                 //是抢单
                 //是自动派单
                 List<DispatchSetting> dispatchSettings = Lists.newArrayList();
-                int dispatchMill1 = adminSetting.getGrabSingleMill1();
+
+                double dispatchMill1 = adminSetting.getGrabSingleMill1();
+                double grabSingleMillDefault = adminSetting.getGrabSingleMillDefault();
                 DispatchSetting dispatchSetting1 = new DispatchSetting();
-                dispatchSetting1.setStartDistance(0);
+                dispatchSetting1.setStartDistance(grabSingleMillDefault);
                 dispatchSetting1.setEndDistance(dispatchMill1);
                 dispatchSetting1.setTimeOut(adminSetting.getGrabSingleTimeOut1());
                 dispatchSettings.add(dispatchSetting1);
-                int dispatchMill2 = adminSetting.getGrabSingleMill2();
+
+                double dispatchMill2 = adminSetting.getGrabSingleMill2();
                 DispatchSetting dispatchSetting2 = new DispatchSetting();
                 dispatchSetting2.setStartDistance(dispatchMill1);
                 dispatchSetting2.setEndDistance(dispatchMill2);
                 dispatchSetting2.setTimeOut(adminSetting.getGrabSingleTimeOut2());
                 dispatchSettings.add(dispatchSetting2);
-                int dispatchMill3 = adminSetting.getGrabSingleMill3();
+
+                double dispatchMill3 = adminSetting.getGrabSingleMill3();
                 DispatchSetting dispatchSetting3 = new DispatchSetting();
                 dispatchSetting3.setStartDistance(dispatchMill2);
                 dispatchSetting3.setEndDistance(dispatchMill3);
@@ -432,8 +447,8 @@ public class PushOrderService {
         }
         logger.info("派单给regisId{}", order.get("regisId"));
         JPushService.getInstance().sendMessageToDriver(title, JSONObject.toJSONString(pushMap), regisId.toString());
-        pushMap.setPushType(Constant.PushType.GT);
-        GeTuiPushUtil.getInstance().pushMsgToList(Constant.PushType.SJ, title.toString(), JSONObject.toJSONString(pushMap), order.getNo(), cId);
+//        pushMap.setPushType(Constant.PushType.GT);
+//        GeTuiPushUtil.getInstance().pushMsgToList(Constant.PushType.SJ, title.toString(), JSONObject.toJSONString(pushMap), order.getNo(), cId);
     }
 
     public void pushChenjiDriver(Order order) {

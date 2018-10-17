@@ -1,25 +1,26 @@
 package models.driver;
 
-import annotation.TableBind;
-import base.Constant;
-import base.models.BaseDriverInfo;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.redis.Redis;
-import kits.StringsKit;
-import models.member.MemberLogin;
-import models.order.Order;
-import models.sys.ZxLine;
+
 import org.joda.time.DateTime;
-import plugin.sqlInXml.SqlManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import annotation.TableBind;
+import base.Constant;
+import base.models.BaseDriverInfo;
+import kits.StringsKit;
+import models.member.MemberLogin;
+import models.order.Order;
+import plugin.sqlInXml.SqlManager;
 
 /**
  * Created by Administrator on 2016/8/20.
@@ -111,7 +112,7 @@ public class DriverInfo extends BaseDriverInfo<DriverInfo> {
      * @param longitude
      * @return
      */
-    public List<DriverInfo> findByDistance(int type, boolean pdFlag, String latitude, String longitude, int companyId, int start, int end) {
+    public List<DriverInfo> findByDistance(int type, boolean pdFlag, String latitude, String longitude, int companyId, Double start, Double end) {
         if (type == Constant.ServiceType.DaiJia) {
             return find(SqlManager.sql("driverInfo.findByDistanceForDaiJia"), latitude, longitude, Constant.LoginStatus.RECIVEDORDER, Constant.DriverStatus.ShengHeTongGuo, companyId, type, start, end);
         } else {
@@ -133,7 +134,7 @@ public class DriverInfo extends BaseDriverInfo<DriverInfo> {
      * @param longitude
      * @return
      */
-    public List<DriverInfo> findByDistance(int type, boolean pdFlag, String latitude, String longitude, int start, int end) {
+    public List<DriverInfo> findByDistance(int type, boolean pdFlag, String latitude, String longitude, Double start, Double end) {
         if (type == Constant.ServiceType.DaiJia) {
             return find(SqlManager.sql("driverInfo.findByDistanceForDaiJiaNoLimit"), latitude, longitude, Constant.LoginStatus.RECIVEDORDER, Constant.DriverStatus.ShengHeTongGuo, type, start, end);
         } else {

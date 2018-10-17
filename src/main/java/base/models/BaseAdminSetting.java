@@ -73,11 +73,11 @@ public abstract class BaseAdminSetting<M extends BaseAdminSetting<M>> extends Mo
         return get("auto_dispatch");
     }
 
-    public void setDispatchMill1(Integer dispatchMill1) {
+    public void setDispatchMill1(String dispatchMill1) {
         set("dispatch_mill1", dispatchMill1);
     }
 
-    public Integer getDispatchMill1() {
+    public Double getDispatchMill1() {
         return get("dispatch_mill1");
     }
 
@@ -89,11 +89,11 @@ public abstract class BaseAdminSetting<M extends BaseAdminSetting<M>> extends Mo
         return get("dispatch_time_out1");
     }
 
-    public void setDispatchMill2(Integer dispatchMill2) {
+    public void setDispatchMill2(String dispatchMill2) {
         set("dispatch_mill2", dispatchMill2);
     }
 
-    public Integer getDispatchMill2() {
+    public Double getDispatchMill2() {
         return get("dispatch_mill2");
     }
 
@@ -105,11 +105,11 @@ public abstract class BaseAdminSetting<M extends BaseAdminSetting<M>> extends Mo
         return get("dispatch_time_out2");
     }
 
-    public void setDispatchMill3(Integer dispatchMill3) {
+    public void setDispatchMill3(String dispatchMill3) {
         set("dispatch_mill3", dispatchMill3);
     }
 
-    public Integer getDispatchMill3() {
+    public Double getDispatchMill3() {
         return get("dispatch_mill3");
     }
 
@@ -129,12 +129,16 @@ public abstract class BaseAdminSetting<M extends BaseAdminSetting<M>> extends Mo
         return get("grab_single_flag");
     }
 
-    public void setGrabSingleMill1(Integer grabSingleMill1) {
+    public void setGrabSingleMill1(String grabSingleMill1) {
         set("grab_single_mill1", grabSingleMill1);
     }
 
-    public Integer getGrabSingleMill1() {
-        return get("grab_single_mill1");
+    public Double getGrabSingleMill1() {
+        String str = get("grab_single_mill1").toString();
+        if(!str.contains(".")){
+            str = str +".0";
+        }
+        return Double.valueOf(str);
     }
 
     public void setGrabSingleTimeOut1(Integer grabSingleTimeOut1) {
@@ -145,12 +149,16 @@ public abstract class BaseAdminSetting<M extends BaseAdminSetting<M>> extends Mo
         return get("grab_single_time_out1");
     }
 
-    public void setGrabSingleMill2(Integer grabSingleMill2) {
+    public void setGrabSingleMill2(String grabSingleMill2) {
         set("grab_single_mill2", grabSingleMill2);
     }
 
-    public Integer getGrabSingleMill2() {
-        return get("grab_single_mill2");
+    public Double getGrabSingleMill2() {
+        String str = get("grab_single_mill2").toString();
+        if(!str.contains(".")){
+            str = str +".0";
+        }
+        return Double.valueOf(str);
     }
 
     public void setGrabSingleTimeOut2(Integer grabSingleTimeOut2) {
@@ -161,12 +169,16 @@ public abstract class BaseAdminSetting<M extends BaseAdminSetting<M>> extends Mo
         return get("grab_single_time_out2");
     }
 
-    public void setGrabSingleMill3(Integer grabSingleMill3) {
+    public void setGrabSingleMill3(String grabSingleMill3) {
         set("grab_single_mill3", grabSingleMill3);
     }
 
-    public Integer getGrabSingleMill3() {
-        return get("grab_single_mill3");
+    public Double getGrabSingleMill3() {
+        String str = get("grab_single_mill3").toString();
+        if(!str.contains(".")){
+            str = str +".0";
+        }
+        return Double.valueOf(str);
     }
 
     public void setGrabSingleTimeOut3(Integer grabSingleTimeOut3) {
@@ -321,4 +333,58 @@ public abstract class BaseAdminSetting<M extends BaseAdminSetting<M>> extends Mo
     public java.lang.Integer getTixianAmount() {
         return get("tixian_amount");
     }
+
+
+    public void setDispatchMillDefault(String dispatchMillDefault) {
+        set("dispatch_mill_default", dispatchMillDefault);
+    }
+
+    public Double getDispatchMillDefault() {
+        return get("dispatch_mill_default");
+    }
+
+
+    public void setGrabSingleMillDefault(String grabSingleMillDefault) {
+        set("grab_single_default", grabSingleMillDefault);
+    }
+
+    public Double getGrabSingleMillDefault() {
+        return get("grab_single_default");
+    }
+
+
+    public void setAdditionalCharges(java.math.BigDecimal additionalCharges) {
+        set("additional_charges", additionalCharges);
+    }
+
+    public java.math.BigDecimal getAdditionalCharges() {
+        return get("additional_charges");
+    }
+
+
+    public java.lang.Double getUCarChargeRate() {
+        return get("u_car_charge_rate");
+    }
+
+    public void setUCarChargeRate(java.lang.Double uCarChargeRate) {
+        set("u_car_charge_rate", uCarChargeRate);
+    }
+
+    public void setDriverCancelTime(java.lang.Integer driverCancelTime) {
+        set("driver_cancel_time", driverCancelTime);
+    }
+
+    public java.lang.Integer getDriverCancelTime() {
+        return get("driver_cancel_time");
+    }
+
+    public void setMemberCancelTime(java.lang.Integer memberCancelTime) {
+        set("member_cancel_time", memberCancelTime);
+    }
+
+    public java.lang.Integer getMemberCancelTime() {
+        return get("member_cancel_time");
+    }
+
+
 }
