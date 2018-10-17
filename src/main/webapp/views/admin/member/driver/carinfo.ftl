@@ -502,7 +502,7 @@
                     <td><label for="head_portrait">车辆图片:</label></td>
                     <td>
                         <img id="portrait_show" style="height: 200px;width: 200px;"
-                             src="<#if car.picture??>${(car.picture)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                             src="${ctx}/<#if car.picture??>${(car.picture)!}<#else>static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
@@ -519,7 +519,7 @@
                     <td><label for="Certificate">运输证:</label></td>
                     <td>
                         <img id="Certificate" style="height: 200px;width: 200px;"
-                             src="<#if car.Certificate??>${(car.Certificate)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                             src="${ctx}/<#if car.Certificate??>${(car.Certificate)!}<#else>static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader">
                             <!--用来存放文件信息-->
                             <div id="thelist2" class="uploader-list"></div>

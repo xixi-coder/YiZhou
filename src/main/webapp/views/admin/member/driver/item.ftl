@@ -101,7 +101,7 @@
                     <td><label for="head_portrait" class="control-label">头像:</label></td>
                     <td><span style="height: 40px;width: 40px;" class="rounded-image topbar-profile-image">
                             <img id="portrait_show" style="height: 40px;"
-                                 src="<#if driverInfo.head_portrait??>${(driverInfo.head_portrait)!}<#else>${ctx}/static/images/default-user.jpg</#if>"/></span>
+                                 src="${ctx}/<#if driverInfo.head_portrait??>${(driverInfo.head_portrait)!}<#else>static/images/default-user.jpg</#if>"/></span>
                         <div id="uploader">
                             <!--用来存放文件信息-->
                             <div id="thelist" class="uploader-list"></div>
