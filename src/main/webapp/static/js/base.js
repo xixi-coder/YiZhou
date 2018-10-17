@@ -193,8 +193,8 @@ var uploadPlug = {
             duplicate: true
         });
         uploader.on('uploadSuccess', function (file, data) {
-            $picturesho.attr("src",data.data.path);
-            $pictureval.val(data.data.path);
+            $picturesho.attr("src",'/'+data.data.path);
+            $pictureval.val('/'+data.data.path);
             layer.closeAll('page');
         });
         uploader.on('error', function (errorCode, limitSize, file) {
