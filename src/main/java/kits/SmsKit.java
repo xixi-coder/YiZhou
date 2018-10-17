@@ -1,9 +1,19 @@
 package kits;
 
-import base.Constant;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.ehcache.CacheKit;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+
+import base.Constant;
 import models.company.Company;
 import models.company.CompanyAccount;
 import models.driver.DriverInfo;
@@ -11,15 +21,7 @@ import models.member.MemberInfo;
 import models.order.Order;
 import models.sys.SmsLog;
 import models.sys.SmsTmp;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import services.SmsHttpService;
-
-import java.sql.SQLException;
-import java.text.DecimalFormat;
 
 /**
  * Created by Administrator on 2016/8/20.
@@ -78,7 +80,6 @@ public class SmsKit {
         try {
             final CompanyAccount companyAccount = CompanyAccount.dao.findById(company);
             if (companyAccount == null) {
-                SmsLog.dao.builder(phone, smsTmpId, content, company).save();
                 return SmsHttpService.getInstance().sendSms(content, phone);
             } else {
                 int lastCount = companyAccount.getSmsCount() == null ? 0 : companyAccount.getSmsCount();
@@ -89,7 +90,7 @@ public class SmsKit {
                     boolean isOk = Db.tx(new IAtom() {
                         @Override
                         public boolean run() throws SQLException {
-                            return companyAccount.update() && SmsHttpService.getInstance().sendSms(content, phone) && SmsLog.dao.builder(phone, smsTmpId, content, company).save();
+                            return companyAccount.update() && SmsHttpService.getInstance().sendSms(content, phone);
                         }
                     });
                     return isOk;
@@ -98,6 +99,8 @@ public class SmsKit {
         } catch (Exception e) {
             logger.error("短信注册短信模板没有设置，请联系管理员设置模板");
             return false;
+        }finally {
+            SmsLog.dao.builder(phone, smsTmpId, content, company).save();
         }
     }
     
@@ -474,5 +477,5 @@ public class SmsKit {
             return false;
         }
     }
-    
+
 }
