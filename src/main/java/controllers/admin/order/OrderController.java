@@ -118,24 +118,28 @@ public class OrderController extends BaseAdminController {
         List<OrderLog> allOrderLogs = OrderLog.dao.findByOrder(orderId);
 
         if(null == order.get("consume_time")){
-            Date startDate = new DateTime(allOrderLogs.get(2).get("operation_time")).toDate();
-            Date endDate = new DateTime(allOrderLogs.get(allOrderLogs.size()-1).get("operation_time")).toDate();
-            long endTime = endDate.getTime();
-            long startTime = startDate.getTime();
-            double tmpMinutes = (double)(endTime - startTime);
-            double time = tmpMinutes/(1000 * 60);
-            if(time >= 60){
-                time = time /60;
-                order.set("consume_time",time + "分钟");
-            }else {
-                DecimalFormat df = new DecimalFormat("#.00");
-                String format = df.format(time);
-                if(format.startsWith(".")){
-                    order.set("consume_time", "0" + format+ "秒");
+            if(allOrderLogs.size() > 2){
+                Date startDate = new DateTime(allOrderLogs.get(2).get("operation_time")).toDate();
+                Date endDate = new DateTime(allOrderLogs.get(allOrderLogs.size()-1).get("operation_time")).toDate();
+                long endTime = endDate.getTime();
+                long startTime = startDate.getTime();
+                double tmpMinutes = (double)(endTime - startTime);
+                double time = tmpMinutes/(1000 * 60);
+                if(time >= 60){
+                    time = time /60;
+                    order.set("consume_time",time + "分钟");
                 }else {
-                    order.set("consume_time", format+ "秒");
-                }
+                    DecimalFormat df = new DecimalFormat("#.00");
+                    String format = df.format(time);
+                    if(format.startsWith(".")){
+                        order.set("consume_time", "0" + format+ "秒");
+                    }else {
+                        order.set("consume_time", format+ "秒");
+                    }
 
+                }
+            }else {
+                order.set("consume_time",order.get("consume_time") + "分钟");
             }
         }else {
             order.set("consume_time",order.get("consume_time") + "分钟");
