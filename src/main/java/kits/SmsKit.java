@@ -66,6 +66,10 @@ public class SmsKit {
     
     private static boolean send(String phone, SmsTmp smsTmp, String content, String smsCode) {
         try {
+            if(smsTmp.getStatus() == 1){
+                logger.info("该短信模板被禁用!");
+                return false;
+            }
             SmsLog.dao.builder(phone, smsTmp.getId(), content, 0).save();
             CacheKit.remove(Constant.Sms.SMS_CACHE, phone);
             CacheKit.put(Constant.Sms.SMS_CACHE, phone, smsCode);
@@ -77,6 +81,11 @@ public class SmsKit {
     }
     
     private static boolean send(final String phone, final int smsTmpId, final String content, final int company) {
+        SmsTmp smsTmp = SmsTmp.dao.findById(smsTmpId);
+        if(smsTmp.getStatus() == 1){
+            logger.info("该短信模板被禁用!");
+            return false;
+        }
         try {
             final CompanyAccount companyAccount = CompanyAccount.dao.findById(company);
             if (companyAccount == null) {

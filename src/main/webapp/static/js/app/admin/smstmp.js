@@ -54,7 +54,8 @@ $(document).ready(function () {
         {"data": "create_time"},
         {
             "render": function (display, cell, row) {
-                return tpl.bind($("#action_tpl"), {id: row.id});
+                // return tpl.bind($("#action_tpl"), {id: row.id});
+                return tpl.bind($("#action_tpl"), {id: row.id, type: row.type, status: row.status});
             }
         }
     ];
@@ -71,6 +72,31 @@ $(document).ready(function () {
                         if (data.status == 'OK') {
                             layer.msg(data.msg);
                             window.location.reload();
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                    }
+                })
+            });
+        });
+
+        //添加启用禁用
+        $('.disable').on('click', function (a) {
+            var id = $(a.target).data("id");
+            var status =$(a.target).data("status");
+            var title = '启用';
+            if(status==0){
+                title = "禁用"
+            }
+
+            layer.confirm('是否' + title + '该条短信模板？', {icon: 3, title: '提示'}, function (index) {
+                $.ajax({
+                    url: g.ctx + '/admin/sys/smstmp/disable/' + id,
+                    type: 'POST',
+                    success: function (data) {
+                        if (data.status == 'OK') {
+                            layer.msg(data.msg);
+                            table.ajax.reload();
                         } else {
                             layer.msg(data.msg);
                         }

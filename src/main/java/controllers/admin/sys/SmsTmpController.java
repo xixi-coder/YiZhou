@@ -1,17 +1,19 @@
 package controllers.admin.sys;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseAdminController;
 import com.google.common.collect.Lists;
 import com.jfinal.aop.Before;
 import com.jfinal.ext.interceptor.POST;
-import models.company.Company;
-import models.sys.SmsTmp;
+
 import org.joda.time.DateTime;
-import plugin.sqlInXml.SqlManager;
 
 import java.util.List;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseAdminController;
+import models.company.Company;
+import models.sys.SmsTmp;
+import plugin.sqlInXml.SqlManager;
 
 /**
  * Created by Administrator on 2016/9/9.
@@ -77,6 +79,26 @@ public class SmsTmpController extends BaseAdminController {
             } else {
                 renderAjaxFailure("添加失败！");
             }
+        }
+    }
+
+    //启用和禁用
+    public void disable() {
+        int smsTmpId = getParaToInt(0, 0);
+        if (smsTmpId > 0) {
+            SmsTmp smsTmp=SmsTmp.dao.findById(smsTmpId);
+            if (smsTmp.getStatus() == 0) {
+                smsTmp.setStatus(1);
+            } else {
+                smsTmp.setStatus(0);
+            }
+            if (smsTmp.update()) {
+                renderAjaxSuccess("操作成功！");
+            } else {
+                renderAjaxError("操作失败！");
+            }
+        } else {
+            renderAjaxError("短信模板不存在");
         }
     }
 }

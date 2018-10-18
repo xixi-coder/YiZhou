@@ -65,4 +65,12 @@ public abstract class BaseSmsTmp<M extends BaseSmsTmp<M>> extends Model<M> imple
 		return get("type");
 	}
 
+	public void setStatus(Integer status) {
+		set("status", status);
+	}
+
+	public Integer getStatus() {
+		return get("status");
+	}
+
 }

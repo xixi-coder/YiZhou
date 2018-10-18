@@ -53,6 +53,11 @@
             <span class="sr-only"></span></button>
         <ul class="dropdown-menu success btn-xs " role="menu">
             <li><a href="${ctx}/admin/sys/smstmp/item/{{d.id}}">修改</a></li>
+            {{#if (d.status==0){ }}
+            <li><a class="disable" href="javascript:void(0);" data-id="{{d.id}}" data-status="{{d.status}}">禁用</a></li>
+            {{# }else if(d.status==1){ }}
+            <li><a class="disable" href="javascript:void(0);" data-id="{{d.id}}" data-status="{{d.status}}">启用</a></li>
+            {{#} }}
             <li><a class="delete" href="javascript:void(0);" data-id="{{d.id}}">删除<span class="warning{{d.id}}" style="color: #880000" onmouseover="warning_message({{d.id}})" data-id="{{d.id}}"> ★</span></a></li>
         </ul>
     </div>
