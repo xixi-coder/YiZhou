@@ -1,8 +1,5 @@
 package controllers.admin.sys;
 
-import annotation.Controller;
-import base.Constant;
-import base.controller.BaseAdminController;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -10,19 +7,24 @@ import com.jfinal.aop.Before;
 import com.jfinal.ext.interceptor.POST;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import annotation.Controller;
+import base.Constant;
+import base.controller.BaseAdminController;
 import kits.Md5Kit;
 import kits.StringsKit;
 import models.company.Company;
 import models.driver.DriverInfo;
 import models.sys.Role;
 import models.sys.User;
-import org.apache.commons.lang3.StringUtils;
 import plugin.sqlInXml.SqlManager;
-
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by BOGONm on 16/8/10.
@@ -147,30 +149,59 @@ public class UserController extends BaseAdminController {
      * 修改用户密码
      */
     public void updatepd() {
-        User user = getModel(User.class, "user");
-        if (user.getId() != null) {
-            String oldPw = getPara("oldpassword");
-            user = User.dao.findById(user.getId());
-            if (StringUtils.equals(Md5Kit.MD5(oldPw + user.getSalt()), user.getPassword())) {
-                String password = getPara("password");
-                String repassword = getPara("repassword");
-                if (StringUtils.equals(password, repassword)) {
-                    String salt = StringsKit.getSalt();
-                    String dbPassword = Md5Kit.MD5(password + salt);
-                    user.setSalt(salt);
-                    user.setPassword(dbPassword);
-                    if (user.update()) {
-                        renderAjaxSuccess("密码修改成功！");
+//        User user = getModel(User.class, "user");
+//        if (user.getId() != null) {
+//            String oldPw = getPara("oldpassword");
+//            user = User.dao.findById(user.getId());
+//            if (StringUtils.equals(Md5Kit.MD5(oldPw + user.getSalt()), user.getPassword())) {
+//                String password = getPara("password");
+//                String repassword = getPara("repassword");
+//                if (StringUtils.equals(password, repassword)) {
+//                    String salt = StringsKit.getSalt();
+//                    String dbPassword = Md5Kit.MD5(password + salt);
+//                    user.setSalt(salt);
+//                    user.setPassword(dbPassword);
+//                    if (user.update()) {
+//                        renderAjaxSuccess("密码修改成功！");
+//                    } else {
+//                        renderAjaxError("密码修改失败！");
+//                    }
+//                } else {
+//                    renderAjaxError("两次输入的密码不一致！");
+//                }
+//            } else {
+//                renderAjaxError("旧密码不正确！");
+//            }
+//        } else {
+//            renderAjaxError("用户不存在！");
+//        }
+        User ReceiveUser = getModel(User.class, "user");
+        Integer userId = ReceiveUser.getId();
+        if(userId != null){
+            User user = User.dao.findById(userId);
+            if(user != null){
+                String oldPw = Md5Kit.MD5(getPara("oldpassword")+user.getSalt());
+                if(StringUtils.equals(oldPw, user.getPassword())){
+                    String password = getPara("password");
+                    String repassword = getPara("repassword");
+                    if (StringUtils.equals(password, repassword)) {
+                        String salt = StringsKit.getSalt();
+                        String dbPassword = Md5Kit.MD5(repassword + salt);
+                        user.setSalt(salt);
+                        user.setPassword(dbPassword);
+                        if (user.update()) {
+                            renderAjaxSuccess("密码修改成功！");
+                        } else {
+                            renderAjaxError("密码修改失败！");
+                        }
                     } else {
-                        renderAjaxError("密码修改失败！");
+                        renderAjaxError("两次输入的密码不一致！");
                     }
-                } else {
-                    renderAjaxError("两次输入的密码不一致！");
                 }
-            } else {
-                renderAjaxError("旧密码不正确！");
+            }else {
+                renderAjaxError("用户不存在！");
             }
-        } else {
+        }else {
             renderAjaxError("用户不存在！");
         }
     }
