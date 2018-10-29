@@ -1,26 +1,35 @@
 package wechatpay;
 
 
-import com.google.common.collect.Maps;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import wechatpay.http.HttpClientConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import wechatpay.http.HttpClientConnectionManager;
+
 
 public class GetWxOrderno {
+
+    public static Logger logger = LoggerFactory.getLogger(GetWxOrderno.class);
 
     public static DefaultHttpClient httpclient;
 
@@ -69,35 +78,50 @@ public class GetWxOrderno {
      * @throws Exception
      */
     public static Map<String, String> doXMLParse(String strxml) throws Exception {
-        if (null == strxml || "".equals(strxml)) {
+        if (null == strxml || "".equals(strxml))
             return null;
-        }
+        Map data = new HashMap<>();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        String FEATURE = null;
+        try {
 
-        Map<String, String> m = Maps.newHashMap();
-        InputStream in = String2Inputstream(strxml);
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(in);
-        Element root = doc.getRootElement();
-        List list = root.getChildren();
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            Element e = (Element) it.next();
-            String k = e.getName();
-            String v = "";
-            List children = e.getChildren();
-            if (children.isEmpty()) {
-                v = e.getTextNormalize();
-            } else {
-                v = getChildrenText(children);
+            FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+            documentBuilderFactory.setFeature(FEATURE, true);
+
+            FEATURE = "http://xml.org/sax/features/external-general-entities";
+            documentBuilderFactory.setFeature(FEATURE, false);
+
+            FEATURE = "http://xml.org/sax/features/external-parameter-entities";
+            documentBuilderFactory.setFeature(FEATURE, false);
+
+            FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+            documentBuilderFactory.setFeature(FEATURE, false);
+
+            documentBuilderFactory.setXIncludeAware(false);
+            documentBuilderFactory.setExpandEntityReferences(false);
+
+        } catch (ParserConfigurationException e) {
+            logger.error("ParserConfigurationException was thrown. The feature '" + FEATURE + "' is probably not supported by your XML processor.");
+        }
+        DocumentBuilder documentBuilder= documentBuilderFactory.newDocumentBuilder();
+        InputStream stream = new ByteArrayInputStream(strxml.getBytes("UTF-8"));
+        org.w3c.dom.Document doc = documentBuilder.parse(stream);
+        doc.getDocumentElement().normalize();
+        NodeList nodeList = doc.getDocumentElement().getChildNodes();
+        for (int idx=0; idx<nodeList.getLength(); ++idx) {
+            Node node = nodeList.item(idx);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                org.w3c.dom.Element element = (org.w3c.dom.Element) node;
+                data.put(element.getNodeName(), element.getTextContent());
             }
-
-            m.put(k, v);
         }
-
-        //关闭流
-        in.close();
-
-        return m;
+        try {
+            stream.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return data;
     }
 
     /**
